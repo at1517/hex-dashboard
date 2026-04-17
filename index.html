@@ -3,20 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>HEX车间质量看板 | 深色商务版 | 缩放75%</title>
-    <!-- ECharts CDN -->
+    <title>HEX车间质量看板</title>
     <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
-    <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         /* 全局缩放25% (即缩小为原来的75%) */
         body {
             zoom: 0.75;
-            /* 兼容性：大多数现代浏览器支持zoom，如果不支持可使用transform，但zoom最简单且不影响布局流 */
             -moz-transform: scale(0.75);
             -moz-transform-origin: top left;
         }
-        /* 针对Firefox不支持zoom的降级处理 */
         @-moz-document url-prefix() {
             body {
                 zoom: unset;
@@ -35,7 +31,7 @@
         body {
             background: linear-gradient(145deg, #0a1a2f 0%, #0c2a48 100%);
             font-family: 'Segoe UI', 'Roboto', 'Inter', system-ui, -apple-system, sans-serif;
-            padding: 24px 20px;
+            padding: 16px 20px;
             color: #eef2ff;
             min-height: 100vh;
         }
@@ -45,30 +41,29 @@
             margin: 0 auto;
         }
 
-        /* 头部区域 - 商务蓝风格 */
+        /* 头部区域 */
         .header {
             display: flex;
             justify-content: space-between;
             align-items: flex-end;
             flex-wrap: wrap;
-            margin-bottom: 28px;
-            gap: 16px;
+            margin-bottom: 20px;
+            gap: 12px;
             border-bottom: 2px solid rgba(59,130,246,0.5);
-            padding-bottom: 16px;
+            padding-bottom: 12px;
         }
         .title-section h1 {
-            font-size: 1.9rem;
+            font-size: 2.2rem;
             font-weight: 700;
             background: linear-gradient(135deg, #fff, #90cdf4);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            letter-spacing: -0.3px;
         }
         .title-section p {
             color: #b9d0f0;
-            margin-top: 6px;
-            font-size: 0.9rem;
+            margin-top: 4px;
+            font-size: 1rem;
         }
         .date-badge {
             background: rgba(15, 35, 60, 0.7);
@@ -78,31 +73,25 @@
             font-weight: 500;
             border: 1px solid #2c4f7a;
             color: #cde1ff;
-            font-size: 0.85rem;
-        }
-        .date-badge i {
-            margin-right: 8px;
-            color: #3b82f6;
+            font-size: 0.95rem;
         }
 
-        /* KPI 卡片网格 - 自动换行（小屏自适应） */
+        /* KPI 卡片 */
         .kpi-grid {
             display: flex;
             flex-wrap: wrap;
-            gap: 20px;
-            margin-bottom: 32px;
-            justify-content: flex-start;
+            gap: 16px;
+            margin-bottom: 24px;
         }
         .kpi-card {
             flex: 1 1 220px;
             min-width: 200px;
             background: rgba(12, 30, 55, 0.75);
             backdrop-filter: blur(12px);
-            border-radius: 28px;
-            padding: 18px 20px;
+            border-radius: 24px;
+            padding: 14px 16px;
             border: 1px solid rgba(59,130,246,0.3);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-            transition: transform 0.2s, border-color 0.2s;
+            transition: transform 0.2s;
         }
         .kpi-card:hover {
             transform: translateY(-3px);
@@ -111,48 +100,47 @@
         .kpi-icon {
             font-size: 2rem;
             color: #3b82f6;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
         .kpi-label {
-            font-size: 0.75rem;
+            font-size: 0.85rem;
             font-weight: 600;
             color: #9ab9e8;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
         }
         .kpi-value {
-            font-size: 2.2rem;
+            font-size: 2.4rem;
             font-weight: 800;
             color: white;
             margin-top: 4px;
+            line-height: 1.1;
         }
         .kpi-sub {
-            font-size: 0.7rem;
+            font-size: 0.75rem;
             color: #8aa9cc;
             border-top: 1px dashed #2c4f7a;
-            margin-top: 8px;
-            padding-top: 6px;
+            margin-top: 6px;
+            padding-top: 5px;
         }
 
-        /* 图表卡片 - 深色风格 */
+        /* 图表卡片 */
         .chart-row {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 24px;
-            margin-bottom: 32px;
+            gap: 20px;
+            margin-bottom: 24px;
         }
         .chart-card {
             background: rgba(10, 25, 45, 0.7);
             backdrop-filter: blur(8px);
-            border-radius: 28px;
-            padding: 16px 12px 12px;
+            border-radius: 24px;
+            padding: 12px 12px 8px;
             border: 1px solid #1e3a5f;
-            box-shadow: 0 6px 14px rgba(0,0,0,0.2);
         }
         .chart-card h3 {
             font-weight: 600;
-            font-size: 1.2rem;
-            margin: 0 0 8px 12px;
+            font-size: 1.3rem;
+            margin: 0 0 8px 8px;
             display: flex;
             align-items: center;
             gap: 8px;
@@ -160,37 +148,38 @@
         }
         .chart-container {
             width: 100%;
-            height: 300px;
+            height: 340px;
         }
         .full-width {
             grid-column: span 2;
         }
 
-        /* 表格区域 - 深色 */
+        /* 表格区域 */
         .table-wrapper {
             overflow-x: auto;
-            border-radius: 24px;
+            border-radius: 20px;
             background: rgba(8, 22, 40, 0.8);
-            padding: 4px 0;
+            padding: 0;
             border: 1px solid #1e3a5f;
             margin-top: 8px;
         }
         .data-table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             color: #e2e8f0;
         }
         .data-table th {
             background: #0b2a44;
-            padding: 14px 12px;
+            padding: 12px 12px;
             text-align: left;
             font-weight: 600;
             border-bottom: 1px solid #2a4c6e;
             color: #bfd9ff;
+            font-size: 0.95rem;
         }
         .data-table td {
-            padding: 12px;
+            padding: 10px 12px;
             border-bottom: 1px solid #1f3b57;
         }
         .badge-ok {
@@ -199,7 +188,7 @@
             padding: 4px 12px;
             border-radius: 40px;
             font-weight: 600;
-            font-size: 0.75rem;
+            font-size: 0.8rem;
             display: inline-block;
         }
         .badge-warning {
@@ -208,47 +197,45 @@
         }
         .footer-note {
             text-align: center;
-            margin-top: 30px;
+            margin-top: 20px;
             color: #7e9bc0;
-            font-size: 0.75rem;
+            font-size: 0.8rem;
             border-top: 1px solid #1e3a5f;
-            padding-top: 18px;
+            padding-top: 12px;
         }
 
-        /* 响应式：手机端图表堆叠 */
         @media (max-width: 860px) {
             body {
-                padding: 16px 12px;
+                padding: 12px;
             }
             .chart-row {
                 grid-template-columns: 1fr;
-                gap: 20px;
+                gap: 16px;
             }
             .full-width {
                 grid-column: span 1;
             }
             .kpi-card {
-                min-width: 180px;
-                padding: 14px 16px;
+                min-width: 170px;
+                padding: 12px 14px;
             }
             .kpi-value {
-                font-size: 1.8rem;
+                font-size: 2rem;
             }
             .chart-container {
-                height: 260px;
+                height: 280px;
             }
             .title-section h1 {
-                font-size: 1.5rem;
+                font-size: 1.6rem;
             }
         }
 
-        /* 电视/大屏优化 */
         @media (min-width: 1920px) {
             .kpi-card {
-                min-width: 260px;
+                min-width: 240px;
             }
             .chart-container {
-                height: 360px;
+                height: 380px;
             }
         }
     </style>
@@ -258,14 +245,14 @@
     <div class="header">
         <div class="title-section">
             <h1><i class="fas fa-chart-line" style="color: #3b82f6;"></i> HEX车间 · 质量数据看板</h1>
-            <p>2026年3月 AINT量产 SOP RTY 统计 | 工段FTT & 产品良率全景 | 慢速循环滚动 | 自动刷新 | 缩放75%</p>
+            <p>2026年3月 AINT量产 SOP RTY 统计 | 工段FTT & 产品良率全景</p>
         </div>
         <div class="date-badge">
             <i class="far fa-calendar-alt"></i> 2026.03.01 - 2026.03.31
         </div>
     </div>
 
-    <!-- KPI 卡片（flex wrap 自动换行） -->
+    <!-- KPI 卡片 -->
     <div class="kpi-grid" id="kpiGrid"></div>
 
     <!-- 双图区 -->
@@ -283,7 +270,7 @@
     <div class="chart-row">
         <div class="chart-card full-width">
             <h3><i class="fas fa-chart-simple"></i> 主要产品类型平均RTY对比</h3>
-            <div id="chart-category" class="chart-container" style="height: 280px;"></div>
+            <div id="chart-category" class="chart-container" style="height: 320px;"></div>
         </div>
     </div>
 
@@ -299,13 +286,13 @@
             </table>
         </div>
         <div class="footer-note">
-            <i class="fas fa-database"></i> 数据源自BASE表 & RTY汇总 | FTT% = 1 - 不良率 | RTY = 各工段FTT乘积 | 页面慢速循环滚动（每10分钟自动刷新）| 整体缩放75%
+            <i class="fas fa-database"></i> 数据源自BASE表 & RTY汇总
         </div>
     </div>
 </div>
 
 <script>
-    // ======================= 核心数据（基于BASE真实值） =======================
+    // ======================= 核心数据 =======================
     const productsData = [
         { name: "Silver内冷VAVE", type: "内冷", furnace: 0.998988, braze: 0.997428, preCheck: 0.996348, ultrasonic: 0.998856, hydro: 0.998932, rty: 0.988797 },
         { name: "ES6冷凝器", type: "冷凝器", furnace: 0.987805, spot: 1.0, braze: 0.986667, helium: 0.892857, rty: 0.870209 },
@@ -327,7 +314,7 @@
         { name: "MS11内冷", type: "内冷", furnace: 0.998633, braze: 0.987486, preCheck: 0.998462, hydro: 0.999537, rty: 0.984163 }
     ];
 
-    // 工段平均FTT计算
+    // 工段平均FTT
     const processMap = { "炉前": [], "钎焊": [], "氦检": [], "预检": [], "点焊": [], "超声波": [], "火焰焊长管": [], "亲水湿度检": [] };
     productsData.forEach(p => {
         if (p.furnace !== undefined) processMap["炉前"].push(p.furnace);
@@ -349,11 +336,11 @@
     productsData.forEach(p => { if(p.rty) { if(!typeRTY[p.type]) typeRTY[p.type]=[]; typeRTY[p.type].push(p.rty); } });
     const typeAvg = Object.keys(typeRTY).map(t => ({ name: t, avgRTY: (typeRTY[t].reduce((a,b)=>a+b,0)/typeRTY[t].length).toFixed(4) }));
 
-    // 全局KPI
+    // KPI
     const validRty = productsData.filter(p => p.rty !== undefined).map(p => p.rty);
     const avgOverallRTY = (validRty.reduce((a,b)=>a+b,0)/validRty.length).toFixed(4);
     const totalProducts = productsData.length;
-    const totalCompleted = 245800;  // 基于base产量估算
+    const totalCompleted = 245800;
     const totalDefects = 9860;
 
     const kpis = [
@@ -369,13 +356,13 @@
         kpiContainer.appendChild(card);
     });
 
-    // 图表渲染 (深色主题)
+    // 图表渲染
     const processChart = echarts.init(document.getElementById('chart-process'));
     processChart.setOption({
         backgroundColor: 'transparent',
         tooltip: { trigger: 'axis', formatter: '{b}: {c}%', axisPointer: { type: 'shadow' } },
-        grid: { containLabel: true, borderWidth: 0 },
-        xAxis: { type: 'category', data: Object.keys(processAvg), axisLabel: { rotate: 30, color: '#b9d0f0' }, axisLine: { lineStyle: { color: '#2c4f7a' } } },
+        grid: { containLabel: true, borderWidth: 0, top: 20, bottom: 10, left: 40, right: 20 },
+        xAxis: { type: 'category', data: Object.keys(processAvg), axisLabel: { rotate: 30, color: '#b9d0f0', fontSize: 11 }, axisLine: { lineStyle: { color: '#2c4f7a' } } },
         yAxis: { type: 'value', name: 'FTT (%)', nameTextStyle: { color: '#b9d0f0' }, min: 85, max: 100, axisLabel: { formatter: '{value}%', color: '#b9d0f0' }, splitLine: { lineStyle: { color: '#1e3a5f' } } },
         series: [{ type: 'bar', data: Object.values(processAvg).map(v => (parseFloat(v)*100).toFixed(1)), itemStyle: { color: '#3b82f6', borderRadius: [8,8,0,0] }, label: { show: true, position: 'top', formatter: '{c}%', color: '#e0edff' } }]
     });
@@ -391,8 +378,8 @@
     rtyChart.setOption({
         backgroundColor: 'transparent',
         tooltip: { trigger: 'axis', formatter: '{b}: {c}%' },
-        legend: { data: ['优秀产品RTY', '待改善产品RTY'], textStyle: { color: '#e0edff' } },
-        grid: { containLabel: true, left: '12%' },
+        legend: { data: ['优秀产品RTY', '待改善产品RTY'], textStyle: { color: '#e0edff' }, itemWidth: 25, itemHeight: 12 },
+        grid: { containLabel: true, left: '12%', top: 20, bottom: 10 },
         xAxis: { type: 'value', name: '直通率 (%)', min: 70, max: 100, axisLabel: { formatter: '{value}%', color: '#b9d0f0' }, splitLine: { lineStyle: { color: '#1e3a5f' } } },
         yAxis: { type: 'category', data: [...topNames, ...bottomNames], axisLabel: { color: '#e0edff', fontSize: 11 }, axisLine: { lineStyle: { color: '#2c4f7a' } } },
         series: [
@@ -405,8 +392,8 @@
     catChart.setOption({
         backgroundColor: 'transparent',
         tooltip: { trigger: 'axis', formatter: '{b}: {c}%' },
-        grid: { containLabel: true },
-        xAxis: { type: 'category', data: typeAvg.map(t=>t.name), axisLabel: { rotate: 20, color: '#b9d0f0' }, axisLine: { lineStyle: { color: '#2c4f7a' } } },
+        grid: { containLabel: true, top: 20, bottom: 10, left: 50, right: 20 },
+        xAxis: { type: 'category', data: typeAvg.map(t=>t.name), axisLabel: { rotate: 20, color: '#b9d0f0', fontSize: 12 }, axisLine: { lineStyle: { color: '#2c4f7a' } } },
         yAxis: { type: 'value', name: '平均RTY (%)', min: 88, max: 100, axisLabel: { formatter: '{value}%', color: '#b9d0f0' }, splitLine: { lineStyle: { color: '#1e3a5f' } } },
         series: [{ type: 'bar', data: typeAvg.map(t=>(parseFloat(t.avgRTY)*100).toFixed(1)), itemStyle: { color: '#8b5cf6', borderRadius: [8,8,0,0] }, label: { show: true, position: 'top', formatter: '{c}%', color: '#e0edff' } }]
     });
@@ -424,22 +411,19 @@
         row.innerHTML = `<td style="font-weight:600;">${p.name}</td><td>${p.type}</td><td><span class="${badgeClass}">${rtyPercent}</span></td><td>${furnaceVal}</td><td>${brazeVal}</td><td>${heliumVal}</td><td>${preVal}</td>`;
     });
 
-    // ======================= 自动慢速循环滚动（速度减半：0.6像素/帧） =======================
+    // ======================= 自动慢速循环滚动 =======================
     let scrollFrameId = null;
     let isAutoScrolling = true;
-    const SCROLL_SPEED = 0.6;        // 原速度为1.2，调慢一半
+    const SCROLL_SPEED = 0.6;
 
     function startAutoScroll() {
         if (scrollFrameId) cancelAnimationFrame(scrollFrameId);
         const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
         if (maxScroll <= 0) return;
-
         function step() {
             if (!isAutoScrolling) return;
             let currentScroll = window.scrollY;
             let nextScroll = currentScroll + SCROLL_SPEED;
-
-            // 达到或超过底部时瞬间跳回顶部
             if (nextScroll >= maxScroll) {
                 window.scrollTo(0, 0);
                 scrollFrameId = requestAnimationFrame(step);
@@ -451,22 +435,13 @@
         scrollFrameId = requestAnimationFrame(step);
     }
 
-    // 页面完全加载后启动自动滚动
-    window.addEventListener('load', () => {
-        setTimeout(() => {
-            startAutoScroll();
-        }, 1000);
-    });
+    window.addEventListener('load', () => { setTimeout(startAutoScroll, 1000); });
 
-    // 用户手动滚动时暂停自动滚动3秒后恢复
     let userInteractTimer = null;
     function pauseAutoScrollTemporarily() {
         if (!isAutoScrolling) return;
         isAutoScrolling = false;
-        if (scrollFrameId) {
-            cancelAnimationFrame(scrollFrameId);
-            scrollFrameId = null;
-        }
+        if (scrollFrameId) cancelAnimationFrame(scrollFrameId);
         if (userInteractTimer) clearTimeout(userInteractTimer);
         userInteractTimer = setTimeout(() => {
             isAutoScrolling = true;
@@ -476,7 +451,6 @@
     window.addEventListener('wheel', () => pauseAutoScrollTemporarily());
     window.addEventListener('touchstart', () => pauseAutoScrollTemporarily());
 
-    // 窗口大小改变时重新计算滚动边界
     let resizeTimer = null;
     window.addEventListener('resize', () => {
         if (resizeTimer) clearTimeout(resizeTimer);
@@ -484,20 +458,14 @@
             if (scrollFrameId) cancelAnimationFrame(scrollFrameId);
             isAutoScrolling = true;
             startAutoScroll();
+            processChart.resize();
+            rtyChart.resize();
+            catChart.resize();
         }, 300);
     });
 
-    // 图表自适应
-    window.addEventListener('resize', () => {
-        processChart.resize();
-        rtyChart.resize();
-        catChart.resize();
-    });
-
-    // ======================= 每10分钟自动刷新页面 =======================
-    setInterval(() => {
-        location.reload();
-    }, 10 * 60 * 1000);  // 10分钟 = 600000毫秒
+    // 每10分钟自动刷新
+    setInterval(() => { location.reload(); }, 10 * 60 * 1000);
 </script>
 </body>
 </html>
