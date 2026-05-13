@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>HEX车间 · 芯体质量动态看板</title>
+    <title>HEX车间 · 芯体质量动态看板 </title>
     <!-- ECharts & Font Awesome -->
     <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -162,23 +162,6 @@
             border-top: 1px solid #2C6288;
             padding-top: 20px;
         }
-        .scroll-control {
-            position: fixed;
-            bottom: 24px;
-            right: 24px;
-            background: #1E4A76;
-            color: white;
-            border: none;
-            border-radius: 60px;
-            padding: 10px 20px;
-            font-weight: bold;
-            font-size: 0.8rem;
-            cursor: pointer;
-            z-index: 1000;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
-            backdrop-filter: blur(8px);
-        }
-        .scroll-control:hover { background: #2B6CB0; }
         @media (max-width: 780px) {
             .chart-row { grid-template-columns: 1fr; }
             .kpi-value { font-size: 1.8rem; }
@@ -190,7 +173,7 @@
     <div class="header">
         <div class="title-section">
             <h1><i class="fas fa-chart-line" style="margin-right: 12px; color: #60A5FA;"></i>HEX车间 · 芯体质量全景看板</h1>
-            <p>2026年1-4月质量趋势 | 直通率(RTY) 动态分析 & 4月失效明细</p>
+            <p>2026年1-4月质量趋势 | 直通率(RTY) 动态分析 & 4月失效明细 </p>
         </div>
         <div class="badge-date">
             <i class="fas fa-calendar-alt"></i> 数据周期：2026.01 - 2026.04
@@ -208,7 +191,7 @@
             <div id="trendProductChart" class="chart-container"></div>
         </div>
         <div class="chart-card">
-            <h3><i class="fas fa-chart-simple"></i> 2026年04月 RTY vs 年度目标</h3>
+            <h3><i class="fas fa-chart-simple"></i> 2026年04月 RTY vs 统一目标96.5%</h3>
             <div id="targetChart" class="chart-container"></div>
         </div>
     </div>
@@ -218,44 +201,41 @@
         <h3><i class="fas fa-clipboard-list"></i> 4月份 TOP6 失效模式 (不良数量占比)</h3>
         <div id="defectPieChart" style="height: 300px; width: 100%; margin-bottom: 28px;"></div>
         
-        <h3 style="margin-top: 20px;"><i class="fas fa-industry"></i> 各产品月度RTY明细表 & 目标达成</h3>
+        <h3 style="margin-top: 20px;"><i class="fas fa-industry"></i> 各产品月度RTY明细表 & 统一目标96.5%达成</h3>
         <div style="overflow-x: auto;">
             <table class="detail-table" id="rtyTable">
                 <thead>
-                    <tr><th>产品类别</th><th>年度目标</th><th>2026-01</th><th>2026-02</th><th>2026-03</th><th>2026-04</th><th>Q1均值</th><th>4月达标</th></tr>
+                    <tr><th>产品类别</th><th>2026-01</th><th>2026-02</th><th>2026-03</th><th>2026-04</th><th>Q1均值</th><th>4月达标</th></tr>
                 </thead>
                 <tbody id="tableBody"></tbody>
             </table>
         </div>
         <div style="margin-top: 18px; background: #EFF6FF; border-radius: 20px; padding: 10px 16px; font-size: 0.75rem;">
-            <i class="fas fa-chart-line"></i> RTY基于实际工段合格率乘积（合装/钎焊/预检/氦检等核心工序），数据源自2026实际生产及4月报表明细。
+            <i class="fas fa-chart-line"></i> RTY基于实际工段合格率乘积（合装/钎焊/预检/氦检等核心工序），数据源自2026实际生产及4月报表明细。年度目标统一为96.5%。
         </div>
     </div>
     <div class="footer-note">
-        <i class="fas fa-chart-pie"></i> 动态看板 · HEX车间质量分析
+        <i class="fas fa-chart-pie"></i> 动态看板  · HEX车间质量分析 | 数据每小时自动刷新 |
     </div>
 </div>
-<button class="scroll-control" id="toggleScrollBtn"><i class="fas fa-play-circle"></i> 滚动中 (点击暂停)</button>
 
 <script>
     // --------------------------------------------------------------
     // 基于2026年HEX车间质量数据 (26年FTT & 4月份明细) 构建真实动态展示
     // 产品: 暖风(HC) , 内冷(In Cond), 蒸发器(Evap), 冷凝器(Cond), 水箱&冷模, 油冷器(TOC)
-    // 月度RTY数值 (1-4月) 依据实际工段产量不良和乘积推算，贴合目标趋势
+    // 月度RTY数值 (1-4月) 依据实际工段产量不良和乘积推算，统一目标均为96.5%
     // --------------------------------------------------------------
+    const UNIFIED_TARGET = 0.965;  
     const products = [
-        { name: "暖风", target: 0.960, color: "#3b82f6", rty_jan: 0.9693, rty_feb: 0.9678, rty_mar: 0.9645, rty_apr: 0.9632 },
-        { name: "内冷", target: 0.980, color: "#10b981", rty_jan: 0.9742, rty_feb: 0.9765, rty_mar: 0.9781, rty_apr: 0.9770 },
-        { name: "蒸发器", target: 0.970, color: "#f59e0b", rty_jan: 0.9635, rty_feb: 0.9612, rty_mar: 0.9597, rty_apr: 0.9608 },
-        { name: "冷凝器", target: 0.950, color: "#ef4444", rty_jan: 0.9411, rty_feb: 0.9387, rty_mar: 0.9432, rty_apr: 0.9455 },
-        { name: "水箱&冷模", target: 0.980, color: "#8b5cf6", rty_jan: 0.9756, rty_feb: 0.9719, rty_mar: 0.9773, rty_apr: 0.9764 },
-        { name: "油冷器", target: 0.970, color: "#ec489a", rty_jan: 0.9668, rty_feb: 0.9634, rty_mar: 0.9692, rty_apr: 0.9660 }
+        { name: "暖风", color: "#3b82f6", rty_jan: 0.9693, rty_feb: 0.9678, rty_mar: 0.9645, rty_apr: 0.9632 },
+        { name: "内冷", color: "#10b981", rty_jan: 0.9742, rty_feb: 0.9765, rty_mar: 0.9781, rty_apr: 0.9770 },
+        { name: "蒸发器", color: "#f59e0b", rty_jan: 0.9635, rty_feb: 0.9612, rty_mar: 0.9597, rty_apr: 0.9608 },
+        { name: "冷凝器", color: "#ef4444", rty_jan: 0.9411, rty_feb: 0.9387, rty_mar: 0.9432, rty_apr: 0.9455 },
+        { name: "水箱&冷模", color: "#8b5cf6", rty_jan: 0.9756, rty_feb: 0.9719, rty_mar: 0.9773, rty_apr: 0.9764 },
+        { name: "油冷器", color: "#ec489a", rty_jan: 0.9668, rty_feb: 0.9634, rty_mar: 0.9692, rty_apr: 0.9660 }
     ];
-    // 2025年全年均值 (参考)
-    const avg2025 = {
-        "暖风": 0.9646, "内冷": 0.9762, "蒸发器": 0.9587, "冷凝器": 0.9382, "水箱&冷模": 0.9735, "油冷器": 0.9658
-    };
-    // 2026综合芯体RTY趋势 (基于产量权重)
+    // 2025年全年均值仅作参考（不影响统一目标）
+    // 2026综合芯体RTY趋势 (产量加权)
     const overallRTY = [0.9623, 0.9608, 0.9625, 0.9637]; // 1-4月
 
     // 4月份主要失效模式统计 (基于4月份明细真实数据汇总前6大失效)
@@ -271,7 +251,7 @@
     // KPI 指标计算
     let latestMonth = "2026-04";
     let latestOverall = overallRTY[3]; // 0.9637
-    let targetOverall = 0.965;
+    let targetOverall = UNIFIED_TARGET;
     let yoyChange = ((latestOverall - targetOverall) / targetOverall * 100).toFixed(1);
     let bestProduct = products.reduce((best, p) => p.rty_apr > best.val ? { name: p.name, val: p.rty_apr } : best, { name: "", val: 0 });
     let totalDefects = defectData.reduce((s, d) => s + d.value, 0);
@@ -279,8 +259,8 @@
     function renderKPI() {
         const container = document.getElementById('kpiContainer');
         const kpis = [
-            { title: "4月综合RTY", value: `${(latestOverall * 100).toFixed(1)}%`, sub: `年度目标 96.5% (${yoyChange>=0?'+':''}${yoyChange}%)`, icon: "fas fa-chart-line" },
-            { title: "最佳产品(4月)", value: `${bestProduct.name} ${(bestProduct.val*100).toFixed(1)}%`, sub: `高于目标基准线`, icon: "fas fa-trophy" },
+            { title: "4月综合RTY", value: `${(latestOverall * 100).toFixed(1)}%`, sub: `统一目标 96.5% (${yoyChange>=0?'+':''}${yoyChange}%)`, icon: "fas fa-chart-line" },
+            { title: "最佳产品(4月)", value: `${bestProduct.name} ${(bestProduct.val*100).toFixed(1)}%`, sub: `高于目标线 ${(bestProduct.val>UNIFIED_TARGET?'达标':'未达标')}`, icon: "fas fa-trophy" },
             { title: "4月不良总数", value: `${totalDefects} 件`, sub: "TOP1缺陷: 钎焊缺陷", icon: "fas fa-exclamation-triangle" },
             { title: "Q1综合均值", value: `${((overallRTY[0]+overallRTY[1]+overallRTY[2])/3*100).toFixed(1)}%`, sub: "环比4月 +0.2pp", icon: "fas fa-calendar-week" }
         ];
@@ -319,7 +299,7 @@
         });
     }
 
-    // 4月目标达成柱状图
+    // 4月目标达成柱状图 (统一目标线96.5%)
     let targetChart;
     function renderTargetChart() {
         const dom = document.getElementById('targetChart');
@@ -327,15 +307,16 @@
         targetChart = echarts.init(dom);
         const categories = products.map(p => p.name);
         const actualApr = products.map(p => p.rty_apr * 100);
-        const targets = products.map(p => p.target * 100);
+        // 统一目标线数值
+        const targetLineValue = UNIFIED_TARGET * 100;
         targetChart.setOption({
             tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' }, valueFormatter: (value) => value?.toFixed(1) + '%' },
-            legend: { data: ['2026年4月 实际RTY', '年度目标'], left: 'left', textStyle: { color: '#1f3a5f' } },
+            legend: { data: ['2026年4月 实际RTY', '统一年度目标 (96.5%)'], left: 'left', textStyle: { color: '#1f3a5f' } },
             xAxis: { type: 'category', data: categories, axisLabel: { rotate: 25, fontWeight: 500, color: '#1E3A5F' } },
             yAxis: { type: 'value', name: '合格率 (%)', min: 90, max: 100, axisLabel: { formatter: '{value}%' } },
             series: [
                 { name: '2026年4月 实际RTY', type: 'bar', data: actualApr, itemStyle: { borderRadius: [6,6,0,0], color: '#3b82f6' }, label: { show: true, position: 'top', formatter: '{c}%' } },
-                { name: '年度目标', type: 'line', data: targets, symbol: 'none', lineStyle: { width: 2, color: '#ef4444', type: 'dashed' }, label: { show: true, position: 'top', formatter: '{c}%' } }
+                { name: '统一年度目标 (96.5%)', type: 'line', data: Array(categories.length).fill(targetLineValue), symbol: 'none', lineStyle: { width: 2, color: '#ef4444', type: 'dashed' }, label: { show: true, position: 'top', formatter: `${targetLineValue}%` } }
             ]
         });
     }
@@ -356,16 +337,16 @@
         });
     }
 
-    // 详细表格渲染
+    // 详细表格渲染 
     function renderDetailTable() {
         const tbody = document.getElementById('tableBody');
         let html = '';
         products.forEach(p => {
             const q1Avg = (p.rty_jan + p.rty_feb + p.rty_mar) / 3;
-            const status = p.rty_apr >= p.target ? '<span class="badge-goal">✓ 达标</span>' : '<span class="badge-goal badge-warn">⚠ 未达标</span>';
+            const status = p.rty_apr >= UNIFIED_TARGET ? '<span class="badge-goal">✓ 达标</span>' : '<span class="badge-goal badge-warn">⚠ 未达标</span>';
             html += `<tr>
                         <td style="font-weight:700">${p.name}</td>
-                        <td>${(p.target*100).toFixed(1)}%</td>
+                        <td>${(UNIFIED_TARGET*100).toFixed(1)}%</td>
                         <td>${(p.rty_jan*100).toFixed(1)}%</td>
                         <td>${(p.rty_feb*100).toFixed(1)}%</td>
                         <td>${(p.rty_mar*100).toFixed(1)}%</td>
@@ -377,45 +358,57 @@
         tbody.innerHTML = html;
     }
 
-    // ---------- 循环滚动(自动翻页，到底返回顶部) ----------
+    // ---------- 优化后的循环滚动：确保滚动到底部后返回顶部 ----------
     let autoScrollEnabled = true;
     let scrollTimer = null;
-    const SCROLL_STEP = 6;
-    const SCROLL_INTERVAL = 28;
+    const SCROLL_STEP = 8;       // 每步滚动8px，更平滑
+    const SCROLL_INTERVAL = 25;   // 25ms一步
+
     function performScroll() {
         if (!autoScrollEnabled) return;
         const scrollTop = window.scrollY;
-        const docHeight = document.documentElement.scrollHeight;
         const winHeight = window.innerHeight;
+        const docHeight = document.documentElement.scrollHeight;
         const maxScroll = docHeight - winHeight;
-        if (scrollTop + winHeight >= maxScroll - 3) {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-            setTimeout(() => { if(autoScrollEnabled) window.scrollTo(0, 0); }, 80);
-        } else {
-            window.scrollBy({ top: SCROLL_STEP, behavior: 'smooth' });
+        
+        // 防止负值或极小误差
+        if (maxScroll <= 0) return;
+        
+        // 剩余距离
+        const remaining = maxScroll - scrollTop;
+        
+        // 如果剩余距离小于步长，则直接滚动到底部，然后稍后返回顶部
+        if (remaining <= SCROLL_STEP) {
+            window.scrollTo({ top: maxScroll, behavior: 'smooth' });
+            // 到达底部后，等待平滑滚动完成再返回顶部
+            setTimeout(() => {
+                if (autoScrollEnabled) {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+            }, 200);
+            return;
         }
+        
+        // 正常滚动一步
+        window.scrollBy({ top: SCROLL_STEP, behavior: 'smooth' });
     }
+
     function startAutoScroll() {
-        if(scrollTimer) clearInterval(scrollTimer);
-        scrollTimer = setInterval(performScroll, SCROLL_INTERVAL);
+        if (scrollTimer) clearInterval(scrollTimer);
+        scrollTimer = setInterval(() => {
+            performScroll();
+        }, SCROLL_INTERVAL);
     }
+    
     function stopAutoScroll() {
-        if(scrollTimer) { clearInterval(scrollTimer); scrollTimer = null; }
-    }
-    const toggleBtn = document.getElementById('toggleScrollBtn');
-    function toggleAutoScroll() {
-        autoScrollEnabled = !autoScrollEnabled;
-        if(autoScrollEnabled) {
-            startAutoScroll();
-            toggleBtn.innerHTML = '<i class="fas fa-pause-circle"></i> 滚动中 (点击暂停)';
-            toggleBtn.style.background = '#1E4A76';
-        } else {
-            stopAutoScroll();
-            toggleBtn.innerHTML = '<i class="fas fa-play-circle"></i> 滚动已暂停 (点击恢复)';
-            toggleBtn.style.background = '#2C6288';
+        if (scrollTimer) {
+            clearInterval(scrollTimer);
+            scrollTimer = null;
         }
     }
-    toggleBtn.addEventListener('click', toggleAutoScroll);
+    
+    // 初始化自动滚动（页面加载即开始）
+    startAutoScroll();
     
     // 每小时自动刷新页面 (3600000 ms)
     let refreshTimer = null;
@@ -429,12 +422,12 @@
         console.log("每小时自动刷新已启动，下次刷新在60分钟后");
     }
     
-    // 监听页面可见性变化(滚动续播)
+    // 监听页面可见性变化 (保持滚动)
     document.addEventListener('visibilitychange', () => {
         if (!document.hidden && autoScrollEnabled && !scrollTimer) startAutoScroll();
     });
     
-    // 窗口resize重绘
+    // 窗口resize重绘 (图表自适应)
     window.addEventListener('resize', () => {
         if(trendChart) trendChart.resize();
         if(targetChart) targetChart.resize();
@@ -448,8 +441,9 @@
         renderTargetChart();
         renderDefectPie();
         renderDetailTable();
-        startAutoScroll();
         startHourlyRefresh();
+        // 页面完全加载后，如果滚动未启动则启动
+        if (autoScrollEnabled && !scrollTimer) startAutoScroll();
     }
     initDashboard();
 </script>
