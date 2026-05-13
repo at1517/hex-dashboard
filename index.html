@@ -345,7 +345,7 @@
                 <h1><i class="fas fa-chart-pie"></i> 质量归因 & 产品RTY目标达成</h1>
                 <p>基于4月份明细(Top6失效) & 2026年各产品月度RTY目标达成 </p>
             </div>
-            <div class="badge-date"><i class="fas fa-calendar-alt"></i> 数据源：表2 & 表3</div>
+            <div class="badge-date"><i class="fas fa-calendar-alt"></i> 4月份质量深度分析</div>
         </div>
 
         <!-- Top6 问题饼图卡片 -->
@@ -558,7 +558,7 @@
             currentIdx = index;
         }
         function nextPage() { switchToPage((currentIdx + 1) % pages.length); }
-        function startCarousel() { if(intervalId) clearInterval(intervalId); intervalId = setInterval(nextPage, 3000); }
+        function startCarousel() { if(intervalId) clearInterval(intervalId); intervalId = setInterval(nextPage, 10000); }
         dots.forEach((dot, idx) => { dot.addEventListener('click', () => { if(intervalId) { clearInterval(intervalId); startCarousel(); } switchToPage(idx); }); });
         window.addEventListener('load', () => { applyRandomAnimation(pages[0]); startCarousel(); barChart.resize(); trendChart.resize(); top6Chart.resize(); });
         window.addEventListener('resize', () => { barChart.resize(); trendChart.resize(); top6Chart.resize(); });
