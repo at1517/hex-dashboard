@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>HEX车间 · 芯体质量动态看板 | 商务蓝调</title>
+    <title>HEX车间 · 芯体质量动态看板</title>
     <!-- ECharts & Font Awesome -->
     <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -190,7 +190,7 @@
     <div class="header">
         <div class="title-section">
             <h1><i class="fas fa-chart-line" style="margin-right: 12px; color: #60A5FA;"></i>HEX车间 · 芯体质量全景看板</h1>
-            <p>2026年1-4月质量趋势 | 直通率(RTY) 动态分析 & 4月失效明细 | 商务蓝调自动循环</p>
+            <p>2026年1-4月质量趋势 | 直通率(RTY) 动态分析 & 4月失效明细</p>
         </div>
         <div class="badge-date">
             <i class="fas fa-calendar-alt"></i> 数据周期：2026.01 - 2026.04
@@ -232,7 +232,7 @@
         </div>
     </div>
     <div class="footer-note">
-        <i class="fas fa-chart-pie"></i> 动态看板 — 自动循环滚动 (滚动到底部即返回顶部) | 数据每小时自动刷新 | 商务蓝调 · HEX车间质量分析
+        <i class="fas fa-chart-pie"></i> 动态看板 · HEX车间质量分析
     </div>
 </div>
 <button class="scroll-control" id="toggleScrollBtn"><i class="fas fa-play-circle"></i> 滚动中 (点击暂停)</button>
@@ -244,12 +244,12 @@
     // 月度RTY数值 (1-4月) 依据实际工段产量不良和乘积推算，贴合目标趋势
     // --------------------------------------------------------------
     const products = [
-        { name: "暖风", target: 0.965, color: "#3b82f6", rty_jan: 0.9693, rty_feb: 0.9678, rty_mar: 0.9645, rty_apr: 0.9632 },
-        { name: "内冷", target: 0.965, color: "#10b981", rty_jan: 0.9742, rty_feb: 0.9765, rty_mar: 0.9781, rty_apr: 0.9770 },
-        { name: "蒸发器", target: 0.965, color: "#f59e0b", rty_jan: 0.9635, rty_feb: 0.9612, rty_mar: 0.9597, rty_apr: 0.9608 },
-        { name: "冷凝器", target: 0.965, color: "#ef4444", rty_jan: 0.9411, rty_feb: 0.9387, rty_mar: 0.9432, rty_apr: 0.9455 },
-        { name: "水箱&冷模", target: 0.965, color: "#8b5cf6", rty_jan: 0.9756, rty_feb: 0.9719, rty_mar: 0.9773, rty_apr: 0.9764 },
-        { name: "油冷器", target: 0.965, color: "#ec489a", rty_jan: 0.9668, rty_feb: 0.9634, rty_mar: 0.9692, rty_apr: 0.9660 }
+        { name: "暖风", target: 0.960, color: "#3b82f6", rty_jan: 0.9693, rty_feb: 0.9678, rty_mar: 0.9645, rty_apr: 0.9632 },
+        { name: "内冷", target: 0.980, color: "#10b981", rty_jan: 0.9742, rty_feb: 0.9765, rty_mar: 0.9781, rty_apr: 0.9770 },
+        { name: "蒸发器", target: 0.970, color: "#f59e0b", rty_jan: 0.9635, rty_feb: 0.9612, rty_mar: 0.9597, rty_apr: 0.9608 },
+        { name: "冷凝器", target: 0.950, color: "#ef4444", rty_jan: 0.9411, rty_feb: 0.9387, rty_mar: 0.9432, rty_apr: 0.9455 },
+        { name: "水箱&冷模", target: 0.980, color: "#8b5cf6", rty_jan: 0.9756, rty_feb: 0.9719, rty_mar: 0.9773, rty_apr: 0.9764 },
+        { name: "油冷器", target: 0.970, color: "#ec489a", rty_jan: 0.9668, rty_feb: 0.9634, rty_mar: 0.9692, rty_apr: 0.9660 }
     ];
     // 2025年全年均值 (参考)
     const avg2025 = {
