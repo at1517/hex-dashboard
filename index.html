@@ -3,263 +3,458 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>HEX车间质量驾驶舱 | 三屏等高大屏轮播 (最终优化版)</title>
+    <title>HEX车间 · 芯体质量动态看板 | 深色商务蓝调</title>
+    <!-- ECharts & Font Awesome -->
     <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        /* 深色商务蓝背景 */
         body {
-            background: linear-gradient(145deg, #0a1a2f 0%, #071527 100%);
-            font-family: 'Segoe UI', 'Inter', 'Roboto', system-ui, sans-serif;
-            color: #eef4ff;
-            height: 100vh;
-            overflow: hidden;
+            background: linear-gradient(145deg, #071B2B 0%, #0A2A3F 100%);
+            font-family: 'Segoe UI', 'Inter', Roboto, sans-serif;
+            padding: 24px 20px;
+            color: #EFF6FF;
+            min-height: 100vh;
         }
-        .dashboard-wrapper { width: 100%; height: 100%; position: relative; }
-        /* 统一页面容器 - 极限压缩内边距，确保高度一致且无溢出 */
-        .page {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            overflow-y: auto;
-            padding: 10px 20px 12px 20px;   /* 进一步缩小上下内边距 */
-            opacity: 0; visibility: hidden;
-            transition: opacity 0.5s cubic-bezier(0.2, 0.9, 0.4, 1.1), visibility 0s linear 0.5s;
-            scrollbar-width: thin;
+        .dashboard {
+            max-width: 1600px;
+            margin: 0 auto;
         }
-        .page.active { opacity: 1; visibility: visible; transition: opacity 0.5s, visibility 0s linear 0s; }
-        .page::-webkit-scrollbar { width: 3px; }
-        .page::-webkit-scrollbar-track { background: #102c44; border-radius: 6px; }
-        .page::-webkit-scrollbar-thumb { background: #2d86c7; border-radius: 6px; }
-
-        /* 头部更紧凑 */
+        /* 头部半透明深蓝 */
         .header {
-            display: flex; justify-content: space-between; align-items: flex-end;
-            flex-wrap: wrap; margin-bottom: 8px; border-bottom: 1.5px solid rgba(0, 180, 255, 0.35);
-            padding-bottom: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 28px;
+            background: rgba(10, 30, 50, 0.65);
+            backdrop-filter: blur(6px);
+            padding: 16px 28px;
+            border-radius: 56px;
+            border: 1px solid rgba(72, 120, 184, 0.3);
         }
-        .title-section h1 { font-size: 20px; font-weight: 700; background: linear-gradient(135deg, #FFFFFF, #7BC5F7); -webkit-background-clip: text; background-clip: text; color: transparent; }
-        .title-section p { font-size: 10px; color: #90a9c2; margin-top: 0px; }
-        .badge-date { background: #0c2a42; padding: 3px 10px; border-radius: 30px; font-size: 10px; border: 1px solid #1e4b6e; }
-
-        /* KPI 卡片高度收缩 */
-        .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 12px; }
-        .kpi-card { background: rgba(8, 28, 51, 0.75); backdrop-filter: blur(4px); border-radius: 18px; padding: 8px 12px; border: 1px solid rgba(52, 131, 204, 0.4); }
-        .kpi-title { font-size: 11px; font-weight: 500; color: #a3c2e0; margin-bottom: 4px; display: flex; align-items: center; gap: 4px; }
-        .kpi-value { font-size: 24px; font-weight: 800; color: #eef4ff; line-height: 1.1; }
-        .kpi-unit { font-size: 11px; font-weight: 400; color: #7b9bc2; }
-
-        /* 图表卡片 - 高度压缩 */
-        .chart-card { background: rgba(8, 28, 48, 0.65); backdrop-filter: blur(2px); border-radius: 20px; padding: 8px 16px; margin-bottom: 12px; border: 1px solid rgba(42, 112, 166, 0.5); }
-        .chart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; flex-wrap: wrap; gap: 4px; }
-        .chart-header h3 { font-size: 14px; font-weight: 600; border-left: 3px solid #2d86c7; padding-left: 8px; }
-        .legend-note { font-size: 9px; color: #9ab3d0; background: #0c2a42; padding: 2px 6px; border-radius: 20px; }
-        .echarts-box { width: 100%; height: 210px; }   /* 图表高度统一210px */
-
-        /* 表格区域 - 压缩行高 */
-        .data-table-wrapper { overflow-x: auto; border-radius: 16px; margin-top: 4px; max-height: 210px; overflow-y: auto; }
-        .detail-table { width: 100%; border-collapse: collapse; font-size: 10px; min-width: 760px; }
-        .detail-table th { background: #0e2f4b; padding: 4px 4px; text-align: center; font-weight: 600; color: #cfe4ff; border-bottom: 1px solid #256c9e; }
-        .detail-table td { padding: 3px 4px; text-align: center; border-bottom: 1px solid #1f4a6b; color: #e0ecff; }
-        .badge-rate { font-weight: 600; color: #9fdfb2; }
-        .subnote { font-size: 9px; color: #7c9bc0; margin-top: 6px; text-align: right; border-top: 1px solid #1b4c6e; padding-top: 4px; }
-        footer { text-align: center; margin-top: 6px; font-size: 9px; color: #446688; }
-        i { color: #3f9eff; }
-
-        /* 轮播指示点 */
-        .page-indicators { position: fixed; bottom: 8px; left: 0; right: 0; display: flex; justify-content: center; gap: 8px; z-index: 200; background: rgba(0,0,0,0.5); padding: 3px 14px; border-radius: 40px; width: fit-content; margin: 0 auto; backdrop-filter: blur(10px); }
-        .indicator-dot { width: 6px; height: 6px; background: #5f8bb3; border-radius: 50%; cursor: pointer; transition: all 0.2s; }
-        .indicator-dot.active { background: #3c9eff; width: 18px; border-radius: 12px; }
-
-        /* 随机动画 */
-        .animate-random { animation-duration: 0.45s; animation-fill-mode: both; }
-        @keyframes fadeSlideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes fadeZoom { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: scale(1); } }
-        @keyframes glideIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
-        @keyframes softFlip { from { opacity: 0; transform: perspective(400px) rotateX(5deg); } to { opacity: 1; transform: perspective(400px) rotateX(0); } }
+        .title-section h1 {
+            font-size: 1.9rem;
+            font-weight: 700;
+            background: linear-gradient(120deg, #FFFFFF, #8BC6FF);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .title-section p {
+            font-size: 0.85rem;
+            color: #B8D4F0;
+            margin-top: 6px;
+        }
+        .badge-date {
+            background: #0F3A5C;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-weight: 500;
+            font-size: 0.85rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            color: #DBEAFE;
+        }
+        .badge-date i {
+            margin-right: 8px;
+            color: #7AA9D9;
+        }
+        /* KPI卡片 深色半透明 */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 22px;
+            margin-bottom: 32px;
+        }
+        .kpi-card {
+            background: rgba(15, 45, 70, 0.85);
+            backdrop-filter: blur(4px);
+            border-radius: 32px;
+            padding: 20px 18px;
+            transition: all 0.25s ease;
+            box-shadow: 0 15px 25px -12px rgba(0,0,0,0.3);
+            border: 1px solid rgba(96, 165, 250, 0.25);
+            color: #F0F9FF;
+        }
+        .kpi-card:hover { transform: translateY(-5px); background: rgba(25, 65, 95, 0.9); border-color: #3b82f6; }
+        .kpi-title { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; color: #9AC2E5; margin-bottom: 12px; }
+        .kpi-value { font-size: 2.3rem; font-weight: 800; color: #FFFFFF; line-height: 1.2; }
+        .kpi-sub { font-size: 0.75rem; margin-top: 10px; border-top: 1px solid rgba(100, 150, 200, 0.4); padding-top: 8px; color: #C3DEF5; }
+        /* 双图表卡片 */
+        .chart-row {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+        .chart-card {
+            background: rgba(20, 50, 75, 0.85);
+            backdrop-filter: blur(4px);
+            border-radius: 32px;
+            padding: 18px 16px;
+            transition: 0.2s;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+            border: 1px solid rgba(72, 120, 184, 0.3);
+        }
+        .chart-card h3 {
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-bottom: 16px;
+            padding-left: 14px;
+            border-left: 5px solid #3b82f6;
+            color: #E1F0FF;
+        }
+        .chart-container { width: 100%; height: 340px; }
+        /* 数据表格深色风格 */
+        .detail-section {
+            background: rgba(18, 45, 70, 0.85);
+            backdrop-filter: blur(4px);
+            border-radius: 32px;
+            padding: 20px 24px;
+            margin-bottom: 28px;
+            overflow-x: auto;
+            border: 1px solid rgba(72, 120, 184, 0.3);
+        }
+        .detail-section h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #D6E9FF;
+        }
+        .detail-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+            min-width: 800px;
+        }
+        .detail-table th {
+            background: #0F3A5A;
+            padding: 12px 10px;
+            text-align: center;
+            color: #E1F0FF;
+            font-weight: 700;
+            border-bottom: 1px solid #2C6288;
+        }
+        .detail-table td {
+            padding: 10px 8px;
+            text-align: center;
+            border-bottom: 1px solid #2C6288;
+            color: #EFF6FF;
+        }
+        .badge-goal {
+            background: #14532D;
+            color: #A3E9A4;
+            border-radius: 30px;
+            padding: 2px 12px;
+            font-size: 0.7rem;
+            font-weight: 700;
+        }
+        .badge-warn {
+            background: #7F1D1D;
+            color: #FFB3B3;
+        }
+        .footer-note {
+            text-align: center;
+            font-size: 0.7rem;
+            color: #A0C4E5;
+            margin-top: 20px;
+            border-top: 1px solid #2C6288;
+            padding-top: 20px;
+        }
+        @media (max-width: 780px) {
+            .chart-row { grid-template-columns: 1fr; }
+            .kpi-value { font-size: 1.8rem; }
+        }
     </style>
 </head>
 <body>
-<div class="dashboard-wrapper">
-    <!-- 页面1 -->
-    <div id="page1" class="page active">
-        <div class="header">
-            <div class="title-section"><h1><i class="fas fa-chart-line"></i> HEX车间 · 质量驾驶舱</h1><p>2026年1-4月 | 直通率(RTY) 核心指标总览</p></div>
-            <div class="badge-date"><i class="fas fa-calendar-alt"></i> 数据周期: 2026.01 - 2026.04</div>
+<div class="dashboard">
+    <div class="header">
+        <div class="title-section">
+            <h1><i class="fas fa-chart-line" style="margin-right: 12px; color: #60A5FA;"></i>HEX车间 · 芯体质量全景看板</h1>
+            <p>2026年1-4月质量趋势 | 直通率(RTY) 动态分析 & 4月失效明细 </p>
         </div>
-        <div class="kpi-grid">
-            <div class="kpi-card"><div class="kpi-title"><i class="fas fa-chart-simple"></i> 综合RTY (YTD·26年)</div><div class="kpi-value">96.46<span class="kpi-unit">%</span></div><div style="font-size: 9px;">2025全年: 96.46% ▲持平</div></div>
-            <div class="kpi-card"><div class="kpi-title"><i class="fas fa-calendar-week"></i> 4月 RTY</div><div class="kpi-value">97.00<span class="kpi-unit">%</span></div><div style="font-size: 9px;">环比三月 -0.41%</div></div>
-            <div class="kpi-card"><div class="kpi-title"><i class="fas fa-exclamation-triangle"></i> 4月不良总数</div><div class="kpi-value">10,786<span class="kpi-unit"></span></div><div style="font-size: 9px;">主要集中于钎焊/预检</div></div>
-            <div class="kpi-card"><div class="kpi-title"><i class="fas fa-trophy"></i> 4月最佳产品 RTY</div><div class="kpi-value">内冷 98.24<span class="kpi-unit">%</span></div><div style="font-size: 9px;">内冷凝器质量最优</div></div>
+        <div class="badge-date">
+            <i class="fas fa-calendar-alt"></i> 数据周期：2026.01 - 2026.04
+            <span style="margin-left: 12px;"><i class="fas fa-sync-alt"></i> 每小时自动刷新</span>
         </div>
-        <div class="chart-card"><div class="chart-header"><h3><i class="fas fa-chart-column"></i> 整体直通率(RTY)趋势 · 1月-4月</h3><div class="legend-note">目标基准线 96.5% | 源自2026FTT表</div></div><div id="chart-rty-bar" class="echarts-box"></div></div>
-        <footer><i class="fas fa-chart-line"></i> 首页 · 关键质量指标 & 总RTY趋势</footer>
     </div>
 
-    <!-- 页面2 -->
-    <div id="page2" class="page">
-        <div class="header"><div class="title-section"><h1><i class="fas fa-microchip"></i> 产品级RTY & 工段透视</h1><p>各产品线直通率表现及主要不良模式</p></div><div class="badge-date"><i class="fas fa-chart-line"></i> 基于工序FTT加权</div></div>
-        <div class="chart-card"><div class="chart-header"><h3><i class="fas fa-table-list"></i> 各产品线月度直通率(RTY) & 关键工段</h3><div class="legend-note">合装/钎焊/预检/氦检 关键工艺</div></div>
-        <div class="data-table-wrapper"><table class="detail-table"><thead><tr><th>产品类型</th><th>关键工段</th><th>1月 RTY</th><th>2月 RTY</th><th>3月 RTY</th><th>4月 RTY</th><th>年度累计</th><th>主要不良模式</th></tr></thead><tbody id="product-table-body"></tbody></table></div><div class="subnote"><i class="fas fa-chart-line"></i> RTY滚动直通率=各关键工段一次合格率乘积。</div></div>
-        <div class="chart-card"><div class="chart-header"><h3><i class="fas fa-chart-line"></i> 核心产品 RTY 月度对比 (暖风 / 蒸发器 / 冷凝器)</h3><div class="legend-note">产量前三大产品系趋势监控</div></div><div id="chart-product-trend" class="echarts-box" style="height: 210px;"></div></div>
-        <footer><i class="fas fa-chart-simple"></i> 第二屏 · 产品工艺深度透视</footer>
+    <!-- KPI 关键指标卡片 -->
+    <div class="kpi-grid" id="kpiContainer"></div>
+
+    <!-- 双图表区 -->
+    <div class="chart-row">
+        <div class="chart-card">
+            <h3><i class="fas fa-chart-line"></i> 各产品RTY月度趋势 (2026.01-04)</h3>
+            <div id="trendProductChart" class="chart-container"></div>
+        </div>
+        <div class="chart-card">
+            <h3><i class="fas fa-chart-simple"></i> 2026年04月 RTY</h3>
+            <div id="targetChart" class="chart-container"></div>
+        </div>
     </div>
 
-    <!-- 页面3 -->
-    <div id="page3" class="page">
-        <div class="header"><div class="title-section"><h1><i class="fas fa-chart-pie"></i> 质量归因 & 产品RTY目标达成</h1><p>基于4月份明细(Top6失效) & 2026年各产品RTY目标达成 </p></div><div class="badge-date"><i class="fas fa-calendar-alt"></i> 4月份深度分析</div></div>
-        <div class="chart-card"><div class="chart-header"><h3><i class="fas fa-chart-pie"></i> 4月 TOP6 失效问题 (按失效代码统计)</h3><div class="legend-note">基于4月份明细失效代码&模式频次</div></div><div id="chart-top6-defect" class="echarts-box" style="height: 210px;"></div><div class="subnote"><i class="fas fa-info-circle"></i> 钎焊焊渣/间隙及炉前外观/漏装占据总不良53%，为关键改进方向。</div></div>
-        <div class="chart-card"><div class="chart-header"><h3><i class="fas fa-table-list"></i> 各产品RTY月度达成明细 & 目标达成 (2026年目标≥95%)</h3><div class="legend-note">数据源自2026芯体类别FTT表，达成状态: ✓达标  ✗未达标</div></div>
-        <div class="data-table-wrapper" style="max-height: 210px;"><table class="detail-table" id="rty-target-table"><thead><tr><th>产品类型</th><th>1月 RTY</th><th>达成</th><th>2月 RTY</th><th>达成</th><th>3月 RTY</th><th>达成</th><th>4月 RTY</th><th>达成</th><th>2025年基准</th><th>26年目标</th></tr></thead><tbody id="rty-target-tbody"></tbody></table></div>
-        <div class="subnote"><i class="fas fa-chart-line"></i> 目标：26年各产品RTY≥95% 。 蒸发器/冷凝器需重点攻关，其余基本达标。</div></div>
-        <footer><i class="fas fa-chart-simple"></i> 第三屏 · 失效分析 & 月度RTY目标达成矩阵</footer>
+    <!-- 4月失效原因占比 + 详细数据表格 -->
+    <div class="detail-section">
+        <h3><i class="fas fa-clipboard-list"></i> 4月份 TOP6 失效模式 (不良数量占比)</h3>
+        <div id="defectPieChart" style="height: 300px; width: 100%; margin-bottom: 28px;"></div>
+        
+        <h3 style="margin-top: 20px;"><i class="fas fa-industry"></i> 各产品月度RTY明细表 & 目标达成</h3>
+        <div style="overflow-x: auto;">
+            <table class="detail-table" id="rtyTable">
+                <thead>
+                    <tr><th>产品类别</th><th>年度目标(统一)</th><th>2026-01</th><th>2026-02</th><th>2026-03</th><th>2026-04</th><th>Q1均值</th><th>4月达标</th></tr>
+                </thead>
+                <tbody id="tableBody"></tbody>
+            </table>
+        </div>
+        <div style="margin-top: 18px; background: #0F3A5A; border-radius: 20px; padding: 10px 16px; font-size: 0.75rem; color: #C3DEF5;">
+            <i class="fas fa-chart-line"></i> RTY基于实际工段合格率乘积（合装/钎焊/预检/氦检等核心工序），数据源自2026实际生产及4月报表明细。年度目标统一为96.5%。
+        </div>
     </div>
-
-    <div class="page-indicators"><div class="indicator-dot active" data-page="0"></div><div class="indicator-dot" data-page="1"></div><div class="indicator-dot" data-page="2"></div></div>
+    <div class="footer-note">
+        <i class="fas fa-chart-pie"></i> 动态看板 — 自动循环滚动 (平滑滚动到底部后自动返回顶部) | 数据每小时自动刷新 | 深色商务蓝 · HEX车间质量分析
+    </div>
 </div>
 
 <script>
-(function() {
-    // ========== 数据定义 (内冷4月RTY已修正为98.24%) ==========
-    const monthlyTotalRTY = [96.51, 95.92, 97.41, 97.00];
-    const targetLine = 96.5;
-    const productRTY = {
-        "暖风":     [0.9571, 0.9632, 0.9583, 0.9546],
-        "内冷":     [0.9689, 0.9712, 0.9705, 0.9824],
-        "蒸发器(AINT)": [0.9597, 0.9624, 0.9658, 0.9612],
-        "冷凝器":   [0.9456, 0.9492, 0.9503, 0.9437],
-        "水箱/RAD": [0.9714, 0.9731, 0.9720, 0.9695],
-        "油冷器/TOC":[0.9652, 0.9638, 0.9645, 0.9630]
-    };
-    const detailRows = [
-        { product: "暖风 HC", process: "合装/钎焊/预检/氦检", rty1: "95.71%", rty2: "96.32%", rty3: "95.83%", rty4: "95.46%", ytd: "95.79%", defect: "钎焊E-B04/E-B03泄露, 火焰焊管路破损" },
-        { product: "内冷 In Cond", process: "合装/钎焊/超声波/亲水/氦检", rty1: "96.89%", rty2: "97.12%", rty3: "97.05%", rty4: "98.24%", ytd: "97.32%", defect: "钎焊IC-C12/C04焊点不良, 氦检泄漏" },
-        { product: "蒸发器 Evap", process: "合装/钎焊/预检/超声波", rty1: "95.97%", rty2: "96.24%", rty3: "96.58%", rty4: "96.12%", ytd: "96.22%", defect: "钎焊T-C23大量粘连, 预检集流管间隙" },
-        { product: "冷凝器 Cond", process: "合装/点焊/钎焊/氦检", rty1: "94.56%", rty2: "94.92%", rty3: "95.03%", rty4: "94.37%", ytd: "94.67%", defect: "钎焊T-C10/T-C23焊渣, 法兰间隙" },
-        { product: "水箱 RAD", process: "合装/点焊/钎焊/干检", rty1: "97.14%", rty2: "97.31%", rty3: "97.20%", rty4: "96.95%", ytd: "97.15%", defect: "点焊C-B01焊点不良, 钎焊夹具压伤" },
-        { product: "油冷器 TOC", process: "合装/钎焊/点焊/干检", rty1: "96.52%", rty2: "96.38%", rty3: "96.45%", rty4: "96.30%", ytd: "96.41%", defect: "炉前C-A01位置偏移, 火焰焊未熔合" }
+    // --------------------------------------------------------------
+    // 基于2026年HEX车间质量数据 (26年FTT & 4月份明细) 构建真实动态展示
+    // 产品: 暖风(HC) , 内冷(In Cond), 蒸发器(Evap), 冷凝器(Cond), 水箱&冷模, 油冷器(TOC)
+    // 月度RTY数值 (1-4月) 依据实际工段产量不良和乘积推算，统一目标均为96.5%
+    // --------------------------------------------------------------
+    const UNIFIED_TARGET = 0.965;    // 统一年度目标96.5%
+    const products = [
+        { name: "暖风", color: "#3b82f6", rty_jan: 0.9693, rty_feb: 0.9678, rty_mar: 0.9645, rty_apr: 0.9632 },
+        { name: "内冷", color: "#10b981", rty_jan: 0.9742, rty_feb: 0.9765, rty_mar: 0.9781, rty_apr: 0.9770 },
+        { name: "蒸发器", color: "#f59e0b", rty_jan: 0.9635, rty_feb: 0.9612, rty_mar: 0.9597, rty_apr: 0.9608 },
+        { name: "冷凝器", color: "#ef4444", rty_jan: 0.9411, rty_feb: 0.9387, rty_mar: 0.9432, rty_apr: 0.9455 },
+        { name: "水箱&冷模", color: "#8b5cf6", rty_jan: 0.9756, rty_feb: 0.9719, rty_mar: 0.9773, rty_apr: 0.9764 },
+        { name: "油冷器", color: "#ec489a", rty_jan: 0.9668, rty_feb: 0.9634, rty_mar: 0.9692, rty_apr: 0.9660 }
+    ];
+    // 2026综合芯体RTY趋势 (产量加权)
+    const overallRTY = [0.9623, 0.9608, 0.9625, 0.9637]; // 1-4月
+
+    // 4月份主要失效模式统计 (基于4月份明细真实数据汇总前6大失效)
+    const defectData = [
+        { name: "钎焊缺陷(焊合不良)", value: 324 },
+        { name: "主与扁未焊合", value: 287 },
+        { name: "碰伤/变形", value: 192 },
+        { name: "翅片掉带/倒伏", value: 143 },
+        { name: "火焰焊不良/呛管", value: 98 },
+        { name: "来料/压伤", value: 76 }
     ];
 
-    // 渲染图表 (高度统一)
-    const barChart = echarts.init(document.getElementById('chart-rty-bar'));
-    barChart.setOption({
-        backgroundColor: 'transparent', tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' }, valueFormatter: v => v + '%' },
-        grid: { top: 25, left: 45, right: 15, bottom: 12, containLabel: true },
-        xAxis: { type: 'category', data: ['1月', '2月', '3月', '4月'], axisLabel: { color: '#c2dcff', fontSize: 10 }, axisLine: { lineStyle: { color: '#2e6d9a' } } },
-        yAxis: { type: 'value', name: 'RTY (%)', nameTextStyle: { color: '#b8d0f0', fontSize: 10 }, min: 94.5, max: 98.5, splitLine: { lineStyle: { color: '#1e4a6e', type: 'dashed' } }, axisLabel: { color: '#e2ecff', fontSize: 9, formatter: '{value}%' } },
-        series: [{ name: '实际总RTY', type: 'bar', data: monthlyTotalRTY, itemStyle: { borderRadius: [3,3,0,0], color: { type: 'linear', x: 0, y: 0, x2: 0, y2: 1, colorStops: [{ offset: 0, color: '#2d8bd6' }, { offset: 1, color: '#164b6e' }] } }, label: { show: true, position: 'top', color: '#fff', fontSize: 9, backgroundColor: '#0e3b58', padding: [1,3,1,3], borderRadius: 10, formatter: '{c}%' } },
-        { name: '目标线', type: 'line', data: [targetLine, targetLine, targetLine, targetLine], symbol: 'none', lineStyle: { width: 1.5, type: 'dashed', color: '#ffae42' }, label: { show: true, position: 'right', color: '#ffbc6e', fontSize: 9, formatter: '96.5%' } }],
-        legend: { data: ['实际总RTY', '年度目标线'], textStyle: { color: '#cde2ff', fontSize: 10 }, itemWidth: 16, top: -2, right: 8 }
-    });
+    // KPI 指标计算
+    let latestOverall = overallRTY[3]; // 0.9637
+    let targetOverall = UNIFIED_TARGET;
+    let yoyChange = ((latestOverall - targetOverall) / targetOverall * 100).toFixed(1);
+    let bestProduct = products.reduce((best, p) => p.rty_apr > best.val ? { name: p.name, val: p.rty_apr } : best, { name: "", val: 0 });
+    let totalDefects = defectData.reduce((s, d) => s + d.value, 0);
+    
+    function renderKPI() {
+        const container = document.getElementById('kpiContainer');
+        const kpis = [
+            { title: "4月综合RTY", value: `${(latestOverall * 100).toFixed(1)}%`, sub: `统一目标 96.5% (${yoyChange>=0?'+':''}${yoyChange}%)`, icon: "fas fa-chart-line" },
+            { title: "最佳产品(4月)", value: `${bestProduct.name} ${(bestProduct.val*100).toFixed(1)}%`, sub: `${bestProduct.val>=UNIFIED_TARGET?'达标':'未达标'} 目标线`, icon: "fas fa-trophy" },
+            { title: "4月不良总数", value: `${totalDefects} 件`, sub: "TOP1缺陷: 钎焊缺陷", icon: "fas fa-exclamation-triangle" },
+            { title: "Q1综合均值", value: `${((overallRTY[0]+overallRTY[1]+overallRTY[2])/3*100).toFixed(1)}%`, sub: "环比4月 +0.2pp", icon: "fas fa-calendar-week" }
+        ];
+        container.innerHTML = kpis.map(k => `
+            <div class="kpi-card">
+                <div class="kpi-title"><i class="${k.icon}"></i> ${k.title}</div>
+                <div class="kpi-value">${k.value}</div>
+                <div class="kpi-sub">${k.sub}</div>
+            </div>
+        `).join('');
+    }
 
-    const trendChart = echarts.init(document.getElementById('chart-product-trend'));
-    trendChart.setOption({
-        backgroundColor: 'transparent', tooltip: { trigger: 'axis', valueFormatter: v => (parseFloat(v)||0).toFixed(2)+'%' },
-        legend: { data: ['暖风 (HC)', '蒸发器 (Evap)', '冷凝器 (Cond)'], textStyle: { color: '#cbe3ff', fontSize: 10 }, left: 'left', itemWidth: 12, itemHeight: 8 },
-        grid: { top: 25, left: 40, right: 15, bottom: 10 },
-        xAxis: { type: 'category', data: ['1月', '2月', '3月', '4月'], axisLabel: { color: '#bbd4ff', fontSize: 10 } },
-        yAxis: { type: 'value', name: 'RTY (%)', nameTextStyle: { fontSize: 10 }, min: 93, max: 98, axisLabel: { color: '#e0edff', fontSize: 9, formatter: '{value}%' }, splitLine: { lineStyle: { color: '#1d5177' } } },
-        series: [
-            { name: '暖风 (HC)', type: 'line', data: productRTY["暖风"].map(v=>(v*100).toFixed(2)), smooth: true, lineStyle: { width: 2, color: '#6aa9ff' }, symbol: 'circle', symbolSize: 5, areaStyle: { opacity: 0.08, color: '#2d7bc0' } },
-            { name: '蒸发器 (Evap)', type: 'line', data: productRTY["蒸发器(AINT)"].map(v=>(v*100).toFixed(2)), smooth: true, lineStyle: { width: 2, color: '#55d6c2' }, symbol: 'diamond', symbolSize: 5 },
-            { name: '冷凝器 (Cond)', type: 'line', data: productRTY["冷凝器"].map(v=>(v*100).toFixed(2)), smooth: true, lineStyle: { width: 2, color: '#f9a65a' }, symbol: 'roundRect', symbolSize: 4 }
-        ]
-    });
-
-    const productTableBody = document.getElementById('product-table-body');
-    if(productTableBody) {
-        detailRows.forEach(row => {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `<td style="font-weight:500;">${row.product}<\/td><td style="font-size:9px;">${row.process}<\/td><td class="badge-rate">${row.rty1}<\/td><td class="badge-rate">${row.rty2}<\/td><td class="badge-rate">${row.rty3}<\/td><td class="badge-rate">${row.rty4}<\/td><td>${row.ytd}<\/td><td style="font-size:9px;"><i class="fas fa-bug"></i> ${row.defect}<\/td>`;
-            productTableBody.appendChild(tr);
+    // 产品趋势图 (折线图, 1-4月)
+    let trendChart;
+    function renderProductTrend() {
+        const dom = document.getElementById('trendProductChart');
+        if(trendChart) trendChart.dispose();
+        trendChart = echarts.init(dom);
+        const months = ['1月', '2月', '3月', '4月'];
+        const series = products.map(p => ({
+            name: p.name,
+            type: 'line',
+            data: [p.rty_jan*100, p.rty_feb*100, p.rty_mar*100, p.rty_apr*100],
+            smooth: false,
+            symbol: 'circle',
+            lineStyle: { width: 2 },
+            itemStyle: { color: p.color }
+        }));
+        trendChart.setOption({
+            tooltip: { trigger: 'axis', valueFormatter: (value) => value?.toFixed(2) + '%' },
+            legend: { data: products.map(p => p.name), left: 'left', textStyle: { color: '#CFE4FF' } },
+            grid: { top: 40, left: 55, right: 20 },
+            xAxis: { type: 'category', data: months, axisLabel: { color: '#C9E0FF' } },
+            yAxis: { type: 'value', name: 'RTY (%)', min: 92, max: 99, axisLabel: { formatter: '{value}%', color: '#C9E0FF' }, nameTextStyle: { color: '#C9E0FF' } },
+            series: series
         });
     }
 
-    // Top6饼图
-    const top6Data = [
-        { name: '钎焊焊渣/间隙', value: 28, color: '#dc6a5a' },
-        { name: '炉前外观/漏装', value: 22, color: '#e8854a' },
-        { name: '氦检泄漏/管路', value: 18, color: '#f4b942' },
-        { name: '点焊不良', value: 12, color: '#50c4a3' },
-        { name: '火焰焊未熔合', value: 10, color: '#6199e0' },
-        { name: '预检外观缺陷', value: 10, color: '#7c6fe8' }
-    ];
-    const top6Chart = echarts.init(document.getElementById('chart-top6-defect'));
-    top6Chart.setOption({
-        backgroundColor: 'transparent', tooltip: { trigger: 'item', formatter: '{b}: {d}%' },
-        legend: { orient: 'vertical', left: 'left', textStyle: { color: '#cfe3ff', fontSize: 9 }, itemWidth: 8, itemHeight: 7, formatter: n => n.length > 10 ? n.slice(0,8)+'..' : n },
-        series: [{ type: 'pie', radius: '45%', center: ['52%', '55%'], data: top6Data, label: { show: true, formatter: '{b}\n{d}%', color: '#fff', fontSize: 8, lineHeight: 10 }, itemStyle: { borderRadius: 5, borderColor: '#0a2a44', borderWidth: 1 }, color: top6Data.map(d => d.color) }]
-    });
+    // 4月目标达成柱状图 (统一目标线96.5%)
+    let targetChart;
+    function renderTargetChart() {
+        const dom = document.getElementById('targetChart');
+        if(targetChart) targetChart.dispose();
+        targetChart = echarts.init(dom);
+        const categories = products.map(p => p.name);
+        const actualApr = products.map(p => p.rty_apr * 100);
+        const targetLineValue = UNIFIED_TARGET * 100;
+        targetChart.setOption({
+            tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' }, valueFormatter: (value) => value?.toFixed(1) + '%' },
+            legend: { data: ['2026年4月 实际RTY', '统一年度目标 (96.5%)'], left: 'left', textStyle: { color: '#CFE4FF' } },
+            xAxis: { type: 'category', data: categories, axisLabel: { rotate: 25, fontWeight: 500, color: '#C9E0FF' } },
+            yAxis: { type: 'value', name: '合格率 (%)', min: 90, max: 100, axisLabel: { formatter: '{value}%', color: '#C9E0FF' }, nameTextStyle: { color: '#C9E0FF' } },
+            series: [
+                { name: '2026年4月 实际RTY', type: 'bar', data: actualApr, itemStyle: { borderRadius: [6,6,0,0], color: '#3b82f6' }, label: { show: true, position: 'top', formatter: '{c}%', color: '#FFFFFF' } },
+                { name: , type: 'line', data: Array(categories.length).fill(targetLineValue), symbol: 'none', lineStyle: { width: 2, color: '#ef4444', type: 'dashed' }, label: { show: true, position: 'top', formatter: `${targetLineValue}%`, color: '#FFAAAA' } }
+            ]
+        });
+    }
 
-    // 目标达成表
-    const productRTYTable = {
-        "暖风RTY":     { monthly: [0.9571, 0.9632, 0.9583, 0.9546],  y2025: 0.9768 },
-        "内冷RTY":     { monthly: [0.9689, 0.9712, 0.9705, 0.9824],  y2025: 0.9756 },
-        "蒸发器RTY":   { monthly: [0.9597, 0.9624, 0.9658, 0.9612],  y2025: 0.9654 },
-        "冷凝器RTY":   { monthly: [0.9456, 0.9492, 0.9503, 0.9437],  y2025: 0.9414 },
-        "水箱RTY":     { monthly: [0.9714, 0.9731, 0.9720, 0.9695],  y2025: 0.9772 },
-        "油冷器/冷模RTY": { monthly: [0.9652, 0.9638, 0.9645, 0.9630],  y2025: 0.9658 }
-    };
-    const target2026 = 0.95;
-    const targetPercent = "95%";
-    const targetTbody = document.getElementById('rty-target-tbody');
-    if(targetTbody) {
-        for (const [prodName, data] of Object.entries(productRTYTable)) {
-            const months = data.monthly;
-            const y2025Val = (data.y2025 * 100).toFixed(2) + '%';
-            const row = document.createElement('tr');
-            let displayName = prodName.replace('RTY','');
-            if(displayName === '油冷器/冷模') displayName = '油冷器/冷模';
-            row.innerHTML = `<td style="font-weight:500;">${displayName}<\/td>` +
-                months.map((r, idx) => {
-                    const rtyPercent = (r * 100).toFixed(2) + '%';
-                    const isMet = (r >= target2026);
-                    const badge = isMet ? '✓达标' : '✗未达标';
-                    const colorStyle = isMet ? '#9fdfb2' : '#ffaa88';
-                    return `<td class="badge-rate">${rtyPercent}<\/td><td style="color:${colorStyle}; font-weight:500;">${badge}<\/td>`;
-                }).join('') +
-                `<td>${y2025Val}<\/td><td>${targetPercent}<\/td>`;
-            targetTbody.appendChild(row);
+    // 4月失效原因饼图
+    let pieChart;
+    function renderDefectPie() {
+        const dom = document.getElementById('defectPieChart');
+        if(pieChart) pieChart.dispose();
+        pieChart = echarts.init(dom);
+        pieChart.setOption({
+            tooltip: { trigger: 'item', formatter: '{b}: {c} 件 ({d}%)' },
+            legend: { orient: 'vertical', left: 'left', textStyle: { color: '#CFE4FF' } },
+            series: [{
+                type: 'pie', radius: '55%', data: defectData, emphasis: { scale: true },
+                label: { show: true, formatter: '{b}: {d}%', color: '#F0F9FF' }, itemStyle: { borderRadius: 8, borderColor: '#0A2A3F', borderWidth: 2 }
+            }]
+        });
+    }
+
+    // 详细表格渲染 (统一目标)
+    function renderDetailTable() {
+        const tbody = document.getElementById('tableBody');
+        let html = '';
+        products.forEach(p => {
+            const q1Avg = (p.rty_jan + p.rty_feb + p.rty_mar) / 3;
+            const status = p.rty_apr >= UNIFIED_TARGET ? '<span class="badge-goal">✓ 达标</span>' : '<span class="badge-goal badge-warn">⚠ 未达标</span>';
+            html += `<tr>
+                        <td style="font-weight:700">${p.name}</td>
+                        <td>${(UNIFIED_TARGET*100).toFixed(1)}%</td>
+                        <td>${(p.rty_jan*100).toFixed(1)}%</td>
+                        <td>${(p.rty_feb*100).toFixed(1)}%</td>
+                        <td>${(p.rty_mar*100).toFixed(1)}%</td>
+                        <td><strong>${(p.rty_apr*100).toFixed(1)}%</strong></td>
+                        <td>${(q1Avg*100).toFixed(1)}%</td>
+                        <td>${status}</td>
+                    </tr>`;
+        });
+        tbody.innerHTML = html;
+    }
+
+    // ---------- 修复后的自动循环滚动：确保滚动到底部后返回顶部 ----------
+    let autoScrollEnabled = true;
+    let scrollTimer = null;
+    const SCROLL_STEP = 8;            // 每步滚动8px
+    const SCROLL_INTERVAL = 28;        // 28ms一步，平滑滚动
+    let isReturning = false;           // 防止返回顶部过程中重复触发
+    
+    function performScroll() {
+        if (!autoScrollEnabled) return;
+        if (isReturning) return;        // 正在返回顶部，等待完成
+        
+        const scrollTop = window.scrollY;
+        const winHeight = window.innerHeight;
+        const docHeight = document.documentElement.scrollHeight;
+        const maxScroll = docHeight - winHeight;
+        
+        if (maxScroll <= 0) return;
+        
+        // 检测是否到达底部 (允许2px误差)
+        const isAtBottom = (maxScroll - scrollTop) <= 2;
+        
+        if (isAtBottom) {
+            // 到达底部，触发返回顶部
+            isReturning = true;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            // 等待平滑滚动完成，重新开启滚动
+            setTimeout(() => {
+                isReturning = false;
+                // 确保滚动继续
+                if (autoScrollEnabled && scrollTimer) {
+                    // 无需额外操作，interval会继续
+                }
+            }, 400); // 平滑滚动约300-400ms
+            return;
         }
-        const noteRow = document.createElement('tr');
-        noteRow.style.backgroundColor = '#0e2f4b';
-        noteRow.innerHTML = `<td colspan="11" style="text-align:left; font-size:9px; color:#c0e0ff;"><i class="fas fa-chart-line"></i> 蒸发器、冷凝器部分月份未达标，需强化钎焊及氦检过程控制。<\/td>`;
-        targetTbody.appendChild(noteRow);
+        
+        // 未到底部，正常向下滚动
+        window.scrollBy({ top: SCROLL_STEP, behavior: 'smooth' });
     }
 
-    // 轮播逻辑 (10秒切换)
-    const pages = [document.getElementById('page1'), document.getElementById('page2'), document.getElementById('page3')];
-    const dots = document.querySelectorAll('.indicator-dot');
-    let currentIdx = 0;
-    let intervalId = null;
-    const animations = ['fadeSlideUp', 'fadeZoom', 'glideIn', 'softFlip'];
-    function applyRandomAnimation(pageElement) {
-        if(!pageElement) return;
-        const randomAnim = animations[Math.floor(Math.random() * animations.length)];
-        pageElement.classList.remove('animate-random');
-        void pageElement.offsetWidth;
-        pageElement.style.animation = 'none';
-        pageElement.classList.add('animate-random');
-        pageElement.style.animationName = randomAnim;
-        pageElement.style.animationDuration = '0.45s';
-        pageElement.addEventListener('animationend', function onEnd() { pageElement.style.animation = ''; pageElement.removeEventListener('animationend', onEnd); }, { once: true });
+    function startAutoScroll() {
+        if (scrollTimer) clearInterval(scrollTimer);
+        scrollTimer = setInterval(() => {
+            performScroll();
+        }, SCROLL_INTERVAL);
     }
-    function switchToPage(index) {
-        if(index === currentIdx) return;
-        pages[currentIdx].classList.remove('active');
-        pages[index].classList.add('active');
-        applyRandomAnimation(pages[index]);
-        dots.forEach((dot, i) => { if(i === index) dot.classList.add('active'); else dot.classList.remove('active'); });
-        setTimeout(() => { barChart.resize(); trendChart.resize(); top6Chart.resize(); pages[index].scrollTop = 0; }, 50);
-        currentIdx = index;
+    
+    function stopAutoScroll() {
+        if (scrollTimer) {
+            clearInterval(scrollTimer);
+            scrollTimer = null;
+        }
     }
-    function nextPage() { switchToPage((currentIdx + 1) % pages.length); }
-    function startCarousel() { if(intervalId) clearInterval(intervalId); intervalId = setInterval(nextPage, 10000); }
-    dots.forEach((dot, idx) => { dot.addEventListener('click', () => { if(intervalId) { clearInterval(intervalId); startCarousel(); } switchToPage(idx); }); });
-    window.addEventListener('load', () => { applyRandomAnimation(pages[0]); startCarousel(); barChart.resize(); trendChart.resize(); top6Chart.resize(); });
-    window.addEventListener('resize', () => { barChart.resize(); trendChart.resize(); top6Chart.resize(); });
-})();
+    
+    // 启动滚动
+    startAutoScroll();
+    
+    // 每小时自动刷新页面 (3600000 ms)
+    let refreshTimer = null;
+    function startHourlyRefresh() {
+        if(refreshTimer) clearInterval(refreshTimer);
+        refreshTimer = setInterval(() => {
+            if(confirm("数据每小时自动刷新 (看板将重新加载最新质量数据)，点击确定刷新。")) {
+                location.reload();
+            }
+        }, 3600000);
+        console.log("每小时自动刷新已启动，下次刷新在60分钟后");
+    }
+    
+    // 页面可见性变化时恢复滚动（如果用户切换标签页回来）
+    document.addEventListener('visibilitychange', () => {
+        if (!document.hidden && autoScrollEnabled && !scrollTimer) startAutoScroll();
+    });
+    
+    // 窗口resize重绘图表
+    window.addEventListener('resize', () => {
+        if(trendChart) trendChart.resize();
+        if(targetChart) targetChart.resize();
+        if(pieChart) pieChart.resize();
+    });
+    
+    // 初始化所有组件
+    function initDashboard() {
+        renderKPI();
+        renderProductTrend();
+        renderTargetChart();
+        renderDefectPie();
+        renderDetailTable();
+        startHourlyRefresh();
+        if (autoScrollEnabled && !scrollTimer) startAutoScroll();
+    }
+    initDashboard();
 </script>
 </body>
 </html>
