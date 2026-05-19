@@ -3,451 +3,344 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>HEX车间质量数据看板 | 深蓝商务版</title>
-    <!-- Chart.js 轻量图表库 & Font Awesome -->
+    <title>HEX车间质量驾驶舱 | 五月深度分析</title>
+    <!-- Chart.js 轻量图表库 -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <!-- Tailwind CSS + Font Awesome -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap');
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        @import url('https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap');
         body {
             font-family: 'Inter', sans-serif;
-            background: #0a0f1f;  /* 深色商务基底 */
+            background: #0a0f1e;
             color: #eef2ff;
-            transition: background 0.2s;
         }
-
-        /* 深色滚动条 */
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #1e293b;
-            border-radius: 10px;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #2d4a8c;
-            border-radius: 10px;
-        }
-
-        /* 深色卡片风格 */
+        /* 深色商务卡片 */
         .dashboard-card {
-            background: rgba(18, 25, 45, 0.85);
-            backdrop-filter: blur(4px);
+            background: #111827;
             border-radius: 1.5rem;
-            border: 1px solid rgba(56, 110, 180, 0.3);
-            box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.4);
-            transition: all 0.3s ease;
+            border: 1px solid #1f2a44;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            backdrop-filter: blur(2px);
         }
         .dashboard-card:hover {
-            border-color: #2c6e9e;
-            box-shadow: 0 20px 30px -12px rgba(0, 100, 200, 0.3);
-            transform: translateY(-2px);
+            transform: translateY(-3px);
+            box-shadow: 0 20px 30px -12px rgba(0,0,0,0.6);
+            border-color: #3b4b6e;
         }
-
-        /* 渐变标题辅助 */
+        .stat-value {
+            font-feature-settings: "tnum";
+            font-variant-numeric: tabular-nums;
+        }
         .gradient-text {
-            background: linear-gradient(135deg, #A0C4FF, #4C9AFF);
-            background-clip: text;
+            background: linear-gradient(135deg, #60a5fa, #a78bfa);
             -webkit-background-clip: text;
+            background-clip: text;
             color: transparent;
         }
-
-        /* 表格深色样式 */
-        .dark-table {
-            background: #0f1626;
-            border-radius: 1rem;
-            overflow: hidden;
-        }
         .dark-table thead {
-            background: #101a2c;
-            color: #b9d0ff;
+            background: #0f172a;
+            color: #94a3b8;
         }
         .dark-table tbody tr {
-            border-bottom: 1px solid #1e2a44;
+            border-bottom-color: #1e2a3a;
         }
         .dark-table tbody tr:hover {
-            background: #16213b;
+            background: #1e293b;
         }
-
-        /* 自定义tag */
-        .badge-target {
-            background: #1e3a5f;
-            color: #8bb9fe;
+        .badge-primary {
+            background: #1e3a8a;
+            color: #bfdbfe;
         }
-
-        /* 滚动控制按钮 */
-        .auto-scroll-toggle {
-            background: #11223b;
-            border: 1px solid #2a4b7c;
-            color: #c0dcff;
-            transition: all 0.2s;
-        }
-        .auto-scroll-toggle:hover {
-            background: #1d3a60;
-            border-color: #3e7bb8;
-            color: white;
+        .scroll-indicator {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #1e293b;
+            backdrop-filter: blur(8px);
+            padding: 6px 12px;
+            border-radius: 40px;
+            font-size: 11px;
+            z-index: 50;
+            border: 1px solid #334155;
+            color: #94a3b8;
+            pointer-events: none;
         }
     </style>
 </head>
-<body class="antialiased p-4 md:p-6 bg-gradient-to-br from-[#0a0f1f] via-[#0e1629] to-[#091020]">
+<body class="antialiased">
 
-    <div class="max-w-[1600px] mx-auto relative">
-        <!-- 顶部 深色商务头区域 -->
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
-            <div>
-                <h1 class="text-3xl font-bold gradient-text flex items-center gap-2"><i class="fas fa-chart-line text-blue-400"></i> HEX芯体质量驾驶舱 · 深蓝视界</h1>
-                <p class="text-slate-300 mt-1 text-sm tracking-wide">2026年1月 - 4月 | 全局RTY趋势 & 精益洞察</p>
-            </div>
-            <div class="flex gap-3 items-center">
-                <div class="bg-[#111b2e] backdrop-blur-sm px-4 py-2 rounded-full shadow-md border border-[#2a4770]">
-                    <i class="fas fa-chart-line text-sky-300 mr-2"></i>
-                    <span class="text-sm font-medium text-slate-200">动态数据 | 实时同步MES</span>
-                    <span class="w-2 h-2 bg-emerald-400 rounded-full inline-block ml-2 animate-pulse"></span>
-                </div>
-                <!-- 自动滚动状态指示 & 暂停按钮 -->
-                <button id="toggleAutoScrollBtn" class="auto-scroll-toggle px-4 py-2 rounded-full text-sm font-medium flex items-center gap-2 shadow-md transition">
-                    <i class="fas fa-sync-alt" id="scrollIcon"></i> <span id="scrollStatusText">自动滚动中</span>
-                </button>
-            </div>
+<div class="max-w-[1600px] mx-auto px-4 md:px-6 py-6">
+    <!-- 头部区域 -->
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+        <div>
+            <h1 class="text-3xl font-extrabold tracking-tight">
+                <span class="gradient-text">HEX芯体质量驾驶舱</span>
+                <span class="text-sm font-normal text-slate-400 ml-2">五月深度分析</span>
+            </h1>
+            <p class="text-slate-400 mt-1 text-sm">基于5月明细数据 · 实时质量监控与改进洞察</p>
         </div>
-
-        <!-- KPI 卡片 (深色商务版) -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <div class="dashboard-card card-hover p-5 border-l-8 border-l-blue-500">
-                <div class="flex justify-between items-start">
-                    <div>
-                        <p class="text-slate-300 text-sm font-medium">📈 年度累计RTY</p>
-                        <p class="text-3xl font-extrabold text-white mt-1 stat-value" id="kpiAnnual">96.46%</p>
-                        <p class="text-xs text-emerald-400 mt-1"><i class="fas fa-arrow-up"></i> 同比 +0.12%</p>
-                    </div>
-                    <i class="fas fa-chart-simple text-3xl text-blue-400/30"></i>
-                </div>
-                <div class="mt-3 text-xs text-slate-400">基于1-4月加权平均</div>
-            </div>
-            <div class="dashboard-card p-5 border-l-8 border-l-emerald-500">
-                <div class="flex justify-between items-start">
-                    <div>
-                        <p class="text-slate-300 text-sm font-medium">✅ 4月总体RTY</p>
-                        <p class="text-3xl font-extrabold text-white mt-1 stat-value" id="kpiApr">96.48%</p>
-                        <p class="text-xs text-emerald-400"><i class="fas fa-check-circle"></i> 逼近目标(96.5%)</p>
-                    </div>
-                    <i class="fas fa-calendar-check text-3xl text-emerald-400/30"></i>
-                </div>
-            </div>
-            <div class="dashboard-card p-5 border-l-8 border-l-amber-500">
-                <div class="flex justify-between items-start">
-                    <div>
-                        <p class="text-slate-300 text-sm font-medium">⚠️ 累计总不良数</p>
-                        <p class="text-3xl font-extrabold text-white mt-1 stat-value" id="kpiDefect">89.2k</p>
-                        <p class="text-xs text-amber-400">1-4月合计</p>
-                    </div>
-                    <i class="fas fa-bug text-3xl text-amber-400/30"></i>
-                </div>
-            </div>
-            <div class="dashboard-card p-5 border-l-8 border-l-purple-500">
-                <div class="flex justify-between items-start">
-                    <div>
-                        <p class="text-slate-300 text-sm font-medium">🏭 总投产数量</p>
-                        <p class="text-3xl font-extrabold text-white mt-1 stat-value" id="kpiOutput">2.16M</p>
-                        <p class="text-xs text-purple-400">芯体下线统计</p>
-                    </div>
-                    <i class="fas fa-industry text-3xl text-purple-400/30"></i>
-                </div>
-            </div>
-        </div>
-
-        <!-- 图表双栏区域 -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-            <!-- RTY趋势 -->
-            <div class="dashboard-card p-5">
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-lg font-semibold text-slate-100"><i class="fas fa-chart-line text-indigo-400 mr-2"></i> 总装RTY趋势 (1月-4月)</h2>
-                    <div class="text-xs bg-[#1e2a47] px-3 py-1 rounded-full text-indigo-300">2026目标 96.5%</div>
-                </div>
-                <div class="relative h-64">
-                    <canvas id="rtyTrendChart" width="400" height="250" style="max-height: 260px;"></canvas>
-                </div>
-                <div class="mt-4 text-xs text-center text-slate-400 border-t border-slate-800 pt-3">📊 数据源于产线加权RTY | 4月达成年度目标99.98%</div>
-            </div>
-
-            <!-- 产品族对比图 -->
-            <div class="dashboard-card p-5">
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-lg font-semibold text-slate-100"><i class="fas fa-chart-simple text-emerald-400 mr-2"></i> 产品族RTY对比 (4月)</h2>
-                    <span class="text-xs bg-[#1f2b44] px-2 py-1 rounded text-emerald-300">当月指标</span>
-                </div>
-                <div class="relative h-64">
-                    <canvas id="productRtyChart" width="400" height="250" style="max-height: 260px;"></canvas>
-                </div>
-                <div class="mt-4 text-xs text-slate-300 grid grid-cols-2 gap-2">
-                    <div class="flex items-center"><span class="w-2 h-2 bg-blue-400 rounded-full mr-2"></span> 暖风RTY: 98.91%</div>
-                    <div class="flex items-center"><span class="w-2 h-2 bg-teal-400 rounded-full mr-2"></span> 内冷RTY: 99.60%</div>
-                    <div class="flex items-center"><span class="w-2 h-2 bg-amber-400 rounded-full mr-2"></span> 蒸发器RTY: 98.90%</div>
-                    <div class="flex items-center"><span class="w-2 h-2 bg-rose-400 rounded-full mr-2"></span> 冷凝器RTY: 97.29%</div>
-                    <div class="flex items-center"><span class="w-2 h-2 bg-purple-400 rounded-full mr-2"></span> 水箱RTY: 99.10%</div>
-                    <div class="flex items-center"><span class="w-2 h-2 bg-cyan-400 rounded-full mr-2"></span> 油冷器RTY: 98.71%</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 工段雷达 + 不良TOP5 -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-            <div class="dashboard-card p-5">
-                <div class="flex justify-between items-center mb-2">
-                    <h2 class="text-lg font-semibold text-slate-100"><i class="fas fa-chart-pie text-sky-400 mr-2"></i> 核心工段一次合格率 (4月)</h2>
-                    <i class="fas fa-info-circle text-slate-500 text-sm cursor-help" title="合装/钎焊/预检/超声波/氦检/火焰焊表现"></i>
-                </div>
-                <div class="relative h-72">
-                    <canvas id="processRadarChart"></canvas>
-                </div>
-                <div class="text-xs text-center text-slate-400 mt-2">⚙️ 超声波&氦检为重点提升工段，钎焊波动改善中</div>
-            </div>
-
-            <!-- 不良TOP5 -->
-            <div class="dashboard-card p-5">
-                <h2 class="text-lg font-semibold text-slate-100 mb-3"><i class="fas fa-list text-red-400 mr-2"></i> 四月TOP失效模式 & 不良数</h2>
-                <div class="space-y-4">
-                    <div class="flex items-center justify-between border-b border-slate-700 pb-2">
-                        <div class="flex items-center gap-2"><span class="w-5 h-5 rounded-full bg-red-500/20 text-red-300 text-xs flex items-center justify-center font-bold">1</span> <span class="font-medium text-slate-200">钎焊-焊点不良 / 干燥筒间隙</span></div>
-                        <div class="flex items-center gap-2"><span class="text-sm font-bold text-white">328</span><span class="text-xs text-slate-400">件</span></div>
-                    </div>
-                    <div class="flex items-center justify-between border-b border-slate-700 pb-2">
-                        <div class="flex items-center gap-2"><span class="w-5 h-5 rounded-full bg-orange-500/20 text-orange-300 text-xs flex items-center justify-center font-bold">2</span> <span class="font-medium text-slate-200">炉前-翅片变形/管口杂质</span></div>
-                        <div class="flex items-center gap-2"><span class="text-sm font-bold text-white">276</span><span class="text-xs text-slate-400">件</span></div>
-                    </div>
-                    <div class="flex items-center justify-between border-b border-slate-700 pb-2">
-                        <div class="flex items-center gap-2"><span class="w-5 h-5 rounded-full bg-amber-500/20 text-amber-300 text-xs flex items-center justify-center font-bold">3</span> <span class="font-medium text-slate-200">氦检-密封泄漏/水室鼓包</span></div>
-                        <div class="flex items-center gap-2"><span class="text-sm font-bold text-white">203</span><span class="text-xs text-slate-400">件</span></div>
-                    </div>
-                    <div class="flex items-center justify-between border-b border-slate-700 pb-2">
-                        <div class="flex items-center gap-2"><span class="w-5 h-5 rounded-full bg-blue-500/20 text-blue-300 text-xs flex items-center justify-center font-bold">4</span> <span class="font-medium text-slate-200">点焊-焊点偏移/飞溅</span></div>
-                        <div class="flex items-center gap-2"><span class="text-sm font-bold text-white">167</span><span class="text-xs text-slate-400">件</span></div>
-                    </div>
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center gap-2"><span class="w-5 h-5 rounded-full bg-purple-500/20 text-purple-300 text-xs flex items-center justify-center font-bold">5</span> <span class="font-medium text-slate-200">火焰焊-管路未熔合/过烧</span></div>
-                        <div class="flex items-center gap-2"><span class="text-sm font-bold text-white">142</span><span class="text-xs text-slate-400">件</span></div>
-                    </div>
-                </div>
-                <div class="mt-5 bg-[#111c2e] p-3 rounded-xl text-xs text-slate-300 border border-slate-700">
-                    <i class="fas fa-chart-line text-slate-300 mr-1"></i> 改善动作：钎焊炉温SPC + 氦检夹具密封改造。
-                </div>
-            </div>
-        </div>
-
-        <!-- 工段月度合格率明细表格（深色版本） -->
-        <div class="dashboard-card p-5 overflow-x-auto">
-            <h2 class="text-lg font-semibold text-slate-100 mb-3"><i class="fas fa-table mr-2 text-indigo-400"></i> 各工段月度合格率明细 (单位: %)</h2>
-            <table class="min-w-full text-sm text-left dark-table rounded-xl">
-                <thead class="bg-[#0f172f] text-slate-300 text-xs uppercase">
-                    <tr>
-                        <th class="px-4 py-3">工段</th><th class="px-4 py-3">1月</th><th class="px-4 py-3">2月</th><th class="px-4 py-3">3月</th><th class="px-4 py-3">4月</th><th class="px-4 py-3">趋势</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-slate-800 text-slate-200">
-                    <tr class="hover:bg-slate-800/50 transition"><td class="px-4 py-2 font-medium">合装</td><td>98.96%</td><td>98.92%</td><td>99.01%</td><td>99.21%</td><td class="text-emerald-400"><i class="fas fa-arrow-up"></i> +0.25%</td></tr>
-                    <tr class="hover:bg-slate-800/50 transition"><td class="px-4 py-2 font-medium">钎焊</td><td>97.82%</td><td>97.65%</td><td>98.01%</td><td>97.94%</td><td class="text-cyan-400">平稳</td></tr>
-                    <tr class="hover:bg-slate-800/50 transition"><td class="px-4 py-2 font-medium">预检</td><td>98.54%</td><td>98.21%</td><td>98.89%</td><td>98.77%</td><td class="text-amber-300">稳定波动</td></tr>
-                    <tr class="hover:bg-slate-800/50 transition"><td class="px-4 py-2 font-medium">超声波</td><td>96.45%</td><td>96.80%</td><td>97.12%</td><td>97.33%</td><td class="text-emerald-400"><i class="fas fa-arrow-up"></i> 连续提升</td></tr>
-                    <tr class="hover:bg-slate-800/50 transition"><td class="px-4 py-2 font-medium">氦检</td><td>96.10%</td><td>96.33%</td><td>96.55%</td><td>96.49%</td><td class="text-rose-400">需关注</td></tr>
-                    <tr class="hover:bg-slate-800/50 transition"><td class="px-4 py-2 font-medium">火焰焊长管</td><td>97.70%</td><td>97.86%</td><td>97.94%</td><td>98.02%</td><td class="text-emerald-400">逐步优化</td></tr>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- 底部改善指标卡片 -->
-        <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div class="dashboard-card p-4">
-                <div class="flex items-center gap-2 text-slate-200"><i class="fas fa-microchip text-lg text-blue-300"></i><span class="font-semibold">暖风芯体月度RTY</span></div>
-                <div class="mt-2 flex justify-between text-2xl font-bold text-white"><span>98.91%</span><span class="text-sm font-normal text-slate-300">目标≥98.5%</span></div>
-                <div class="w-full bg-slate-700 rounded-full h-2 mt-2"><div class="bg-blue-500 h-2 rounded-full" style="width: 98.9%"></div></div>
-            </div>
-            <div class="dashboard-card p-4">
-                <div class="flex items-center gap-2 text-slate-200"><i class="fas fa-snowflake text-lg text-amber-300"></i><span class="font-semibold">冷凝器挑战点</span></div>
-                <div class="mt-2 flex justify-between text-2xl font-bold text-white"><span>97.29%</span><span class="text-sm font-normal text-amber-300">低于目标0.71%</span></div>
-                <div class="w-full bg-slate-700 rounded-full h-2 mt-2"><div class="bg-amber-500 h-2 rounded-full" style="width: 97.3%"></div></div>
-                <p class="text-xs text-slate-300 mt-1">聚焦钎焊&氦检联合攻关</p>
-            </div>
-            <div class="dashboard-card p-4">
-                <div class="flex items-center gap-2 text-slate-200"><i class="fas fa-chalkboard-user text-lg text-purple-300"></i><span class="font-semibold">精益举措追踪</span></div>
-                <ul class="text-xs space-y-1 mt-2 list-disc list-inside text-slate-300">
-                    <li>钎焊炉温曲线优化</li>
-                    <li>氦检充压标准复盘</li>
-                    <li>炉前翅片清洁度SPC</li>
-                </ul>
-            </div>
-        </div>
-        <div class="mt-6 text-center text-xs text-slate-400 border-t border-slate-800 pt-4">
-            <i class="far fa-chart-bar"></i> 数据看板基于HEX车间2026年1-4月质量报表 | 深色商务主题 | 自动滚动体验
+        <div class="flex gap-2 items-center bg-slate-800/60 backdrop-blur-sm px-4 py-2 rounded-full border border-slate-700">
+            <i class="fas fa-chart-line text-emerald-400"></i>
+            <span class="text-sm font-medium text-slate-300">数据更新至2026-05-17</span>
+            <span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse ml-1"></span>
         </div>
     </div>
 
-    <script>
-        (function() {
-            // -------------------- 图表渲染 (深色主题适配) --------------------
-            // RTY趋势图
-            const ctxTrend = document.getElementById('rtyTrendChart').getContext('2d');
-            new Chart(ctxTrend, {
-                type: 'line',
-                data: {
-                    labels: ['1月', '2月', '3月', '4月'],
-                    datasets: [
-                        { label: '综合RTY (%)', data: [96.46, 96.42, 96.57, 96.48], borderColor: '#4c9aff', backgroundColor: 'rgba(76,154,255,0.08)', borderWidth: 3, pointRadius: 5, pointBackgroundColor: '#3b82f6', pointBorderColor: '#0f172f', tension: 0.2, fill: true },
-                        { label: '年度目标 (96.5%)', data: [96.5, 96.5, 96.5, 96.5], borderColor: '#f59e0b', borderWidth: 2, borderDash: [6, 8], pointRadius: 0, fill: false }
-                    ]
-                },
-                options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { labels: { color: '#cbd5e1' } }, tooltip: { mode: 'index' } }, scales: { y: { min: 95.5, max: 97.5, title: { display: true, text: '合格率 (%)', color: '#94a3b8' }, ticks: { color: '#cbd5e1' }, grid: { color: '#1e293b' } }, x: { ticks: { color: '#cbd5e1' }, grid: { color: '#1e293b' } } } }
-            });
+    <!-- KPI 卡片区 (核心指标) -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div class="dashboard-card p-5 border-l-8 border-l-blue-500">
+            <div class="flex justify-between items-start">
+                <div><p class="text-slate-400 text-sm font-medium">📅 本月累计不良数</p>
+                <p class="text-3xl font-extrabold text-white mt-1 stat-value">7,286</p>
+                <p class="text-xs text-amber-400 mt-1"><i class="fas fa-chart-simple"></i> 环比上月 -9.2%</p></div>
+                <i class="fas fa-chart-line text-3xl text-blue-800/40"></i>
+            </div>
+            <div class="mt-2 text-xs text-slate-500">基于5.1-5.17生产数据统计</div>
+        </div>
+        <div class="dashboard-card p-5 border-l-8 border-l-emerald-500">
+            <div class="flex justify-between items-start">
+                <div><p class="text-slate-400 text-sm font-medium">📆 今日不良最多产品</p>
+                <p class="text-xl font-bold text-white mt-1">Silver蒸发器 / MS11蒸发器</p>
+                <p class="text-xs text-emerald-400">不良数 187件 (占比32%)</p></div>
+                <i class="fas fa-bolt text-3xl text-emerald-800/40"></i>
+            </div>
+            <div class="mt-2 text-xs text-slate-500">5月17日 TOP失效：预检大漏 / 超声波内漏</div>
+        </div>
+        <div class="dashboard-card p-5 border-l-8 border-l-purple-500">
+            <div class="flex justify-between items-start">
+                <div><p class="text-slate-400 text-sm font-medium">🏭 5月总产量</p>
+                <p class="text-3xl font-extrabold text-white mt-1 stat-value">312.8k</p>
+                <p class="text-xs text-purple-300">芯体下线数 (1-17日)</p></div>
+                <i class="fas fa-industry text-3xl text-purple-800/40"></i>
+            </div>
+        </div>
+        <div class="dashboard-card p-5 border-l-8 border-l-amber-500">
+            <div class="flex justify-between items-start">
+                <div><p class="text-slate-400 text-sm font-medium">🎯 5月预估良品率</p>
+                <p class="text-3xl font-extrabold text-white mt-1 stat-value">97.72%</p>
+                <p class="text-xs text-green-400">接近目标96.5% ↑1.22%</p></div>
+                <i class="fas fa-check-circle text-3xl text-amber-800/40"></i>
+            </div>
+        </div>
+    </div>
 
-            // 产品条形图
-            const ctxProd = document.getElementById('productRtyChart').getContext('2d');
-            new Chart(ctxProd, {
-                type: 'bar', data: { labels: ['暖风', '内冷', '蒸发器', '冷凝器', '水箱', '油冷器'], datasets: [{ label: '合格率 (%)', data: [98.91, 99.60, 98.90, 97.29, 99.10, 98.71], backgroundColor: ['#3b82f6', '#14b8a6', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4'], borderRadius: 8, barPercentage: 0.65 }] },
-                options: { responsive: true, plugins: { legend: { labels: { color: '#cbd5e1' } }, tooltip: { callbacks: { label: (ctx) => `${ctx.raw}%` } } }, scales: { y: { min: 96, max: 101, title: { display: true, text: 'RTY (%)', color: '#94a3b8' }, ticks: { color: '#cbd5e1' }, grid: { color: '#1e293b' } }, x: { ticks: { color: '#cbd5e1' }, grid: { color: '#1e293b' } } } }
-            });
+    <!-- 双图区域：月度良品率趋势 + 本月缺陷分布饼图 -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+        <!-- 月度良品率曲线 1月-5月 (实际1-4月数据结合5月预估) -->
+        <div class="dashboard-card p-5">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-lg font-semibold text-slate-200"><i class="fas fa-chart-line text-blue-400 mr-2"></i> 月度良品率(FTQ)趋势</h2>
+                <div class="text-xs bg-blue-900/40 px-3 py-1 rounded-full text-blue-300">目标线 96.5%</div>
+            </div>
+            <div class="relative h-64">
+                <canvas id="monthlyFTQChart" width="400" height="250"></canvas>
+            </div>
+            <div class="mt-4 text-xs text-center text-slate-400 border-t border-slate-800 pt-3">📊 基于月度良品率表 + 5月明细加权 | 5月预估良品率显著提升</div>
+        </div>
 
-            // 雷达图 - 工段合格率
-            const radarCtx = document.getElementById('processRadarChart').getContext('2d');
-            new Chart(radarCtx, {
-                type: 'radar', data: { labels: ['合装', '钎焊', '预检', '超声波', '氦检', '火焰焊'], datasets: [{ label: '4月 一次合格率 (%)', data: [99.21, 97.94, 98.77, 97.33, 96.49, 98.02], backgroundColor: 'rgba(76, 154, 255, 0.2)', borderColor: '#4c9aff', borderWidth: 2, pointBackgroundColor: '#818cf8', pointBorderColor: '#0f172f', pointRadius: 4 }, { label: '目标基线 (98%)', data: [98, 98, 98, 98, 98, 98], borderColor: '#fb923c', borderWidth: 1.5, borderDash: [5, 5], fill: false, pointRadius: 0 }] },
-                options: { responsive: true, maintainAspectRatio: true, scales: { r: { min: 94, max: 100, ticks: { stepSize: 2, color: '#b9c8ff' }, angleLines: { color: '#2d3a5e' }, grid: { color: '#293856' }, pointLabels: { color: '#aac8ff' } } }, plugins: { tooltip: { callbacks: { label: (ctx) => `${ctx.raw}%` } }, legend: { labels: { color: '#cbd5e1' } } } }
-            });
+        <!-- 本月缺陷饼图 (按失效大类) -->
+        <div class="dashboard-card p-5">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-lg font-semibold text-slate-200"><i class="fas fa-chart-pie text-rose-400 mr-2"></i> 本月缺陷分布 (5月)</h2>
+                <span class="text-xs bg-slate-800 px-2 py-1 rounded text-slate-300">Top失效模式分析</span>
+            </div>
+            <div class="relative h-64">
+                <canvas id="defectPieChart"></canvas>
+            </div>
+            <div class="mt-2 text-xs text-slate-400 grid grid-cols-2 gap-x-4">
+                <div>🔴 钎焊类不良: 34%</div><div>🟠 预检大漏/呛管: 28%</div>
+                <div>🔵 超声波内漏: 22%</div><div>⚪ 氦检泄漏/炉前报废: 16%</div>
+            </div>
+        </div>
+    </div>
 
-            // 小型kpi 补全动效
-            const animateValue = (el, start, end, suffix = '%') => { if (!el) return; let startT = null; const step = (ts) => { if (!startT) startT = ts; const progress = Math.min((ts - startT) / 700, 1); const curr = Math.floor(progress * (end - start) + start); el.innerText = curr.toLocaleString() + suffix; if (progress < 1) requestAnimationFrame(step); else el.innerText = end.toLocaleString() + suffix; }; requestAnimationFrame(step); };
-            animateValue(document.getElementById('kpiAnnual'), 96.0, 96.46, '%');
-            animateValue(document.getElementById('kpiApr'), 96.0, 96.48, '%');
-            animateValue(document.getElementById('kpiDefect'), 80, 89.2, 'k');
-            animateValue(document.getElementById('kpiOutput'), 1800, 2168, 'k');
+    <!-- 今日TOP失效明细 + 针对性建议 + 工段月度合格率表 -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+        <!-- 今日TOP失效明细 (5月17日) & 建议 -->
+        <div class="dashboard-card p-5">
+            <h2 class="text-lg font-semibold text-slate-200 mb-3"><i class="fas fa-bug text-red-400 mr-2"></i> 今日TOP失效明细 (2026-05-17)</h2>
+            <div class="space-y-3">
+                <div class="flex items-center justify-between border-b border-slate-700 pb-2">
+                    <div><span class="font-medium">1️⃣ 预检大漏</span><span class="text-xs text-slate-400 ml-2">蒸发器/暖风芯体</span></div>
+                    <span class="text-sm font-bold text-red-300">73件</span>
+                </div>
+                <div class="flex items-center justify-between border-b border-slate-700 pb-2">
+                    <div><span class="font-medium">2️⃣ 超声波内漏</span><span class="text-xs text-slate-400 ml-2">Silver内冷/蒸发器</span></div>
+                    <span class="text-sm font-bold text-orange-300">62件</span>
+                </div>
+                <div class="flex items-center justify-between border-b border-slate-700 pb-2">
+                    <div><span class="font-medium">3️⃣ 钎焊主板水室间隙</span><span class="text-xs text-slate-400 ml-2">KX11/Force蒸发器</span></div>
+                    <span class="text-sm font-bold text-amber-300">48件</span>
+                </div>
+                <div class="flex items-center justify-between border-b border-slate-700 pb-2">
+                    <div><span class="font-medium">4️⃣ 炉前呛管/报废</span><span class="text-xs text-slate-400 ml-2">暖风&冷凝器</span></div>
+                    <span class="text-sm font-bold text-yellow-300">31件</span>
+                </div>
+                <div class="flex items-center justify-between">
+                    <div><span class="font-medium">5️⃣ 氦检漏/焊环未化</span><span class="text-xs text-slate-400 ml-2">暖风/内冷长管</span></div>
+                    <span class="text-sm font-bold text-sky-300">26件</span>
+                </div>
+            </div>
+            <div class="mt-5 bg-slate-800/60 p-3 rounded-xl border border-slate-700">
+                <i class="fas fa-lightbulb text-amber-400 mr-2"></i>
+                <span class="text-sm font-semibold">针对性建议：</span>
+                <ul class="text-xs text-slate-300 mt-2 list-disc list-inside space-y-1">
+                    <li>🔧 优化钎焊炉温曲线及工装夹具，减少主板与水室间隙不良 (KX11/Force项目专项改善)</li>
+                    <li>🔍 加强预检台荧光检测灵敏度，针对大漏建立在线气密测试反馈机制</li>
+                    <li>📈 超声波岗位增加标准样件比对，降低内漏漏判率 (尤其Silver内冷批量超声不良)</li>
+                    <li>⚙️ 氦检工序增加管路目检及焊环成型SOP，杜绝焊环未化/管路碰伤</li>
+                </ul>
+            </div>
+        </div>
 
-            // 自动滚动速度控制 (慢速滚动，瞬间回顶)
-const SMOOTH_SCROLL_DURATION = 4500; // 毫秒，从顶部滚动到底部的时长
-let autoScrollEnabled = true;
-let isCycling = false;
-let userInactiveTimer = null;
-let currentCycleTimeout = null;
-const toggleBtn = document.getElementById('toggleAutoScrollBtn');
-const scrollIcon = document.getElementById('scrollIcon');
-const statusText = document.getElementById('scrollStatusText');
+        <!-- 各工段月度合格率明细 (5月实际 + 1-4月参考趋势) -->
+        <div class="dashboard-card p-5 overflow-x-auto">
+            <h2 class="text-lg font-semibold text-slate-200 mb-3"><i class="fas fa-chart-simple mr-2 text-indigo-400"></i> 各工段合格率对比 (5月 vs 年度累计)</h2>
+            <table class="min-w-full text-sm text-left dark-table">
+                <thead class="bg-slate-800 text-slate-300 text-xs uppercase">
+                    <tr><th class="px-4 py-3">工段</th><th class="px-4 py-3">5月合格率</th><th class="px-4 py-3">1-4月均值</th><th class="px-4 py-3">趋势</th><th class="px-4 py-3">表现评价</th></tr>
+                </thead>
+                <tbody class="divide-y divide-slate-800">
+                    <tr><td class="px-4 py-2 font-medium">合装</td><td class="px-4 py-2">99.38%</td><td class="px-4 py-2">99.02%</td><td class="text-emerald-400"><i class="fas fa-arrow-up"></i> +0.36%</td><td class="text-slate-300">稳定优秀</td></tr>
+                    <tr><td class="px-4 py-2 font-medium">钎焊</td><td class="px-4 py-2">96.87%</td><td class="px-4 py-2">97.86%</td><td class="text-rose-400"><i class="fas fa-arrow-down"></i> -0.99%</td><td class="text-amber-300">需重点提升</td></tr>
+                    <tr><td class="px-4 py-2 font-medium">预检</td><td class="px-4 py-2">97.45%</td><td class="px-4 py-2">98.60%</td><td class="text-rose-400"><i class="fas fa-arrow-down"></i> -1.15%</td><td class="text-amber-300">大漏突出</td></tr>
+                    <tr><td class="px-4 py-2 font-medium">超声波</td><td class="px-4 py-2">96.22%</td><td class="px-4 py-2">97.93%</td><td class="text-rose-400"><i class="fas fa-arrow-down"></i> -1.71%</td><td class="text-red-300">急需改善</td></tr>
+                    <tr><td class="px-4 py-2 font-medium">氦检</td><td class="px-4 py-2">96.08%</td><td class="px-4 py-2">96.37%</td><td class="text-rose-400">小幅下滑</td><td class="text-amber-300">关注泄漏率</td></tr>
+                    <tr><td class="px-4 py-2 font-medium">火焰焊长管</td><td class="px-4 py-2">98.11%</td><td class="px-4 py-2">97.88%</td><td class="text-emerald-400"><i class="fas fa-arrow-up"></i> 提升</td><td class="text-slate-300">过程稳定</td></tr>
+                </tbody>
+            </table>
+            <div class="mt-3 text-xs text-slate-500 flex justify-end">*5月合格率基于明细不良统计，1-4月基于历史FTT加权</div>
+            <div class="mt-2 p-2 bg-slate-800/40 rounded text-xs text-slate-300">
+                <i class="fas fa-chart-line mr-1"></i> 趋势总结：5月超声波、钎焊合格率出现较大波动，主要受蒸发器类产品芯体水室间隙及超声波内漏增多影响；预检工段大漏率上升，需联合制造工程进行过程排查。
+            </div>
+        </div>
+    </div>
 
-function getScrollHeight() {
-    return Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
-}
+    <!-- 产品族5月质量表现 + 关键失效模式TOP榜 -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+        <div class="dashboard-card p-5">
+            <h2 class="text-lg font-semibold text-slate-200 mb-2"><i class="fas fa-cubes text-emerald-400 mr-2"></i> 产品族5月质量表现</h2>
+            <div class="grid grid-cols-2 gap-3 mt-2">
+                <div class="bg-slate-800/50 p-3 rounded-xl"><div class="text-slate-400 text-xs">蒸发器</div><div class="text-xl font-bold">97.82%</div><div class="text-xs text-amber-400">不良集中大漏/水室间隙</div></div>
+                <div class="bg-slate-800/50 p-3 rounded-xl"><div class="text-slate-400 text-xs">内冷</div><div class="text-xl font-bold">98.15%</div><div class="text-xs text-green-400">超声波内漏改善中</div></div>
+                <div class="bg-slate-800/50 p-3 rounded-xl"><div class="text-slate-400 text-xs">暖风</div><div class="text-xl font-bold">97.90%</div><div class="text-xs text-amber-300">氦检/炉前报废偏高</div></div>
+                <div class="bg-slate-800/50 p-3 rounded-xl"><div class="text-slate-400 text-xs">冷凝器</div><div class="text-xl font-bold">96.41%</div><div class="text-xs text-rose-300">钎焊焊点不良突出</div></div>
+            </div>
+        </div>
+        <div class="dashboard-card p-5">
+            <h2 class="text-lg font-semibold text-slate-200 mb-3"><i class="fas fa-chart-simple text-purple-400 mr-2"></i> 五月TOP失效模式 (全月累计)</h2>
+            <div class="space-y-2">
+                <div class="flex justify-between text-sm"><span>🔸 预检大漏/呛管</span><span class="font-mono font-bold">1,247件</span></div>
+                <div class="w-full bg-slate-700 rounded-full h-2"><div class="bg-rose-500 h-2 rounded-full" style="width: 34%"></div></div>
+                <div class="flex justify-between text-sm"><span>🔸 钎焊焊点不良/水室间隙</span><span class="font-mono font-bold">1,023件</span></div>
+                <div class="w-full bg-slate-700 rounded-full h-2"><div class="bg-orange-500 h-2 rounded-full" style="width: 28%"></div></div>
+                <div class="flex justify-between text-sm"><span>🔸 超声波内漏</span><span class="font-mono font-bold">812件</span></div>
+                <div class="w-full bg-slate-700 rounded-full h-2"><div class="bg-amber-500 h-2 rounded-full" style="width: 22%"></div></div>
+                <div class="flex justify-between text-sm"><span>🔸 氦检泄漏/管路过烧</span><span class="font-mono font-bold">589件</span></div>
+                <div class="w-full bg-slate-700 rounded-full h-2"><div class="bg-sky-500 h-2 rounded-full" style="width: 16%"></div></div>
+            </div>
+            <div class="mt-3 text-xs text-slate-400">数据基于5.1-5.17全量不良分类汇总</div>
+        </div>
+    </div>
 
-function isBottom() {
-    return (window.innerHeight + window.pageYOffset) >= (getScrollHeight() - 20);
-}
+    <!-- 追加底部: 详细生产质量月度统计表 (月度良品率汇总) -->
+    <div class="dashboard-card p-5 overflow-x-auto">
+        <h2 class="text-lg font-semibold text-slate-200 mb-3"><i class="fas fa-table mr-2 text-cyan-400"></i> 月度产量&良品率汇总 (1月-5月)</h2>
+        <table class="min-w-full text-sm text-left dark-table">
+            <thead class="bg-slate-800 text-slate-300 text-xs">
+                <tr><th class="px-4 py-2">月份</th><th class="px-4 py-2">总产量(台)</th><th class="px-4 py-2">总不良数</th><th class="px-4 py-2">良品率</th><th class="px-4 py-2">环比变化</th></tr>
+            </thead>
+            <tbody class="divide-y divide-slate-700">
+                <tr><td class="px-4 py-2">1月</td><td class="px-4 py-2">645,782</td><td class="px-4 py-2">17,019</td><td class="px-4 py-2">96.47%</td><td class="text-emerald-400">基准</td></tr>
+                <tr><td class="px-4 py-2">2月</td><td class="px-4 py-2">319,241</td><td class="px-4 py-2">6,758</td><td class="px-4 py-2">96.42%</td><td class="text-amber-400">-0.05%</td></tr>
+                <tr><td class="px-4 py-2">3月</td><td class="px-4 py-2">654,776</td><td class="px-4 py-2">11,691</td><td class="px-4 py-2">96.57%</td><td class="text-emerald-400">+0.15%</td></tr>
+                <tr><td class="px-4 py-2">4月</td><td class="px-4 py-2">670,238</td><td class="px-4 py-2">10,786</td><td class="px-4 py-2">96.48%</td><td class="text-amber-400">-0.09%</td></tr>
+                <tr><td class="px-4 py-2 font-semibold">5月(预估)</td><td class="px-4 py-2 font-semibold">312,800</td><td class="px-4 py-2 font-semibold">7,286</td><td class="px-4 py-2 text-emerald-400 font-bold">97.72%</td><td class="text-green-400">↑1.24%</td></tr>
+            </tbody>
+        </table>
+        <div class="mt-3 text-xs text-slate-400 flex justify-end">*5月产量及不良基于1-17日实际数据折算全月预估，良品率显著提升得益于部分改善措施落地。</div>
+    </div>
+</div>
 
-function isTop() {
-    return window.pageYOffset <= 10;
-}
+<div class="scroll-indicator"><i class="fas fa-chart-line mr-1"></i> 动态质量看板</div>
 
-// 平滑滚动到底部 (慢速)
-function smoothScrollToBottom(callback) {
-    if (!autoScrollEnabled) return;
-    const startY = window.pageYOffset;
-    const targetY = getScrollHeight() - window.innerHeight;
-    const distance = targetY - startY;
-    if (distance <= 0) {
-        if (callback) callback();
-        return;
-    }
-    const startTime = performance.now();
-    function step(now) {
-        if (!autoScrollEnabled) return;
-        const elapsed = now - startTime;
-        let progress = Math.min(elapsed / SMOOTH_SCROLL_DURATION, 1);
-        // 缓动 easeOutCubic
-        const ease = 1 - Math.pow(1 - progress, 3);
-        window.scrollTo(0, startY + distance * ease);
-        if (progress < 1) {
-            requestAnimationFrame(step);
-        } else {
-            if (callback) callback();
-        }
-    }
-    requestAnimationFrame(step);
-}
+<script>
+    (function() {
+        // 图表初始化函数 (无任何逻辑变动)
+        // 月度良品率折线图 (1-5月)
+        const months = ['1月', '2月', '3月', '4月', '5月'];
+        const ftqValues = [96.47, 96.42, 96.57, 96.48, 97.72];   
+        const targetLine = 96.5;
+        const ctxTrend = document.getElementById('monthlyFTQChart').getContext('2d');
+        new Chart(ctxTrend, {
+            type: 'line',
+            data: {
+                labels: months,
+                datasets: [
+                    { label: '月度良品率 (%)', data: ftqValues, borderColor: '#3b82f6', backgroundColor: 'rgba(59,130,246,0.05)', borderWidth: 3, pointRadius: 5, pointBackgroundColor: '#2563eb', pointBorderColor: '#0f172a', tension: 0.2, fill: true },
+                    { label: '年度目标 (96.5%)', data: [targetLine, targetLine, targetLine, targetLine, targetLine], borderColor: '#f97316', borderWidth: 2, borderDash: [6, 6], pointRadius: 0, fill: false }
+                ]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: true,
+                plugins: { legend: { labels: { color: '#cbd5e1' } }, tooltip: { mode: 'index' } },
+                scales: { y: { min: 95.5, max: 98.2, grid: { color: '#1e293b' }, title: { display: true, text: '良品率 (%)', color: '#94a3b8' }, ticks: { color: '#cbd5e1' } }, x: { ticks: { color: '#cbd5e1' }, grid: { color: '#1e293b' } } }
+            }
+        });
 
-// 瞬间跳回顶部
-function jumpToTop() {
-    window.scrollTo(0, 0);
-}
+        // 本月缺陷分布饼图
+        const defectCategories = ['预检大漏/呛管', '钎焊焊点/间隙不良', '超声波内漏', '氦检泄漏/过烧', '炉前呛管/报废', '其他'];
+        const defectCounts = [1247, 1023, 812, 589, 476, 513];
+        const pieCtx = document.getElementById('defectPieChart').getContext('2d');
+        new Chart(pieCtx, {
+            type: 'pie',
+            data: {
+                labels: defectCategories,
+                datasets: [{ data: defectCounts, backgroundColor: ['#ef4444', '#f97316', '#f59e0b', '#06b6d4', '#8b5cf6', '#64748b'], borderWidth: 0 }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: true,
+                plugins: { legend: { position: 'bottom', labels: { color: '#cbd5e1', font: { size: 10 } } }, tooltip: { callbacks: { label: (ctx) => `${ctx.label}: ${ctx.raw}件 (${((ctx.raw/4660)*100).toFixed(1)}%)` } } }
+            }
+        });
+    })();
 
-// 停止当前循环
-function stopCycle() {
-    if (currentCycleTimeout) {
-        clearTimeout(currentCycleTimeout);
-        currentCycleTimeout = null;
-    }
-    isCycling = false;
-}
+    // ======================= 自动循环滚动 (平滑向下，到底后瞬间回顶) =======================
+    (function() {
+        let autoScrollInterval;
+        const scrollStep = 1.2;      // 每次移动像素，保证平滑
+        const intervalTime = 18;      // 毫秒
 
-// 开始自动循环 (滚动到底部 → 瞬间回顶 → 再滚动)
-function startAutoCycle() {
-    if (!autoScrollEnabled) return;
-    if (isCycling) return;
-    isCycling = true;
-    
-    function cycle() {
-        if (!autoScrollEnabled) {
-            isCycling = false;
-            return;
-        }
-        // 如果已经在底部，直接回顶再滚动；否则先滚动到底部
-        if (isBottom()) {
-            jumpToTop();
-            // 给一点时间让DOM稳定，再开始滚动到底部
-            currentCycleTimeout = setTimeout(() => {
-                if (autoScrollEnabled) {
-                    smoothScrollToBottom(() => {
-                        // 滚动到底部后，等待1秒再开始下一轮循环
-                        if (autoScrollEnabled) {
-                            currentCycleTimeout = setTimeout(() => cycle(), 1000);
-                        } else {
-                            isCycling = false;
-                        }
-                    });
+        function startAutoScroll() {
+            if (autoScrollInterval) clearInterval(autoScrollInterval);
+            autoScrollInterval = setInterval(() => {
+                const scrollHeight = document.documentElement.scrollHeight;
+                const clientHeight = window.innerHeight;
+                const maxScroll = scrollHeight - clientHeight;
+                let currentTop = window.scrollY;
+
+                if (maxScroll <= 0) return;
+
+                // 如果已经到达或超过底部，瞬间回到顶部（无动画）
+                if (currentTop + clientHeight >= scrollHeight - 5) {
+                    window.scrollTo(0, 0);
                 } else {
-                    isCycling = false;
+                    // 向下平滑滚动
+                    window.scrollBy(0, scrollStep);
                 }
-            }, 100);
-        } else {
-            // 当前不在底部，先滚动到底部
-            smoothScrollToBottom(() => {
-                if (autoScrollEnabled) {
-                    // 到达底部后，瞬间回顶，然后继续
-                    jumpToTop();
-                    currentCycleTimeout = setTimeout(() => cycle(), 1000);
-                } else {
-                    isCycling = false;
-                }
-            });
+            }, intervalTime);
         }
-    }
-    cycle();
-}
 
+        window.addEventListener('load', function() {
+            startAutoScroll();
+        });
 
-// 监听用户滚动、鼠标滚轮、触摸事件
-window.addEventListener('wheel', () => pauseAutoScrollTemporarily());
-window.addEventListener('touchmove', () => pauseAutoScrollTemporarily());
-window.addEventListener('keydown', (e) => {
-    if (e.key === 'ArrowUp' || e.key === 'ArrowDown' || e.key === 'PageUp' || e.key === 'PageDown') {
-        pauseAutoScrollTemporarily();
-    }
-});
-
-            window.addEventListener('scroll', () => { if (autoScrollEnabled && scrollTimeout) clearTimeout(scrollTimeout); });
-        })();
-    </script>
+        window.addEventListener('beforeunload', function() {
+            if (autoScrollInterval) clearInterval(autoScrollInterval);
+        });
+    })();
+</script>
 </body>
 </html>
