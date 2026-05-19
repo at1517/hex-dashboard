@@ -310,8 +310,8 @@
     // ======================= 自动循环滚动 (平滑向下，到底后瞬间回顶) =======================
     (function() {
         let autoScrollInterval;
-        const scrollStep = 1.2;      // 每次移动像素，保证平滑
-        const intervalTime = 18;      // 毫秒
+        const scrollStep = 0.5;      // 每次移动像素，保证平滑
+        const intervalTime = 10;      // 毫秒
 
         function startAutoScroll() {
             if (autoScrollInterval) clearInterval(autoScrollInterval);
