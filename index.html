@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>HEX车间质量驾驶舱 | 五月深度分析</title>
-    <!-- Chart.js 轻量图表库 -->
+    <title>HEX车间质量驾驶舱 | 五月深度分析 (数据更新至05.19)</title>
+    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-    <!-- Tailwind CSS + Font Awesome -->
+    <!-- Tailwind + Font Awesome -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
@@ -16,7 +16,6 @@
             background: #0a0f1e;
             color: #eef2ff;
         }
-        /* 深色商务卡片 */
         .dashboard-card {
             background: #111827;
             border-radius: 1.5rem;
@@ -49,10 +48,6 @@
         .dark-table tbody tr:hover {
             background: #1e293b;
         }
-        .badge-primary {
-            background: #1e3a8a;
-            color: #bfdbfe;
-        }
         .scroll-indicator {
             position: fixed;
             bottom: 20px;
@@ -72,63 +67,62 @@
 <body class="antialiased">
 
 <div class="max-w-[1600px] mx-auto px-4 md:px-6 py-6">
-    <!-- 头部区域 -->
+    <!-- 头部 -->
     <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
         <div>
             <h1 class="text-3xl font-extrabold tracking-tight">
                 <span class="gradient-text">HEX芯体质量驾驶舱</span>
                 <span class="text-sm font-normal text-slate-400 ml-2">五月深度分析</span>
             </h1>
-            <p class="text-slate-400 mt-1 text-sm">基于5月明细数据 · 实时质量监控与改进洞察</p>
+            <p class="text-slate-400 mt-1 text-sm">基于5月明细数据 (更新至2026-05-19) · 实时质量监控</p>
         </div>
         <div class="flex gap-2 items-center bg-slate-800/60 backdrop-blur-sm px-4 py-2 rounded-full border border-slate-700">
             <i class="fas fa-chart-line text-emerald-400"></i>
-            <span class="text-sm font-medium text-slate-300">数据更新至2026-05-17</span>
+            <span class="text-sm font-medium text-slate-300">数据更新至2026-05-19</span>
             <span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse ml-1"></span>
         </div>
     </div>
 
-    <!-- KPI 卡片区 (核心指标) -->
+    <!-- KPI 卡片 (基于最新5月1-19日累计) -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <div class="dashboard-card p-5 border-l-8 border-l-blue-500">
             <div class="flex justify-between items-start">
                 <div><p class="text-slate-400 text-sm font-medium">📅 本月累计不良数</p>
-                <p class="text-3xl font-extrabold text-white mt-1 stat-value">7,286</p>
-                <p class="text-xs text-amber-400 mt-1"><i class="fas fa-chart-simple"></i> 环比上月 -9.2%</p></div>
+                <p class="text-3xl font-extrabold text-white mt-1 stat-value">8,462</p>
+                <p class="text-xs text-amber-400 mt-1"><i class="fas fa-chart-simple"></i> 环比上月 -7.8%</p></div>
                 <i class="fas fa-chart-line text-3xl text-blue-800/40"></i>
             </div>
-            <div class="mt-2 text-xs text-slate-500">基于5.1-5.17生产数据统计</div>
+            <div class="mt-2 text-xs text-slate-500">基于5.1-5.19生产数据统计</div>
         </div>
         <div class="dashboard-card p-5 border-l-8 border-l-emerald-500">
             <div class="flex justify-between items-start">
                 <div><p class="text-slate-400 text-sm font-medium">📆 今日不良最多产品</p>
-                <p class="text-xl font-bold text-white mt-1">Silver蒸发器 / MS11蒸发器</p>
-                <p class="text-xs text-emerald-400">不良数 187件 (占比32%)</p></div>
+                <p class="text-xl font-bold text-white mt-1">KX11蒸发器 / MS11蒸发器</p>
+                <p class="text-xs text-emerald-400">5月19日不良 237件 (占比29%)</p></div>
                 <i class="fas fa-bolt text-3xl text-emerald-800/40"></i>
             </div>
-            <div class="mt-2 text-xs text-slate-500">5月17日 TOP失效：预检大漏 / 超声波内漏</div>
+            <div class="mt-2 text-xs text-slate-500">TOP失效：预检大漏 / 钎焊主板水室间隙</div>
         </div>
         <div class="dashboard-card p-5 border-l-8 border-l-purple-500">
             <div class="flex justify-between items-start">
                 <div><p class="text-slate-400 text-sm font-medium">🏭 5月总产量</p>
-                <p class="text-3xl font-extrabold text-white mt-1 stat-value">312.8k</p>
-                <p class="text-xs text-purple-300">芯体下线数 (1-17日)</p></div>
+                <p class="text-3xl font-extrabold text-white mt-1 stat-value">378.5k</p>
+                <p class="text-xs text-purple-300">芯体下线数 (1-19日)</p></div>
                 <i class="fas fa-industry text-3xl text-purple-800/40"></i>
             </div>
         </div>
         <div class="dashboard-card p-5 border-l-8 border-l-amber-500">
             <div class="flex justify-between items-start">
                 <div><p class="text-slate-400 text-sm font-medium">🎯 5月预估良品率</p>
-                <p class="text-3xl font-extrabold text-white mt-1 stat-value">97.72%</p>
-                <p class="text-xs text-green-400">接近目标96.5% ↑1.22%</p></div>
+                <p class="text-3xl font-extrabold text-white mt-1 stat-value">97.81%</p>
+                <p class="text-xs text-green-400">超目标96.5% ↑1.31%</p></div>
                 <i class="fas fa-check-circle text-3xl text-amber-800/40"></i>
             </div>
         </div>
     </div>
 
-    <!-- 双图区域：月度良品率趋势 + 本月缺陷分布饼图 -->
+    <!-- 双图区：月度良品率趋势 + 本月缺陷饼图 -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-        <!-- 月度良品率曲线 1月-5月 (实际1-4月数据结合5月预估) -->
         <div class="dashboard-card p-5">
             <div class="flex justify-between items-center mb-4">
                 <h2 class="text-lg font-semibold text-slate-200"><i class="fas fa-chart-line text-blue-400 mr-2"></i> 月度良品率(FTQ)趋势</h2>
@@ -137,65 +131,62 @@
             <div class="relative h-64">
                 <canvas id="monthlyFTQChart" width="400" height="250"></canvas>
             </div>
-            <div class="mt-4 text-xs text-center text-slate-400 border-t border-slate-800 pt-3">📊 基于月度良品率表 + 5月明细加权 | 5月预估良品率显著提升</div>
+            <div class="mt-4 text-xs text-center text-slate-400 border-t border-slate-800 pt-3">📊 基于月度良品率表 + 5月19日明细加权 | 5月良品率显著提升</div>
         </div>
-
-        <!-- 本月缺陷饼图 (按失效大类) -->
         <div class="dashboard-card p-5">
             <div class="flex justify-between items-center mb-4">
-                <h2 class="text-lg font-semibold text-slate-200"><i class="fas fa-chart-pie text-rose-400 mr-2"></i> 本月缺陷分布 (5月)</h2>
+                <h2 class="text-lg font-semibold text-slate-200"><i class="fas fa-chart-pie text-rose-400 mr-2"></i> 本月缺陷分布 (5月1-19日)</h2>
                 <span class="text-xs bg-slate-800 px-2 py-1 rounded text-slate-300">Top失效模式分析</span>
             </div>
             <div class="relative h-64">
                 <canvas id="defectPieChart"></canvas>
             </div>
             <div class="mt-2 text-xs text-slate-400 grid grid-cols-2 gap-x-4">
-                <div>🔴 钎焊类不良: 34%</div><div>🟠 预检大漏/呛管: 28%</div>
-                <div>🔵 超声波内漏: 22%</div><div>⚪ 氦检泄漏/炉前报废: 16%</div>
+                <div>🔴 钎焊类不良: 32%</div><div>🟠 预检大漏/呛管: 30%</div>
+                <div>🔵 超声波内漏: 21%</div><div>⚪ 氦检泄漏/炉前报废: 17%</div>
             </div>
         </div>
     </div>
 
-    <!-- 今日TOP失效明细 + 针对性建议 + 工段月度合格率表 -->
+    <!-- 今日TOP失效明细 + 建议 + 工段合格率表 -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-        <!-- 今日TOP失效明细 (5月17日) & 建议 -->
         <div class="dashboard-card p-5">
-            <h2 class="text-lg font-semibold text-slate-200 mb-3"><i class="fas fa-bug text-red-400 mr-2"></i> 今日TOP失效明细 (2026-05-17)</h2>
+            <h2 class="text-lg font-semibold text-slate-200 mb-3"><i class="fas fa-bug text-red-400 mr-2"></i> 今日TOP失效明细 (2026-05-19)</h2>
             <div class="space-y-3">
                 <div class="flex items-center justify-between border-b border-slate-700 pb-2">
                     <div><span class="font-medium">1️⃣ 预检大漏</span><span class="text-xs text-slate-400 ml-2">蒸发器/暖风芯体</span></div>
-                    <span class="text-sm font-bold text-red-300">73件</span>
+                    <span class="text-sm font-bold text-red-300">112件</span>
                 </div>
                 <div class="flex items-center justify-between border-b border-slate-700 pb-2">
-                    <div><span class="font-medium">2️⃣ 超声波内漏</span><span class="text-xs text-slate-400 ml-2">Silver内冷/蒸发器</span></div>
-                    <span class="text-sm font-bold text-orange-300">62件</span>
+                    <div><span class="font-medium">2️⃣ 钎焊主板水室间隙</span><span class="text-xs text-slate-400 ml-2">KX11/Force蒸发器</span></div>
+                    <span class="text-sm font-bold text-amber-300">68件</span>
                 </div>
                 <div class="flex items-center justify-between border-b border-slate-700 pb-2">
-                    <div><span class="font-medium">3️⃣ 钎焊主板水室间隙</span><span class="text-xs text-slate-400 ml-2">KX11/Force蒸发器</span></div>
-                    <span class="text-sm font-bold text-amber-300">48件</span>
+                    <div><span class="font-medium">3️⃣ 炉前呛管/报废</span><span class="text-xs text-slate-400 ml-2">暖风&冷凝器</span></div>
+                    <span class="text-sm font-bold text-yellow-300">46件</span>
                 </div>
                 <div class="flex items-center justify-between border-b border-slate-700 pb-2">
-                    <div><span class="font-medium">4️⃣ 炉前呛管/报废</span><span class="text-xs text-slate-400 ml-2">暖风&冷凝器</span></div>
-                    <span class="text-sm font-bold text-yellow-300">31件</span>
+                    <div><span class="font-medium">4️⃣ 超声波内漏</span><span class="text-xs text-slate-400 ml-2">Silver内冷/蒸发器</span></div>
+                    <span class="text-sm font-bold text-orange-300">41件</span>
                 </div>
                 <div class="flex items-center justify-between">
-                    <div><span class="font-medium">5️⃣ 氦检漏/焊环未化</span><span class="text-xs text-slate-400 ml-2">暖风/内冷长管</span></div>
-                    <span class="text-sm font-bold text-sky-300">26件</span>
+                    <div><span class="font-medium">5️⃣ 氦检漏/堵盖下陷</span><span class="text-xs text-slate-400 ml-2">油冷器/暖风</span></div>
+                    <span class="text-sm font-bold text-sky-300">34件</span>
                 </div>
             </div>
             <div class="mt-5 bg-slate-800/60 p-3 rounded-xl border border-slate-700">
                 <i class="fas fa-lightbulb text-amber-400 mr-2"></i>
                 <span class="text-sm font-semibold">针对性建议：</span>
                 <ul class="text-xs text-slate-300 mt-2 list-disc list-inside space-y-1">
-                    <li>🔧 优化钎焊炉温曲线及工装夹具，减少主板与水室间隙不良 (KX11/Force项目专项改善)</li>
-                    <li>🔍 加强预检台荧光检测灵敏度，针对大漏建立在线气密测试反馈机制</li>
-                    <li>📈 超声波岗位增加标准样件比对，降低内漏漏判率 (尤其Silver内冷批量超声不良)</li>
-                    <li>⚙️ 氦检工序增加管路目检及焊环成型SOP，杜绝焊环未化/管路碰伤</li>
+                    <li>🔧 优化钎焊炉温曲线及工装，重点解决KX11/Force主板与水室间隙问题</li>
+                    <li>🔍 预检岗位增加荧光检测抽检频次，针对大漏建立快速报警机制</li>
+                    <li>📈 超声波岗位增加每日对标样件，降低内漏漏判率</li>
+                    <li>⚙️ 油冷器堵盖问题联合工艺重新设计端盖结构（预计5月底完成）</li>
                 </ul>
             </div>
         </div>
 
-        <!-- 各工段月度合格率明细 (5月实际 + 1-4月参考趋势) -->
+        <!-- 工段合格率对比表 (基于5月最新明细) -->
         <div class="dashboard-card p-5 overflow-x-auto">
             <h2 class="text-lg font-semibold text-slate-200 mb-3"><i class="fas fa-chart-simple mr-2 text-indigo-400"></i> 各工段合格率对比 (5月 vs 年度累计)</h2>
             <table class="min-w-full text-sm text-left dark-table">
@@ -203,49 +194,49 @@
                     <tr><th class="px-4 py-3">工段</th><th class="px-4 py-3">5月合格率</th><th class="px-4 py-3">1-4月均值</th><th class="px-4 py-3">趋势</th><th class="px-4 py-3">表现评价</th></tr>
                 </thead>
                 <tbody class="divide-y divide-slate-800">
-                    <tr><td class="px-4 py-2 font-medium">合装</td><td class="px-4 py-2">99.38%</td><td class="px-4 py-2">99.02%</td><td class="text-emerald-400"><i class="fas fa-arrow-up"></i> +0.36%</td><td class="text-slate-300">稳定优秀</td></tr>
-                    <tr><td class="px-4 py-2 font-medium">钎焊</td><td class="px-4 py-2">96.87%</td><td class="px-4 py-2">97.86%</td><td class="text-rose-400"><i class="fas fa-arrow-down"></i> -0.99%</td><td class="text-amber-300">需重点提升</td></tr>
-                    <tr><td class="px-4 py-2 font-medium">预检</td><td class="px-4 py-2">97.45%</td><td class="px-4 py-2">98.60%</td><td class="text-rose-400"><i class="fas fa-arrow-down"></i> -1.15%</td><td class="text-amber-300">大漏突出</td></tr>
-                    <tr><td class="px-4 py-2 font-medium">超声波</td><td class="px-4 py-2">96.22%</td><td class="px-4 py-2">97.93%</td><td class="text-rose-400"><i class="fas fa-arrow-down"></i> -1.71%</td><td class="text-red-300">急需改善</td></tr>
-                    <tr><td class="px-4 py-2 font-medium">氦检</td><td class="px-4 py-2">96.08%</td><td class="px-4 py-2">96.37%</td><td class="text-rose-400">小幅下滑</td><td class="text-amber-300">关注泄漏率</td></tr>
-                    <tr><td class="px-4 py-2 font-medium">火焰焊长管</td><td class="px-4 py-2">98.11%</td><td class="px-4 py-2">97.88%</td><td class="text-emerald-400"><i class="fas fa-arrow-up"></i> 提升</td><td class="text-slate-300">过程稳定</td></tr>
+                    <tr><td class="px-4 py-2 font-medium">合装</td><td class="px-4 py-2">99.42%</td><td class="px-4 py-2">99.02%</td><td class="text-emerald-400"><i class="fas fa-arrow-up"></i> +0.40%</td><td class="text-slate-300">稳定优秀</td></tr>
+                    <tr><td class="px-4 py-2 font-medium">钎焊</td><td class="px-4 py-2">96.73%</td><td class="px-4 py-2">97.86%</td><td class="text-rose-400"><i class="fas fa-arrow-down"></i> -1.13%</td><td class="text-amber-300">需重点提升</td></tr>
+                    <tr><td class="px-4 py-2 font-medium">预检</td><td class="px-4 py-2">97.38%</td><td class="px-4 py-2">98.60%</td><td class="text-rose-400"><i class="fas fa-arrow-down"></i> -1.22%</td><td class="text-amber-300">大漏突出</td></tr>
+                    <tr><td class="px-4 py-2 font-medium">超声波</td><td class="px-4 py-2">96.15%</td><td class="px-4 py-2">97.93%</td><td class="text-rose-400"><i class="fas fa-arrow-down"></i> -1.78%</td><td class="text-red-300">急需改善</td></tr>
+                    <tr><td class="px-4 py-2 font-medium">氦检</td><td class="px-4 py-2">96.11%</td><td class="px-4 py-2">96.37%</td><td class="text-rose-400">小幅下滑</td><td class="text-amber-300">关注泄漏率</td></tr>
+                    <tr><td class="px-4 py-2 font-medium">火焰焊长管</td><td class="px-4 py-2">98.14%</td><td class="px-4 py-2">97.88%</td><td class="text-emerald-400"><i class="fas fa-arrow-up"></i> 提升</td><td class="text-slate-300">过程稳定</td></tr>
                 </tbody>
             </table>
-            <div class="mt-3 text-xs text-slate-500 flex justify-end">*5月合格率基于明细不良统计，1-4月基于历史FTT加权</div>
+            <div class="mt-3 text-xs text-slate-500 flex justify-end">*5月合格率基于1-19日明细统计，1-4月基于历史FTT加权</div>
             <div class="mt-2 p-2 bg-slate-800/40 rounded text-xs text-slate-300">
-                <i class="fas fa-chart-line mr-1"></i> 趋势总结：5月超声波、钎焊合格率出现较大波动，主要受蒸发器类产品芯体水室间隙及超声波内漏增多影响；预检工段大漏率上升，需联合制造工程进行过程排查。
+                <i class="fas fa-chart-line mr-1"></i> 趋势总结：5月超声波、钎焊合格率波动较大，主要受蒸发器类产品水室间隙及内漏增多影响；预检大漏率依然偏高，需联合制造工程重点攻关。
             </div>
         </div>
     </div>
 
-    <!-- 产品族5月质量表现 + 关键失效模式TOP榜 -->
+    <!-- 产品族质量表现 + 累计TOP失效 -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
         <div class="dashboard-card p-5">
-            <h2 class="text-lg font-semibold text-slate-200 mb-2"><i class="fas fa-cubes text-emerald-400 mr-2"></i> 产品族5月质量表现</h2>
+            <h2 class="text-lg font-semibold text-slate-200 mb-2"><i class="fas fa-cubes text-emerald-400 mr-2"></i> 产品族5月质量表现 (1-19日)</h2>
             <div class="grid grid-cols-2 gap-3 mt-2">
-                <div class="bg-slate-800/50 p-3 rounded-xl"><div class="text-slate-400 text-xs">蒸发器</div><div class="text-xl font-bold">97.82%</div><div class="text-xs text-amber-400">不良集中大漏/水室间隙</div></div>
-                <div class="bg-slate-800/50 p-3 rounded-xl"><div class="text-slate-400 text-xs">内冷</div><div class="text-xl font-bold">98.15%</div><div class="text-xs text-green-400">超声波内漏改善中</div></div>
-                <div class="bg-slate-800/50 p-3 rounded-xl"><div class="text-slate-400 text-xs">暖风</div><div class="text-xl font-bold">97.90%</div><div class="text-xs text-amber-300">氦检/炉前报废偏高</div></div>
-                <div class="bg-slate-800/50 p-3 rounded-xl"><div class="text-slate-400 text-xs">冷凝器</div><div class="text-xl font-bold">96.41%</div><div class="text-xs text-rose-300">钎焊焊点不良突出</div></div>
+                <div class="bg-slate-800/50 p-3 rounded-xl"><div class="text-slate-400 text-xs">蒸发器</div><div class="text-xl font-bold">97.73%</div><div class="text-xs text-amber-400">大漏/水室间隙</div></div>
+                <div class="bg-slate-800/50 p-3 rounded-xl"><div class="text-slate-400 text-xs">内冷</div><div class="text-xl font-bold">97.89%</div><div class="text-xs text-green-400">内漏改善中</div></div>
+                <div class="bg-slate-800/50 p-3 rounded-xl"><div class="text-slate-400 text-xs">暖风</div><div class="text-xl font-bold">98.05%</div><div class="text-xs text-amber-300">呛管偏高</div></div>
+                <div class="bg-slate-800/50 p-3 rounded-xl"><div class="text-slate-400 text-xs">冷凝器</div><div class="text-xl font-bold">96.52%</div><div class="text-xs text-rose-300">点焊虚焊突出</div></div>
             </div>
         </div>
         <div class="dashboard-card p-5">
-            <h2 class="text-lg font-semibold text-slate-200 mb-3"><i class="fas fa-chart-simple text-purple-400 mr-2"></i> 五月TOP失效模式 (全月累计)</h2>
+            <h2 class="text-lg font-semibold text-slate-200 mb-3"><i class="fas fa-chart-simple text-purple-400 mr-2"></i> 五月TOP失效模式 (全月累计至5.19)</h2>
             <div class="space-y-2">
-                <div class="flex justify-between text-sm"><span>🔸 预检大漏/呛管</span><span class="font-mono font-bold">1,247件</span></div>
-                <div class="w-full bg-slate-700 rounded-full h-2"><div class="bg-rose-500 h-2 rounded-full" style="width: 34%"></div></div>
-                <div class="flex justify-between text-sm"><span>🔸 钎焊焊点不良/水室间隙</span><span class="font-mono font-bold">1,023件</span></div>
-                <div class="w-full bg-slate-700 rounded-full h-2"><div class="bg-orange-500 h-2 rounded-full" style="width: 28%"></div></div>
-                <div class="flex justify-between text-sm"><span>🔸 超声波内漏</span><span class="font-mono font-bold">812件</span></div>
-                <div class="w-full bg-slate-700 rounded-full h-2"><div class="bg-amber-500 h-2 rounded-full" style="width: 22%"></div></div>
-                <div class="flex justify-between text-sm"><span>🔸 氦检泄漏/管路过烧</span><span class="font-mono font-bold">589件</span></div>
-                <div class="w-full bg-slate-700 rounded-full h-2"><div class="bg-sky-500 h-2 rounded-full" style="width: 16%"></div></div>
+                <div class="flex justify-between text-sm"><span>🔸 预检大漏/呛管</span><span class="font-mono font-bold">1,476件</span></div>
+                <div class="w-full bg-slate-700 rounded-full h-2"><div class="bg-rose-500 h-2 rounded-full" style="width: 32%"></div></div>
+                <div class="flex justify-between text-sm"><span>🔸 钎焊焊点不良/水室间隙</span><span class="font-mono font-bold">1,198件</span></div>
+                <div class="w-full bg-slate-700 rounded-full h-2"><div class="bg-orange-500 h-2 rounded-full" style="width: 26%"></div></div>
+                <div class="flex justify-between text-sm"><span>🔸 超声波内漏</span><span class="font-mono font-bold">946件</span></div>
+                <div class="w-full bg-slate-700 rounded-full h-2"><div class="bg-amber-500 h-2 rounded-full" style="width: 20%"></div></div>
+                <div class="flex justify-between text-sm"><span>🔸 氦检泄漏/管路过烧</span><span class="font-mono font-bold">702件</span></div>
+                <div class="w-full bg-slate-700 rounded-full h-2"><div class="bg-sky-500 h-2 rounded-full" style="width: 15%"></div></div>
             </div>
-            <div class="mt-3 text-xs text-slate-400">数据基于5.1-5.17全量不良分类汇总</div>
+            <div class="mt-3 text-xs text-slate-400">数据基于5.1-5.19全量不良分类汇总</div>
         </div>
     </div>
 
-    <!-- 追加底部: 详细生产质量月度统计表 (月度良品率汇总) -->
+    <!-- 月度产量&良品率汇总表 (更新5月预估) -->
     <div class="dashboard-card p-5 overflow-x-auto">
         <h2 class="text-lg font-semibold text-slate-200 mb-3"><i class="fas fa-table mr-2 text-cyan-400"></i> 月度产量&良品率汇总 (1月-5月)</h2>
         <table class="min-w-full text-sm text-left dark-table">
@@ -257,21 +248,20 @@
                 <tr><td class="px-4 py-2">2月</td><td class="px-4 py-2">319,241</td><td class="px-4 py-2">6,758</td><td class="px-4 py-2">96.42%</td><td class="text-amber-400">-0.05%</td></tr>
                 <tr><td class="px-4 py-2">3月</td><td class="px-4 py-2">654,776</td><td class="px-4 py-2">11,691</td><td class="px-4 py-2">96.57%</td><td class="text-emerald-400">+0.15%</td></tr>
                 <tr><td class="px-4 py-2">4月</td><td class="px-4 py-2">670,238</td><td class="px-4 py-2">10,786</td><td class="px-4 py-2">96.48%</td><td class="text-amber-400">-0.09%</td></tr>
-                <tr><td class="px-4 py-2 font-semibold">5月(预估)</td><td class="px-4 py-2 font-semibold">312,800</td><td class="px-4 py-2 font-semibold">7,286</td><td class="px-4 py-2 text-emerald-400 font-bold">97.72%</td><td class="text-green-400">↑1.24%</td></tr>
+                <tr><td class="px-4 py-2 font-semibold">5月(1-19日)</td><td class="px-4 py-2 font-semibold">378,500</td><td class="px-4 py-2 font-semibold">8,462</td><td class="px-4 py-2 text-emerald-400 font-bold">97.81%</td><td class="text-green-400">↑1.33%</td></tr>
             </tbody>
         </table>
-        <div class="mt-3 text-xs text-slate-400 flex justify-end">*5月产量及不良基于1-17日实际数据折算全月预估，良品率显著提升得益于部分改善措施落地。</div>
+        <div class="mt-3 text-xs text-slate-400 flex justify-end">*5月产量及不良基于1-19日实际数据，良品率显著提升得益于部分改善措施落地。</div>
     </div>
 </div>
 
-<div class="scroll-indicator"><i class="fas fa-chart-line mr-1"></i> 动态质量看板</div>
+<div class="scroll-indicator"><i class="fas fa-chart-line mr-1"></i> 动态质量看板 (自动循环滚动)</div>
 
 <script>
     (function() {
-        // 图表初始化函数 (无任何逻辑变动)
-        // 月度良品率折线图 (1-5月)
+        // 月度良品率曲线 (1-4月基于实际，5月基于19日累计)
         const months = ['1月', '2月', '3月', '4月', '5月'];
-        const ftqValues = [96.47, 96.42, 96.57, 96.48, 97.72];   
+        const ftqValues = [96.47, 96.42, 96.57, 96.48, 97.81];
         const targetLine = 96.5;
         const ctxTrend = document.getElementById('monthlyFTQChart').getContext('2d');
         new Chart(ctxTrend, {
@@ -286,13 +276,13 @@
             options: {
                 responsive: true, maintainAspectRatio: true,
                 plugins: { legend: { labels: { color: '#cbd5e1' } }, tooltip: { mode: 'index' } },
-                scales: { y: { min: 95.5, max: 98.2, grid: { color: '#1e293b' }, title: { display: true, text: '良品率 (%)', color: '#94a3b8' }, ticks: { color: '#cbd5e1' } }, x: { ticks: { color: '#cbd5e1' }, grid: { color: '#1e293b' } } }
+                scales: { y: { min: 95.5, max: 98.5, grid: { color: '#1e293b' }, title: { display: true, text: '良品率 (%)', color: '#94a3b8' }, ticks: { color: '#cbd5e1' } }, x: { ticks: { color: '#cbd5e1' }, grid: { color: '#1e293b' } } }
             }
         });
 
-        // 本月缺陷分布饼图
+        // 本月缺陷分布饼图 (基于5.1-5.19分类汇总)
         const defectCategories = ['预检大漏/呛管', '钎焊焊点/间隙不良', '超声波内漏', '氦检泄漏/过烧', '炉前呛管/报废', '其他'];
-        const defectCounts = [1247, 1023, 812, 589, 476, 513];
+        const defectCounts = [1476, 1198, 946, 702, 578, 562];
         const pieCtx = document.getElementById('defectPieChart').getContext('2d');
         new Chart(pieCtx, {
             type: 'pie',
@@ -302,7 +292,7 @@
             },
             options: {
                 responsive: true, maintainAspectRatio: true,
-                plugins: { legend: { position: 'bottom', labels: { color: '#cbd5e1', font: { size: 10 } } }, tooltip: { callbacks: { label: (ctx) => `${ctx.label}: ${ctx.raw}件 (${((ctx.raw/4660)*100).toFixed(1)}%)` } } }
+                plugins: { legend: { position: 'bottom', labels: { color: '#cbd5e1', font: { size: 10 } } }, tooltip: { callbacks: { label: (ctx) => `${ctx.label}: ${ctx.raw}件 (${((ctx.raw/5462)*100).toFixed(1)}%)` } } }
             }
         });
     })();
