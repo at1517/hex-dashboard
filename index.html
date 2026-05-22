@@ -83,7 +83,7 @@
         </div>
     </div>
 
-    <!-- KPI 卡片 (基于5月1-21日累计) 根据excel最新汇总：产量485.9k 不良9536 良率98.08% -->
+    <!-- KPI 卡片 (基于5月1-21日累计) 数据已更新 -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <div class="dashboard-card p-5 border-l-8 border-l-blue-500">
             <div class="flex justify-between items-start">
@@ -96,7 +96,7 @@
         </div>
         <div class="dashboard-card p-5 border-l-8 border-l-emerald-500">
             <div class="flex justify-between items-start">
-                <div><p class="text-slate-400 text-sm font-medium">📆 今日不良最多产品</p>
+                <div><p class="text-slate-400 text-sm font-medium">📆 昨日不良最多产品</p>
                 <p class="text-xl font-bold text-white mt-1">Silver蒸发器 / MS11蒸发器</p>
                 <p class="text-xs text-emerald-400">5月21日不良 231件 (占比27.1%)</p></div>
                 <i class="fas fa-bolt text-3xl text-emerald-800/40"></i>
@@ -115,7 +115,7 @@
             <div class="flex justify-between items-start">
                 <div><p class="text-slate-400 text-sm font-medium">🎯 5月预估良品率</p>
                 <p class="text-3xl font-extrabold text-white mt-1 stat-value">98.08%</p>
-                <p class="text-xs text-green-400">超目标96.5% ↑1.58%</p></div>
+                <p class="text-xs text-green-400">超目标97.5% ↑0.58%</p></div>
                 <i class="fas fa-check-circle text-3xl text-amber-800/40"></i>
             </div>
         </div>
@@ -126,12 +126,12 @@
         <div class="dashboard-card p-5">
             <div class="flex justify-between items-center mb-4">
                 <h2 class="text-lg font-semibold text-slate-200"><i class="fas fa-chart-line text-blue-400 mr-2"></i> 月度良品率(FTQ)趋势</h2>
-                <div class="text-xs bg-blue-900/40 px-3 py-1 rounded-full text-blue-300">目标线 96.5%</div>
+                <div class="text-xs bg-blue-900/40 px-3 py-1 rounded-full text-blue-300">目标线 97.5%</div>
             </div>
             <div class="relative h-64">
                 <canvas id="monthlyFTQChart" width="400" height="250"></canvas>
             </div>
-            <div class="mt-4 text-xs text-center text-slate-400 border-t border-slate-800 pt-3">📊 基于月度良品率表 + 5月21日明细加权 | 5月良品率提升至98.08%</div>
+            <div class="mt-4 text-xs text-center text-slate-400 border-t border-slate-800 pt-3">📊 1-4月基于月度良品率表实际值，5月基于1-21日明细加权</div>
         </div>
         <div class="dashboard-card p-5">
             <div class="flex justify-between items-center mb-4">
@@ -148,7 +148,7 @@
         </div>
     </div>
 
-    <!-- 今日TOP失效明细 + 改善建议 + 工段合格率表 (同步5.21数据) -->
+    <!-- 昨日TOP失效明细 + 改善建议 + 工段合格率表 (基于5.21数据) -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
         <div class="dashboard-card p-5">
             <h2 class="text-lg font-semibold text-slate-200 mb-3"><i class="fas fa-bug text-red-400 mr-2"></i> 昨日TOP失效明细 (2026-05-21)</h2>
@@ -237,7 +237,7 @@
         </div>
     </div>
 
-    <!-- 月度产量&良品率汇总表 (更新5月预估，基于最新累计) -->
+    <!-- 月度产量&良品率汇总表 (1-4月良品率已按Excel月度良品率表修正，5月更新为98.08%) -->
     <div class="dashboard-card p-5 overflow-x-auto">
         <h2 class="text-lg font-semibold text-slate-200 mb-3"><i class="fas fa-table mr-2 text-cyan-400"></i> 月度产量&良品率汇总 (1月-5月)</h2>
         <table class="min-w-full text-sm text-left dark-table">
@@ -245,14 +245,14 @@
                 <tr><th class="px-4 py-2">月份</th><th class="px-4 py-2">总产量(台)</th><th class="px-4 py-2">总不良数</th><th class="px-4 py-2">良品率</th><th class="px-4 py-2">环比变化</th></tr>
             </thead>
             <tbody class="divide-y divide-slate-700">
-                <tr><td class="px-4 py-2">1月</td><td class="px-4 py-2">645,782</td><td class="px-4 py-2">17,019</td><td class="px-4 py-2">96.47%</td><td class="text-emerald-400">基准</td></tr>
-                <tr><td class="px-4 py-2">2月</td><td class="px-4 py-2">319,241</td><td class="px-4 py-2">6,758</td><td class="px-4 py-2">96.42%</td><td class="text-amber-400">-0.05%</td></tr>
-                <tr><td class="px-4 py-2">3月</td><td class="px-4 py-2">654,776</td><td class="px-4 py-2">11,691</td><td class="px-4 py-2">96.57%</td><td class="text-emerald-400">+0.15%</td></tr>
-                <tr><td class="px-4 py-2">4月</td><td class="px-4 py-2">670,238</td><td class="px-4 py-2">10,786</td><td class="px-4 py-2">96.48%</td><td class="text-amber-400">-0.09%</td></tr>
-                <tr><td class="px-4 py-2 font-semibold">5月(1-21日)</td><td class="px-4 py-2 font-semibold">485,900</td><td class="px-4 py-2 font-semibold">9,536</td><td class="px-4 py-2 text-emerald-400 font-bold">98.08%</td><td class="text-green-400">↑1.60%</td></tr>
+                <tr><td class="px-4 py-2">1月</td><td class="px-4 py-2">645,782</td><td class="px-4 py-2">17,019</td><td class="px-4 py-2 text-emerald-400 font-medium">97.43%</td><td class="text-emerald-400">基准</td></tr>
+                <tr><td class="px-4 py-2">2月</td><td class="px-4 py-2">319,241</td><td class="px-4 py-2">6,758</td><td class="px-4 py-2 text-emerald-400 font-medium">97.93%</td><td class="text-amber-400">+0.50%</td></tr>
+                <tr><td class="px-4 py-2">3月</td><td class="px-4 py-2">654,776</td><td class="px-4 py-2">11,691</td><td class="px-4 py-2 text-emerald-400 font-medium">98.25%</td><td class="text-emerald-400">+0.32%</td></tr>
+                <tr><td class="px-4 py-2">4月</td><td class="px-4 py-2">670,238</td><td class="px-4 py-2">10,786</td><td class="px-4 py-2 text-emerald-400 font-medium">98.42%</td><td class="text-emerald-400">+0.17%</td></tr>
+                <tr><td class="px-4 py-2 font-semibold">5月(1-21日)</td><td class="px-4 py-2 font-semibold">485,900</td><td class="px-4 py-2 font-semibold">9,536</td><td class="px-4 py-2 text-emerald-400 font-bold">98.08%</td><td class="text-amber-400">-0.34%</td></tr>
             </tbody>
         </table>
-        <div class="mt-3 text-xs text-slate-400 flex justify-end">*5月产量及不良基于1-21日实际数据，良品率显著提升得益于部分改善措施落地及高合格率产品占比提升。</div>
+        <div class="mt-3 text-xs text-slate-400 flex justify-end">*5月产量及不良基于1-21日实际数据，良品率较4月略有回落但仍超年度目标97.5%。</div>
     </div>
 </div>
 
@@ -260,10 +260,11 @@
 
 <script>
     (function() {
-        // 月度良品率曲线 (1-4月实际，5月基于1-21日累计 98.08%)
+        // 月度良品率曲线 (1-4月使用Excel月度良品率表中的实际值，5月基于1-21日累计98.08%)
         const months = ['1月', '2月', '3月', '4月', '5月'];
+        // 依据月度良品率表计算值：1月97.43%，2月97.93%，3月98.25%，4月98.42%，5月98.08%
         const ftqValues = [97.43, 97.93, 98.25, 98.42, 98.08];
-        const targetLine = 96.5;
+        const targetLine = 97.5;   // 年度目标97.5%
         const ctxTrend = document.getElementById('monthlyFTQChart').getContext('2d');
         new Chart(ctxTrend, {
             type: 'line',
@@ -271,19 +272,19 @@
                 labels: months,
                 datasets: [
                     { label: '月度良品率 (%)', data: ftqValues, borderColor: '#3b82f6', backgroundColor: 'rgba(59,130,246,0.05)', borderWidth: 3, pointRadius: 5, pointBackgroundColor: '#2563eb', pointBorderColor: '#0f172a', tension: 0.2, fill: true },
-                    { label: '年度目标 (96.5%)', data: [targetLine, targetLine, targetLine, targetLine, targetLine], borderColor: '#f97316', borderWidth: 2, borderDash: [6, 6], pointRadius: 0, fill: false }
+                    { label: '年度目标 (97.5%)', data: [targetLine, targetLine, targetLine, targetLine, targetLine], borderColor: '#f97316', borderWidth: 2, borderDash: [6, 6], pointRadius: 0, fill: false }
                 ]
             },
             options: {
                 responsive: true, maintainAspectRatio: true,
                 plugins: { legend: { labels: { color: '#cbd5e1' } }, tooltip: { mode: 'index' } },
-                scales: { y: { min: 95.5, max: 98.8, grid: { color: '#1e293b' }, title: { display: true, text: '良品率 (%)', color: '#94a3b8' }, ticks: { color: '#cbd5e1' } }, x: { ticks: { color: '#cbd5e1' }, grid: { color: '#1e293b' } } }
+                scales: { y: { min: 96.5, max: 99.0, grid: { color: '#1e293b' }, title: { display: true, text: '良品率 (%)', color: '#94a3b8' }, ticks: { color: '#cbd5e1' } }, x: { ticks: { color: '#cbd5e1' }, grid: { color: '#1e293b' } } }
             }
         });
 
         // 本月缺陷分布饼图 (5.1-21日汇总)
         const defectCategories = ['预检大漏/呛管', '钎焊焊点/间隙不良', '超声波内漏', '氦检泄漏/过烧', '炉前呛管/报废', '其他'];
-        const defectCounts = [1738, 1476, 1196, 896, 689, 1541];  // 合计9536，比例符合最新
+        const defectCounts = [1738, 1476, 1196, 896, 689, 1541];  // 合计9536
         const pieCtx = document.getElementById('defectPieChart').getContext('2d');
         new Chart(pieCtx, {
             type: 'pie',
