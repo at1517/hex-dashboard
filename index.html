@@ -305,10 +305,12 @@
         });
     })();
 
-    // 自动循环滚动 (平滑到底后回顶)
+ // ======================= 自动循环滚动 (支持点击暂停/恢复) =======================
     (function() {
-        let autoScrollInterval;
-        const scrollStep = 0.6;
+        let autoScrollInterval = null;
+        let isPaused = false;
+        let pauseTimeout = null;
+        const scrollStep = 0.5;
         const intervalTime = 40;
 
         function startAutoScroll() {
@@ -318,7 +320,9 @@
                 const clientHeight = window.innerHeight;
                 const maxScroll = scrollHeight - clientHeight;
                 let currentTop = window.scrollY;
+
                 if (maxScroll <= 0) return;
+
                 if (currentTop + clientHeight >= scrollHeight - 5) {
                     window.scrollTo(0, 0);
                 } else {
@@ -326,12 +330,52 @@
                 }
             }, intervalTime);
         }
-        window.addEventListener('load', function() { startAutoScroll(); });
-        window.addEventListener('beforeunload', function() { if (autoScrollInterval) clearInterval(autoScrollInterval); });
+
+        function pauseScroll() {
+            if (autoScrollInterval) {
+                clearInterval(autoScrollInterval);
+                autoScrollInterval = null;
+            }
+            isPaused = true;
+        }
+
+        function resumeScroll() {
+            if (isPaused && !autoScrollInterval) {
+                startAutoScroll();
+            }
+            isPaused = false;
+            if (pauseTimeout) {
+                clearTimeout(pauseTimeout);
+                pauseTimeout = null;
+            }
+        }
+
+        function handlePageClick() {
+            if (autoScrollInterval) {
+                pauseScroll();
+                pauseTimeout = setTimeout(() => {
+                    resumeScroll();
+                }, 20000);
+            } else if (isPaused) {
+                resumeScroll();
+            }
+        }
+
+        window.addEventListener('load', function() {
+            startAutoScroll();
+            document.addEventListener('click', handlePageClick);
+        });
+
+        window.addEventListener('beforeunload', function() {
+            if (autoScrollInterval) clearInterval(autoScrollInterval);
+            if (pauseTimeout) clearTimeout(pauseTimeout);
+        });
     })();
 
-    // 每小时自动刷新保持数据最新
-    setTimeout(function() { location.reload(); }, 3600000);
+    // 每小时自动刷新
+    setTimeout(function() {
+        location.reload();
+    }, 3600000);
 </script>
 </body>
 </html>
