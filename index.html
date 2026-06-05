@@ -372,26 +372,77 @@
     }
     init();
 
-    // ======================= 自动滚动 & 刷新 =======================
+   // ======================= 自动循环滚动 (支持点击暂停/恢复) =======================
     (function() {
-        let autoScrollInterval;
-        const scrollStep = 0.6;
+        let autoScrollInterval = null;
+        let isPaused = false;
+        let pauseTimeout = null;
+        const scrollStep = 0.5;
         const intervalTime = 40;
+
         function startAutoScroll() {
             if (autoScrollInterval) clearInterval(autoScrollInterval);
             autoScrollInterval = setInterval(() => {
                 const scrollHeight = document.documentElement.scrollHeight;
                 const clientHeight = window.innerHeight;
                 const maxScroll = scrollHeight - clientHeight;
+                let currentTop = window.scrollY;
+
                 if (maxScroll <= 0) return;
-                if (window.scrollY + clientHeight >= scrollHeight - 5) window.scrollTo(0,0);
-                else window.scrollBy(0, scrollStep);
+
+                if (currentTop + clientHeight >= scrollHeight - 5) {
+                    window.scrollTo(0, 0);
+                } else {
+                    window.scrollBy(0, scrollStep);
+                }
             }, intervalTime);
         }
-        window.addEventListener('load', startAutoScroll);
-        window.addEventListener('beforeunload', () => clearInterval(autoScrollInterval));
+
+        function pauseScroll() {
+            if (autoScrollInterval) {
+                clearInterval(autoScrollInterval);
+                autoScrollInterval = null;
+            }
+            isPaused = true;
+        }
+
+        function resumeScroll() {
+            if (isPaused && !autoScrollInterval) {
+                startAutoScroll();
+            }
+            isPaused = false;
+            if (pauseTimeout) {
+                clearTimeout(pauseTimeout);
+                pauseTimeout = null;
+            }
+        }
+
+        function handlePageClick() {
+            if (autoScrollInterval) {
+                pauseScroll();
+                pauseTimeout = setTimeout(() => {
+                    resumeScroll();
+                }, 20000);
+            } else if (isPaused) {
+                resumeScroll();
+            }
+        }
+
+        window.addEventListener('load', function() {
+            startAutoScroll();
+            document.addEventListener('click', handlePageClick);
+        });
+
+        window.addEventListener('beforeunload', function() {
+            if (autoScrollInterval) clearInterval(autoScrollInterval);
+            if (pauseTimeout) clearTimeout(pauseTimeout);
+        });
     })();
-    setTimeout(() => location.reload(), 3600000);
+
+    // 每小时自动刷新
+    setTimeout(function() {
+        location.reload();
+    }, 3600000);
 </script>
 </body>
 </html>
