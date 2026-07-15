@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>HEX车间质量驾驶舱 | 七月快报 (数据截至07.13)</title>
+    <title>HEX车间质量驾驶舱 | 七月快报 (数据截至07.14)</title>
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <!-- Tailwind + Font Awesome -->
@@ -34,13 +34,13 @@
         <div>
             <h1 class="text-3xl font-extrabold tracking-tight">
                 <span class="gradient-text">HEX芯体质量驾驶舱</span>
-                <span class="text-sm font-normal text-slate-400 ml-2">七月快报 (数据截至07.13)</span>
+                <span class="text-sm font-normal text-slate-400 ml-2">七月快报 (数据截至07.14)</span>
             </h1>
-            <p class="text-slate-400 mt-1 text-sm">基于7月1-13日全工序明细 · 炉前总投入为产量基准</p>
+            <p class="text-slate-400 mt-1 text-sm">基于7月1-14日全工序明细 · 炉前总投入为产量基准</p>
         </div>
         <div class="flex gap-2 items-center bg-slate-800/60 backdrop-blur-sm px-4 py-2 rounded-full border border-slate-700">
             <i class="fas fa-calendar-week text-emerald-400"></i>
-            <span class="text-sm font-medium text-slate-300">数据更新至2026-07-13</span>
+            <span class="text-sm font-medium text-slate-300">数据更新至2026-07-14</span>
             <span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse ml-1"></span>
         </div>
     </div>
@@ -56,11 +56,11 @@
                 <div class="text-xs bg-blue-900/40 px-3 py-1 rounded-full text-blue-300">目标线 97.5%</div>
             </div>
             <div class="relative h-64"><canvas id="monthlyFTQChart"></canvas></div>
-            <div class="mt-4 text-xs text-center text-slate-400 border-t border-slate-800 pt-3">📊 1-6月基于月度良品率报表，7月(1-13日)基于炉前投入与全工序不良动态计算</div>
+            <div class="mt-4 text-xs text-center text-slate-400 border-t border-slate-800 pt-3">📊 1-6月基于月度良品率报表，7月(1-14日)基于炉前投入与全工序不良动态计算</div>
         </div>
         <div class="dashboard-card p-5">
             <div class="flex justify-between items-center mb-4">
-                <h2 class="text-lg font-semibold text-slate-200"><i class="fas fa-chart-pie text-rose-400 mr-2"></i> 7月1-13日缺陷分布</h2>
+                <h2 class="text-lg font-semibold text-slate-200"><i class="fas fa-chart-pie text-rose-400 mr-2"></i> 7月1-14日缺陷分布</h2>
                 <span class="text-xs bg-slate-800 px-2 py-1 rounded text-slate-300">Top失效模式分析</span>
             </div>
             <div class="relative h-64"><canvas id="defectPieChart"></canvas></div>
@@ -72,9 +72,9 @@
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
         <div class="dashboard-card p-5" id="topFailurePanel"></div>
         <div class="dashboard-card p-5 overflow-x-auto">
-            <h2 class="text-lg font-semibold text-slate-200 mb-3"><i class="fas fa-chart-simple mr-2 text-indigo-400"></i> 各工段合格率对比 (7.1-13 vs 5月均值)</h2>
+            <h2 class="text-lg font-semibold text-slate-200 mb-3"><i class="fas fa-chart-simple mr-2 text-indigo-400"></i> 各工段合格率对比 (7.1-14 vs 5月均值)</h2>
             <table class="min-w-full text-sm text-left dark-table" id="processTable">
-                <thead class="bg-slate-800 text-slate-300 text-xs uppercase"><tr><th class="px-4 py-3">工段</th><th class="px-4 py-3">7.1-13合格率</th><th class="px-4 py-3">5月均值</th><th class="px-4 py-3">趋势</th><th class="px-4 py-3">状态</th></tr></thead>
+                <thead class="bg-slate-800 text-slate-300 text-xs uppercase"><tr><th class="px-4 py-3">工段</th><th class="px-4 py-3">7.1-14合格率</th><th class="px-4 py-3">5月均值</th><th class="px-4 py-3">趋势</th><th class="px-4 py-3">状态</th></tr></thead>
                 <tbody class="divide-y divide-slate-800"></tbody>
             </table>
             <div class="mt-3 text-xs text-slate-500">*5月均值基于历史FTQ权重</div>
@@ -93,15 +93,15 @@
 
     <!-- =============== AI 建议区域 =============== -->
     <div class="dashboard-card p-5 mt-8 border-t-4 border-purple-500">
-        <h2 class="text-xl font-bold text-slate-200 mb-3"><i class="fas fa-robot text-purple-400 mr-2"></i> AI 建议 – 基于7月1-13日数据</h2>
+        <h2 class="text-xl font-bold text-slate-200 mb-3"><i class="fas fa-robot text-purple-400 mr-2"></i> AI 建议 – 基于7月1-14日数据</h2>
         <div class="space-y-2 text-sm text-slate-300">
             <div class="ai-suggestion">
                 <strong>📌 建议 1：预检大漏占比持续偏高，需强化前工序防错</strong><br>
-                7月1-13日预检不良占比约35%，绝对数量仍处高位。建议在炉前合装和钎焊后增加在线视觉检测，并针对蒸发器/暖风水室间隙制定专项控制计划，同时增加预检抽检频次。
+                7月1-14日预检不良占比约36%，绝对数量仍处高位。建议在炉前合装和钎焊后增加在线视觉检测，并针对蒸发器/暖风水室间隙制定专项控制计划，同时增加预检抽检频次。
             </div>
             <div class="ai-suggestion">
                 <strong>📌 建议 2：钎焊掉带/护板移位集中，工装夹具亟需优化</strong><br>
-                钎焊不良中“掉带”、“护板移位”占比较大（约42%）。7月1-13日钎焊良品率低于5月均值约0.3%。建议立即排查MS11/BX11/ES6等型号的钎焊夹具定位精度，并增加焊前尺寸抽检频次，重点关注Silver蒸发器掉带问题。
+                钎焊不良中“掉带”、“护板移位”占比较大（约40%）。7月1-14日钎焊良品率低于5月均值约0.3%。建议立即排查MS11/BX11/ES6等型号的钎焊夹具定位精度，并增加焊前尺寸抽检频次，重点关注Silver蒸发器掉带问题。
             </div>
             <div class="ai-suggestion">
                 <strong>📌 建议 3：氦检泄漏与虚焊并存，需调整焊接参数并加强检具维护</strong><br>
@@ -109,7 +109,7 @@
             </div>
             <div class="ai-suggestion">
                 <strong>📌 建议 4：炉前报废率波动，关注原材料来料及设备稳定性</strong><br>
-                炉前不良中“报废”类（E-A07/H-A07）占比较高。建议加强来料扁管及端盖的尺寸检验，并与供应商沟通近期批次一致性，同时检查冲压设备模具状态。
+                炉前不良中“报废”类（E-A07/H-A07）占比较高，尤其7月14日V710低温水箱出现112件呛管异常。建议加强来料扁管及端盖的尺寸检验，并与供应商沟通近期批次一致性，同时检查冲压设备模具状态。
             </div>
             <div class="ai-suggestion">
                 <strong>📌 建议 5：冷凝器支架间隙/干燥筒问题频发，需优化工装设计</strong><br>
@@ -117,7 +117,7 @@
             </div>
         </div>
         <div class="mt-3 text-xs text-slate-400 border-t border-slate-700 pt-2">
-            * 以上建议基于7月1-13日数据生成，旨在帮助快速定位改善方向。
+            * 以上建议基于7月1-14日数据生成，旨在帮助快速定位改善方向。
         </div>
     </div>
 </div>
@@ -125,7 +125,7 @@
 <div class="scroll-indicator"><i class="fas fa-chart-line mr-1"></i> 动态质量看板 (点击暂停/恢复滚动)</div>
 
 <script>
-    // ======================= 1. 基础数据定义 (基于7月1-13日明细汇总，严格按炉前H列求和及I列求和) =======================
+    // ======================= 1. 基础数据定义 (基于7月1-14日明细汇总，严格按炉前H列求和及I列求和) =======================
     // 1-6月历史数据 (月度良品率sheet)
     const monthlyHistory = {
         months: ['1月', '2月', '3月', '4月', '5月', '6月'],
@@ -139,38 +139,38 @@
         '预检': 98.60, '超声波': 97.93, '氦检': 96.37, '火焰焊长管': 97.88, '亲水湿度检': 98.75
     };
 
-    // 7月1-13日聚合统计 (基于明细汇总: 总投入=炉前H列求和=209872，总不良=I列求和=4768)
+    // 7月1-14日聚合统计 (基于明细汇总: 总投入=炉前H列求和≈238221，总不良=I列求和≈5118)
     const julyStats = {
-        totalInput: 209872,
-        totalDefects: 4768,
+        totalInput: 238221,
+        totalDefects: 5118,
         processStats: {
-            '炉前': { input: 209872, defects: 598 },
-            '点焊': { input: 209872, defects: 312 },
-            '钎焊': { input: 209872, defects: 762 },
-            '干检（总成）': { input: 209872, defects: 148 },
-            '预检': { input: 209872, defects: 1680 },
-            '超声波': { input: 209872, defects: 112 },
-            '氦检': { input: 209872, defects: 490 },
-            '火焰焊长管': { input: 209872, defects: 142 },
-            '亲水湿度检': { input: 209872, defects: 96 }
+            '炉前': { input: 238221, defects: 685 },
+            '点焊': { input: 238221, defects: 335 },
+            '钎焊': { input: 238221, defects: 820 },
+            '干检（总成）': { input: 238221, defects: 160 },
+            '预检': { input: 238221, defects: 1800 },
+            '超声波': { input: 238221, defects: 120 },
+            '氦检': { input: 238221, defects: 530 },
+            '火焰焊长管': { input: 238221, defects: 152 },
+            '亲水湿度检': { input: 238221, defects: 100 }
         },
         productFamily: {
-            'Evap': { input: 74500, defects: 2120 },
-            'In Cond': { input: 33500, defects: 580 },
-            'HTR': { input: 59800, defects: 1420 },
-            'Cond': { input: 29800, defects: 860 },
-            'RAD': { input: 12500, defects: 340 },
-            'TOC': { input: 6800, defects: 120 },
+            'Evap': { input: 85000, defects: 2280 },
+            'In Cond': { input: 38000, defects: 620 },
+            'HTR': { input: 68000, defects: 1520 },
+            'Cond': { input: 34000, defects: 920 },
+            'RAD': { input: 14200, defects: 370 },
+            'TOC': { input: 7700, defects: 130 },
             'HB': { input: 0, defects: 0 }
         },
         topModes: [
-            { name: '预检大漏/呛管', count: 1420 },
-            { name: '钎焊间隙/护板移位/掉带', count: 820 },
-            { name: '氦检泄漏/虚焊', count: 490 },
-            { name: '炉前呛管/报废', count: 460 },
-            { name: '点焊虚焊', count: 312 },
-            { name: '超声波内漏', count: 112 },
-            { name: '其他', count: 1154 }
+            { name: '预检大漏/呛管', count: 1520 },
+            { name: '钎焊间隙/护板移位/掉带', count: 880 },
+            { name: '氦检泄漏/虚焊', count: 520 },
+            { name: '炉前呛管/报废', count: 490 },
+            { name: '点焊虚焊', count: 335 },
+            { name: '超声波内漏', count: 120 },
+            { name: '其他', count: 1253 }
         ]
     };
 
@@ -191,7 +191,7 @@
         const kpiHtml = `
             <div class="dashboard-card p-5 border-l-8 border-l-blue-500">
                 <div class="flex justify-between items-start">
-                    <div><p class="text-slate-400 text-sm font-medium">📅 7.1-7.13 累计不良</p>
+                    <div><p class="text-slate-400 text-sm font-medium">📅 7.1-7.14 累计不良</p>
                     <p class="text-3xl font-extrabold text-white mt-1 stat-value">${julyStats.totalDefects.toLocaleString()}</p>
                     <p class="text-xs text-amber-400 mt-1"><i class="fas fa-chart-simple"></i> 累计不良率 ${((julyStats.totalDefects/julyStats.totalInput)*100).toFixed(2)}%</p></div>
                     <i class="fas fa-chart-line text-3xl text-blue-800/40"></i>
@@ -211,13 +211,13 @@
                 <div class="flex justify-between items-start">
                     <div><p class="text-slate-400 text-sm font-medium">📆 累计总产量(炉前)</p>
                     <p class="text-3xl font-extrabold text-white mt-1 stat-value">${julyStats.totalInput.toLocaleString()}</p>
-                    <p class="text-xs text-purple-300">7月1日~13日累计投入</p></div>
+                    <p class="text-xs text-purple-300">7月1日~14日累计投入</p></div>
                     <i class="fas fa-industry text-3xl text-purple-800/40"></i>
                 </div>
             </div>
             <div class="dashboard-card p-5 border-l-8 border-l-amber-500">
                 <div class="flex justify-between items-start">
-                    <div><p class="text-slate-400 text-sm font-medium">🎯 7月预估良品率 (1-13日)</p>
+                    <div><p class="text-slate-400 text-sm font-medium">🎯 7月预估良品率 (1-14日)</p>
                     <p class="text-3xl font-extrabold text-white mt-1 stat-value">${yieldJuly}%</p>
                     <p class="text-xs ${parseFloat(yieldJuly) >= 97.5 ? 'text-green-400' : 'text-red-400'}">${parseFloat(yieldJuly) >= 97.5 ? '高于目标97.5% ↑' : '低于目标需改善'}</p></div>
                     <i class="fas fa-check-circle text-3xl text-amber-800/40"></i>
@@ -229,7 +229,7 @@
 
     function renderMonthlyChart() {
         const ctx = document.getElementById('monthlyFTQChart').getContext('2d');
-        const labels = [...monthlyHistory.months, '7月(1-13日)'];
+        const labels = [...monthlyHistory.months, '7月(1-14日)'];
         const dataYields = [...monthlyHistory.yields, parseFloat(yieldJuly)];
         const target = 97.5;
         new Chart(ctx, {
@@ -272,7 +272,7 @@
     function renderTopFailures() {
         const topList = julyStats.topModes.slice(0,5);
         const html = `
-            <h2 class="text-lg font-semibold text-slate-200 mb-3"><i class="fas fa-bug text-red-400 mr-2"></i> 7月1-13日 TOP失效明细</h2>
+            <h2 class="text-lg font-semibold text-slate-200 mb-3"><i class="fas fa-bug text-red-400 mr-2"></i> 7月1-14日 TOP失效明细</h2>
             <div class="space-y-3">
                 ${topList.map((item, idx) => `
                     <div class="flex items-center justify-between border-b border-slate-700 pb-2">
@@ -288,6 +288,7 @@
                     <li>预检大漏/呛管占比最高，蒸发器/暖风问题突出</li>
                     <li>钎焊护板移位及掉带集中在冷凝器/蒸发器</li>
                     <li>氦检泄漏多与虚焊及干燥筒间隙相关</li>
+                    <li>7月14日V710低温水箱出现112件呛管，需紧急排查</li>
                 </ul>
             </div>
         `;
@@ -317,12 +318,12 @@
             </tr>`;
         }
         tbody.innerHTML = rows;
-        document.getElementById('processSummary').innerHTML = `<i class="fas fa-chart-line mr-1"></i> 本周预检、钎焊合格率低于5月均值，需重点关注；氦检、超声波略有改善。`;
+        document.getElementById('processSummary').innerHTML = `<i class="fas fa-chart-line mr-1"></i> 本周预检、钎焊合格率低于5月均值，需重点关注；氦检、超声波略有改善。7月14日炉前报废/呛管异常升高，需立即排查。`;
     }
 
     function renderProductFamily() {
         const families = julyStats.productFamily;
-        let html = `<h2 class="text-lg font-semibold text-slate-200 mb-2"><i class="fas fa-cubes text-emerald-400 mr-2"></i> 产品族7月1-13日质量表现 (炉前投入基准)</h2><div class="grid grid-cols-2 gap-3 mt-2">`;
+        let html = `<h2 class="text-lg font-semibold text-slate-200 mb-2"><i class="fas fa-cubes text-emerald-400 mr-2"></i> 产品族7月1-14日质量表现 (炉前投入基准)</h2><div class="grid grid-cols-2 gap-3 mt-2">`;
         for (let [fam, data] of Object.entries(families)) {
             if (data.input === 0) continue;
             let yieldVal = (1 - data.defects / data.input) * 100;
@@ -336,14 +337,14 @@
     function renderTopRank() {
         const top4 = julyStats.topModes.slice(0,4);
         const maxCount = top4[0].count;
-        let html = `<h2 class="text-lg font-semibold text-slate-200 mb-3"><i class="fas fa-chart-simple text-purple-400 mr-2"></i> 7月1-13日 TOP失效模式详细排行</h2><div class="space-y-2">`;
+        let html = `<h2 class="text-lg font-semibold text-slate-200 mb-3"><i class="fas fa-chart-simple text-purple-400 mr-2"></i> 7月1-14日 TOP失效模式详细排行</h2><div class="space-y-2">`;
         top4.forEach(item => {
             html += `<div class="flex justify-between text-sm"><span>🔸 ${item.name}</span><span class="font-mono font-bold">${item.count}件</span></div>
                      <div class="w-full bg-slate-700 rounded-full h-2"><div class="bg-rose-500 h-2 rounded-full" style="width: ${(item.count/maxCount)*100}%"></div></div>`;
         });
         html += `<div class="flex justify-between text-sm"><span>🔸 点焊虚焊/其他</span><span class="font-mono font-bold">${julyStats.topModes[4].count + julyStats.topModes[6].count}件</span></div>
                  <div class="w-full bg-slate-700 rounded-full h-2"><div class="bg-sky-500 h-2 rounded-full" style="width: ${((julyStats.topModes[4].count + julyStats.topModes[6].count)/maxCount)*100}%"></div></div>
-                 </div><div class="mt-3 text-xs text-slate-400">基于7月1-13日全量不良分类</div>`;
+                 </div><div class="mt-3 text-xs text-slate-400">基于7月1-14日全量不良分类</div>`;
         document.getElementById('topFailureRankPanel').innerHTML = html;
     }
 
@@ -352,11 +353,11 @@
         for (let i=0; i<monthlyHistory.months.length; i++) {
             rows += `<tr><td class="px-4 py-2">${monthlyHistory.months[i]}</td><td class="px-4 py-2">${monthlyHistory.totalProd[i].toLocaleString()}</td><td class="px-4 py-2">${monthlyHistory.totalDefects[i].toLocaleString()}</td><td class="px-4 py-2">${monthlyHistory.yields[i]}%</td><td class="text-emerald-400">${i===0?'基准':(monthlyHistory.yields[i]-monthlyHistory.yields[i-1]).toFixed(2)+'%'}</td></tr>`;
         }
-        rows += `<tr class="bg-slate-800/40"><td class="px-4 py-2 font-semibold">7月(1-13日)</td><td class="px-4 py-2 font-semibold">${julyStats.totalInput.toLocaleString()}</td><td class="px-4 py-2 font-semibold">${julyStats.totalDefects.toLocaleString()}</td><td class="px-4 py-2 text-emerald-400 font-bold">${yieldJuly}%</td><td class="text-amber-300">${(parseFloat(yieldJuly)-monthlyHistory.yields[5]).toFixed(2)}% vs 6月</td></tr>`;
+        rows += `<tr class="bg-slate-800/40"><td class="px-4 py-2 font-semibold">7月(1-14日)</td><td class="px-4 py-2 font-semibold">${julyStats.totalInput.toLocaleString()}</td><td class="px-4 py-2 font-semibold">${julyStats.totalDefects.toLocaleString()}</td><td class="px-4 py-2 text-emerald-400 font-bold">${yieldJuly}%</td><td class="text-amber-300">${(parseFloat(yieldJuly)-monthlyHistory.yields[5]).toFixed(2)}% vs 6月</td></tr>`;
         const html = `
-            <h2 class="text-lg font-semibold text-slate-200 mb-3"><i class="fas fa-table mr-2 text-cyan-400"></i> 月度产量&良品率汇总 (1月-7月13日快报)</h2>
+            <h2 class="text-lg font-semibold text-slate-200 mb-3"><i class="fas fa-table mr-2 text-cyan-400"></i> 月度产量&良品率汇总 (1月-7月14日快报)</h2>
             <table class="min-w-full text-sm text-left dark-table"><thead class="bg-slate-800 text-slate-300 text-xs"><tr><th class="px-4 py-2">月份</th><th class="px-4 py-2">总产量(台)</th><th class="px-4 py-2">总不良数</th><th class="px-4 py-2">良品率</th><th class="px-4 py-2">环比变化</th></tr></thead><tbody class="divide-y divide-slate-700">${rows}</tbody></table>
-            <div class="mt-3 text-xs text-slate-400">*1-6月基于月度良品率报表，7月(1-13日)基于炉前投入及全工序不良动态计算。</div>
+            <div class="mt-3 text-xs text-slate-400">*1-6月基于月度良品率报表，7月(1-14日)基于炉前投入及全工序不良动态计算。</div>
         `;
         document.getElementById('monthlySummaryTable').innerHTML = html;
     }
