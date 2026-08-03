@@ -570,15 +570,15 @@
       <div class="header-title"><h1>HEX车间 · 月度良品率驾驶舱</h1></div>
       <div class="header-stats">
         <div class="stat-item">
-          <span class="stat-label">📆 7月累计不良</span>
+          <span class="stat-label">📆 8月累计不良</span>
           <span class="stat-value red pulse" id="kpiBad">--</span>
         </div>
         <div class="stat-item">
-          <span class="stat-label">📦 7月累计产量</span>
+          <span class="stat-label">📦 8月累计产量</span>
           <span class="stat-value blue pulse" id="kpiOutput">--</span>
         </div>
         <div class="stat-item">
-          <span class="stat-label">📊 7月良品率</span>
+          <span class="stat-label">📊 8月良品率</span>
           <span class="stat-value green pulse" id="kpiYield">--</span>
         </div>
         <div class="stat-item">
@@ -593,7 +593,7 @@
     <div class="row-main">
       <!-- Left: 月度良品率趋势 -->
       <div class="panel">
-        <div class="panel-header"><span class="panel-title">📈 月度良品率趋势 (1–7月)</span></div>
+        <div class="panel-header"><span class="panel-title">📈 月度良品率趋势 (1–8月)</span></div>
         <div class="panel-body"><div class="chart-container"><canvas id="trendChart"></canvas></div></div>
       </div>
 
@@ -603,7 +603,7 @@
         <div class="panel-body"><div class="chart-container"><canvas id="productTrendChart"></canvas></div></div>
       </div>
 
-      <!-- Right: 7月各产品炉前良品率 -->
+      <!-- Right: 7月各产品炉前良品率 (保持不变) -->
       <div class="panel">
         <div class="panel-header"><span class="panel-title">🏭 7月各产品良品率 (炉前)</span></div>
         <div class="panel-body"><div class="chart-container"><canvas id="julyProductChart"></canvas></div></div>
@@ -612,13 +612,13 @@
 
     <!-- Row 3: 3 columns -->
     <div class="row-bottom">
-      <!-- Left: 工段不良分布 -->
+      <!-- Left: 工段不良分布 (7月数据) -->
       <div class="panel">
         <div class="panel-header"><span class="panel-title">🧩 7月不良 · 工段分布</span></div>
         <div class="panel-body"><div class="chart-container"><canvas id="stationChart"></canvas></div></div>
       </div>
 
-      <!-- Center: TOP失效模式 -->
+      <!-- Center: TOP失效模式 (7月数据) -->
       <div class="panel">
         <div class="panel-header"><span class="panel-title">⚠️ TOP失效模式 (7月)</span></div>
         <div class="panel-body"><div class="chart-container"><canvas id="defectChart"></canvas></div></div>
@@ -628,24 +628,24 @@
       <div class="panel">
         <div class="panel-header"><span class="panel-title">📋 月度明细 & AI建议</span></div>
         <div class="panel-body right-panel-body">
-          <!-- 月度明细 - 自动滚动 -->
+          <!-- 月度明细 - 自动滚动 (含8月) -->
           <div class="right-table-wrap">
             <div class="right-table-scroll">
               <table class="data-table" id="miniMonthlyTable">
                 <thead><tr><th>月份</th><th>良品率</th><th>状态</th></tr></thead>
                 <tbody id="miniMonthlyBody"></tbody>
-                <!-- 复制一份用于无缝滚动 -->
+                <!-- 克隆体用于无缝滚动 -->
                 <tbody id="miniMonthlyBodyClone" style="display:none;"></tbody>
               </table>
             </div>
           </div>
           <div class="scroll-hint">⬇ 自动滚动 · 悬停暂停</div>
 
-          <!-- AI建议 -->
+          <!-- AI建议 (根据8月数据微调) -->
           <div class="right-suggestion-wrap">
             <div class="right-suggestion-grid" id="suggestionGrid">
-              <div class="right-suggestion-item"><strong>预检大漏</strong> 占比高，建议加强炉后视觉检测</div>
-              <div class="right-suggestion-item"><strong>钎焊移位</strong> 需优化工装定位，降低掉带</div>
+              <div class="right-suggestion-item"><strong>预检大漏</strong> 占比仍高，建议加强炉后视觉检测</div>
+              <div class="right-suggestion-item"><strong>钎焊移位</strong> 8月初集中，需优化工装定位</div>
               <div class="right-suggestion-item"><strong>氦检虚焊</strong> 点焊参数复测，增加焊后全检</div>
               <div class="right-suggestion-item"><strong>炉前报废</strong> 来料尺寸一致性需与供应商沟通</div>
             </div>
@@ -657,23 +657,53 @@
 
   <script>
     // ================================================================
-    // 1. 核心数据
+    // 1. 核心数据 (更新至8月2日)
     // ================================================================
     const monthly = {
-      months: ['1月', '2月', '3月', '4月', '5月', '6月', '7月'],
-      good: [599233, 242774, 661516, 544923, 658978, 631507, 258027],
-      bad: [17019, 6758, 11691, 10786, 12047, 12231, 4380]
+      months: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月'],
+      good: [
+        599233, // 1月
+        242774, // 2月
+        661516, // 3月
+        544923, // 4月
+        658978, // 5月
+        631507, // 6月
+        165351, // 7月
+        37555 // 8月 (截至8月2日)
+      ],
+      bad: [
+        17019, // 1月
+        6758, // 2月
+        11691, // 3月
+        10786, // 4月
+        12047, // 5月
+        12231, // 6月
+        4380, // 7月
+        1122 // 8月
+      ]
     };
 
+    // 各产品月度合格数量 (1-7月历史，8月新增)
     const prodGood = {
-      'HTR': [113522, 41689, 107615, 94564, 102714, 109039, 26113],
-      'In Cond': [137485, 47057, 179209, 109975, 116240, 137317, 32756],
-      'Evap': [183979, 80204, 193006, 206898, 278452, 259238, 49562],
-      'Cond': [71649, 38841, 67798, 41948, 47815, 59055, 26637],
-      'RAD': [64518, 18543, 84188, 67148, 47115, 50208, 23204],
-      'TOC': [28080, 16440, 29700, 24390, 22119, 16650, 7079]
+      'HTR': [113522, 41689, 107615, 94564, 102714, 109039, 26113, 7484],
+      'In Cond': [137485, 47057, 179209, 109975, 116240, 137317, 32756, 8776],
+      'Evap': [183979, 80204, 193006, 206898, 278452, 259238, 49562, 13606],
+      'Cond': [71649, 38841, 67798, 41948, 47815, 59055, 26637, 3512],
+      'RAD': [64518, 18543, 84188, 67148, 47115, 50208, 23204, 2817],
+      'TOC': [28080, 16440, 29700, 24390, 22119, 16650, 7079, 1360]
     };
 
+    // 8月各产品不良 (已汇总)
+    const augBadByProduct = {
+      'HTR': 339,
+      'In Cond': 49,
+      'Evap': 351,
+      'Cond': 277,
+      'RAD': 62,
+      'TOC': 44
+    };
+
+    // 7月各产品不良 (保留用于7月图表)
     const julyBadByProduct = {
       'HTR': 1558,
       'In Cond': 742,
@@ -682,12 +712,15 @@
       'RAD': 689,
       'TOC': 292
     };
+
     const prodNames = Object.keys(prodGood);
+    // 构造7月产品数据 (用于7月柱状图)
     const julyProd = {};
     for (const p of prodNames) {
       julyProd[p] = { good: prodGood[p][6], bad: julyBadByProduct[p] || 0 };
     }
 
+    // 7月工段不良 (保持不变)
     const stationBad = {
       '炉前': 1184,
       '点焊': 412,
@@ -711,23 +744,28 @@
     };
 
     // ================================================================
-    // 2. 计算
+    // 2. 计算良品率
     // ================================================================
     function calcYield(g, b) {
       if (g + b === 0) return 0;
       return g / (g + b);
     }
     const monthlyYield = monthly.months.map((_, i) => calcYield(monthly.good[i], monthly.bad[i]));
+    // 各产品月度良品率 (1-7月用整体，8月用产品自身)
     const prodYield = {};
     for (const p of prodNames) {
       prodYield[p] = monthly.months.map((_, i) => {
-        if (i === 6) return calcYield(julyProd[p].good, julyProd[p].bad);
+        if (i === 7) {
+          // 8月使用产品自身不良
+          return calcYield(prodGood[p][7], augBadByProduct[p] || 0);
+        }
+        // 1-7月使用整体良品率 (因为缺少分产品不良明细)
         return monthlyYield[i];
       });
     }
 
     // ================================================================
-    // 3. KPI 数字滚动动画
+    // 3. KPI 数字滚动动画 (8月数据)
     // ================================================================
     function animateNumber(el, target, suffix = '', duration = 1200) {
       const start = 0;
@@ -737,7 +775,6 @@
       function update(currentTime) {
         const elapsed = currentTime - startTime;
         const progress = Math.min(elapsed / duration, 1);
-        // easeOutQuart
         const eased = 1 - Math.pow(1 - progress, 4);
         const current = start + (target - start) * eased;
         if (isFloat) {
@@ -758,15 +795,14 @@
       requestAnimationFrame(update);
     }
 
-    const kpiBad = monthly.bad[6];
-    const kpiOutput = monthly.good[6];
-    const kpiYield = monthlyYield[6] * 100;
+    const kpiBad = monthly.bad[7];
+    const kpiOutput = monthly.good[7];
+    const kpiYield = monthlyYield[7] * 100;
 
     const elBad = document.getElementById('kpiBad');
     const elOutput = document.getElementById('kpiOutput');
     const elYield = document.getElementById('kpiYield');
 
-    // 初始显示0，然后动画
     elBad.textContent = '0';
     elOutput.textContent = '0';
     elYield.textContent = '0.00%';
@@ -806,15 +842,7 @@
     Chart.defaults.color = '#c8d0dc';
     Chart.defaults.borderColor = '#1a2540';
 
-    // 通用动画配置
-    const chartAnimations = {
-      tension: {
-        duration: 1000,
-        easing: 'easeOutQuad'
-      }
-    };
-
-    // 5.1 月度趋势
+    // 5.1 月度趋势 (1-8月)
     const ctx1 = document.getElementById('trendChart').getContext('2d');
     const trendData = monthlyYield.map(v => +(v * 100).toFixed(2));
     new Chart(ctx1, {
@@ -862,7 +890,7 @@
       }
     });
 
-    // 5.2 各产品月度对比
+    // 5.2 各产品月度对比 (1-8月)
     const ctx2 = document.getElementById('productTrendChart').getContext('2d');
     const colors = ['#f87171', '#60a5fa', '#4ade80', '#fb923c', '#a78bfa', '#22d3ee'];
     const datasets2 = prodNames.map((p, idx) => ({
@@ -893,7 +921,7 @@
       }
     });
 
-    // 5.3 7月各产品炉前良品率 (柱状图)
+    // 5.3 7月各产品炉前良品率 (保持不变)
     const ctx3 = document.getElementById('julyProductChart').getContext('2d');
     const julyYieldArr = prodNames.map(p => calcYield(julyProd[p].good, julyProd[p].bad) * 100);
     const barColors = ['#f87171', '#60a5fa', '#4ade80', '#fb923c', '#a78bfa', '#22d3ee'];
@@ -926,7 +954,7 @@
       }
     });
 
-    // 5.4 工段分布 (饼图) - 带流光插件
+    // 5.4 工段分布 (7月)
     const flowingGlowPlugin = {
       id: 'flowingGlow',
       beforeDraw(chart) {
@@ -979,7 +1007,7 @@
       }
     });
 
-    // 5.5 TOP失效模式 (横向条形图)
+    // 5.5 TOP失效模式 (7月)
     const ctx5 = document.getElementById('defectChart').getContext('2d');
     const defectLabels = Object.keys(defectBad);
     const defectValues = Object.values(defectBad);
@@ -1014,10 +1042,9 @@
     });
 
     // ================================================================
-    // 6. 月度明细表格 - 自动滚动 (双份数据实现无缝)
+    // 6. 月度明细表格 - 自动滚动 (含8月)
     // ================================================================
     const miniBody = document.getElementById('miniMonthlyBody');
-    const miniBodyClone = document.getElementById('miniMonthlyBodyClone');
 
     function buildTableRows() {
       let html = '';
@@ -1033,24 +1060,16 @@
     miniBody.innerHTML = rowsHtml;
 
     // 克隆一份用于无缝滚动
-    const cloneHtml = rowsHtml;
-    const cloneTr = document.createElement('tbody');
-    cloneTr.innerHTML = cloneHtml;
-    cloneTr.id = 'miniMonthlyBodyClone';
-    // 移除原有的clone如果存在
+    const table = document.getElementById('miniMonthlyTable');
     const oldClone = document.getElementById('miniMonthlyBodyClone');
     if (oldClone) oldClone.remove();
-    const table = document.getElementById('miniMonthlyTable');
     const newClone = document.createElement('tbody');
     newClone.id = 'miniMonthlyBodyClone';
-    newClone.innerHTML = cloneHtml;
+    newClone.innerHTML = rowsHtml;
     table.appendChild(newClone);
 
-    // 滚动速度控制 - 通过CSS animation duration已经设置
-    // 悬停暂停功能由CSS控制
-
     // ================================================================
-    // 7. AI建议动态轮换 (每8秒高亮切换)
+    // 7. AI建议动态轮换
     // ================================================================
     const suggestionItems = document.querySelectorAll('.right-suggestion-item');
     let suggestionIndex = 0;
@@ -1066,7 +1085,6 @@
       suggestionIndex = (suggestionIndex + 1) % suggestionItems.length;
     }, 5000);
 
-    // 初始高亮第一个
     if (suggestionItems.length > 0) {
       suggestionItems[0].style.borderColor = 'rgba(6, 182, 212, 0.5)';
       suggestionItems[0].style.background = 'rgba(6, 182, 212, 0.08)';
@@ -1078,13 +1096,10 @@
     let resizeTimer;
     window.addEventListener('resize', () => {
       clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(() => {
-        // Chart.js 自动适应
-      }, 200);
+      resizeTimer = setTimeout(() => {}, 200);
     });
 
-    console.log('🚀 HEX车间良品率驾驶舱已启动');
-    console.log('📊 数据更新至 2026年7月20日');
+    console.log('🚀 HEX车间良品率驾驶舱已启动 (数据更新至8月2日)');
   </script>
 </body>
 </html>
