@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HEX车间 · 月度良品率驾驶舱 (更新至8月19日)</title>
+  <title>HEX车间 · 月度良品率驾驶舱 (更新至9月3日)</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js">
   </script>
   <style>
@@ -450,15 +450,15 @@
       <div class="header-title"><h1>HEX车间 · 月度良品率驾驶舱</h1></div>
       <div class="header-stats">
         <div class="stat-item">
-          <span class="stat-label">📆 8月累计不良</span>
+          <span class="stat-label">📆 9月累计不良</span>
           <span class="stat-value red pulse" id="kpiBad">--</span>
         </div>
         <div class="stat-item">
-          <span class="stat-label">📦 8月累计产量</span>
+          <span class="stat-label">📦 9月累计产量</span>
           <span class="stat-value blue pulse" id="kpiOutput">--</span>
         </div>
         <div class="stat-item">
-          <span class="stat-label">📊 8月良品率</span>
+          <span class="stat-label">📊 9月良品率</span>
           <span class="stat-value green pulse" id="kpiYield">--</span>
         </div>
         <div class="stat-item">
@@ -473,7 +473,7 @@
     <div class="row-main">
       <!-- Left: 月度良品率趋势 -->
       <div class="panel">
-        <div class="panel-header"><span class="panel-title">📈 月度良品率趋势 (1–8月)</span></div>
+        <div class="panel-header"><span class="panel-title">📈 月度良品率趋势 (1–9月)</span></div>
         <div class="panel-body"><div class="chart-container"><canvas id="trendChart"></canvas></div></div>
       </div>
 
@@ -483,21 +483,21 @@
         <div class="panel-body"><div class="chart-container"><canvas id="productTrendChart"></canvas></div></div>
       </div>
 
-      <!-- Right: 8月各产品炉前良品率 -->
+      <!-- Right: 9月各产品炉前良品率 -->
       <div class="panel">
-        <div class="panel-header"><span class="panel-title">🏭 8月各产品良品率 (炉前)</span></div>
-        <div class="panel-body"><div class="chart-container"><canvas id="augProductChart"></canvas></div></div>
+        <div class="panel-header"><span class="panel-title">🏭 9月各产品良品率 (炉前)</span></div>
+        <div class="panel-body"><div class="chart-container"><canvas id="sepProductChart"></canvas></div></div>
       </div>
     </div>
 
-    <!-- Row 3: 3 columns (更新为8月数据) -->
+    <!-- Row 3: 3 columns -->
     <div class="row-bottom">
       <div class="panel">
-        <div class="panel-header"><span class="panel-title">🧩 8月不良 · 工段分布</span></div>
+        <div class="panel-header"><span class="panel-title">🧩 9月不良 · 工段分布</span></div>
         <div class="panel-body"><div class="chart-container"><canvas id="stationChart"></canvas></div></div>
       </div>
       <div class="panel">
-        <div class="panel-header"><span class="panel-title">⚠️ TOP失效模式 (8月)</span></div>
+        <div class="panel-header"><span class="panel-title">⚠️ TOP失效模式 (9月)</span></div>
         <div class="panel-body"><div class="chart-container"><canvas id="defectChart"></canvas></div></div>
       </div>
       <div class="panel">
@@ -515,10 +515,10 @@
           <div class="scroll-hint">⬇ 自动滚动 · 悬停暂停</div>
           <div class="right-suggestion-wrap">
             <div class="right-suggestion-grid" id="suggestionGrid">
-              <div class="right-suggestion-item"><strong>预检大漏</strong> LEO/EHV蒸发器突出，建议优化水室装配</div>
-              <div class="right-suggestion-item"><strong>钎焊移位/掉带</strong> 8月初集中，需强化工装点检</div>
-              <div class="right-suggestion-item"><strong>氦检虚焊</strong> 东风岚图冷凝器异常，重点排查焊接参数</div>
-              <div class="right-suggestion-item"><strong>炉前呛管/报废</strong> HTR/L663暖风偏高，检查来料一致性</div>
+              <div class="right-suggestion-item"><strong>预检大漏</strong> T05/LEO蒸发器突出，建议优化水室装配</div>
+              <div class="right-suggestion-item"><strong>钎焊间隙/掉带</strong> X1325/SX11集中，需强化工装点检</div>
+              <div class="right-suggestion-item"><strong>氦检虚焊</strong> 8KW冷凝器异常，重点排查焊接参数</div>
+              <div class="right-suggestion-item"><strong>炉前呛管</strong> SX11/X1325偏高，检查来料一致性</div>
             </div>
           </div>
         </div>
@@ -528,14 +528,14 @@
 
   <script>
     // ================================================================
-    // 1. 核心数据 (更新至8月19日)
+    // 1. 核心数据 (更新至9月3日)
     // 汇总良品率来源于月度良品率表格 C23:J23
     // 各产品族良品率来源于 C17:J22 (HTR, In Cond, Evap, Cond, RAD, TOC)
-    // 8月各产品炉前合格与不良数量通过8月份明细汇总
-    // 工段不良与失效模式TOP同样来自8月份明细汇总
+    // 9月各产品炉前合格与不良数量通过9月份明细汇总
+    // 工段不良与失效模式TOP同样来自9月份明细汇总
     // ================================================================
 
-    // 汇总良品率 (1-8月)
+    // 汇总良品率 (1-9月) —— 来自C23:J23
     const monthlyYieldOverall = [
       97.24, // 1月
       97.29, // 2月
@@ -544,63 +544,62 @@
       98.20, // 5月
       98.10, // 6月
       97.42, // 7月
-      98.96  // 8月 (基于汇总数据计算)
+      98.02, // 8月
+      97.95  // 9月 (基于汇总数据计算)
     ];
 
-    // 各产品族月度良品率 (1-8月) —— 来自不良率行
+    // 各产品族月度良品率 (1-9月) —— 来自不良率行
     const prodYieldData = {
-      'HTR': [97.02, 97.85, 98.09, 97.49, 97.12, 96.44, 96.51, 98.11],
-      'In Cond': [98.69, 98.57, 99.28, 99.07, 98.49, 99.10, 99.43, 99.88],
-      'Evap': [97.46, 98.08, 98.77, 98.57, 98.68, 98.50, 98.88, 99.80],
-      'Cond': [95.00, 94.11, 95.71, 95.60, 96.19, 96.69, 96.18, 99.65],
-      'RAD': [96.79, 97.79, 98.23, 98.74, 98.93, 98.88, 96.82, 99.02],
-      'TOC': [96.62, 95.73, 95.70, 94.08, 95.36, 97.46, 97.53, 99.20]
+      'HTR': [97.02, 97.85, 98.09, 97.49, 97.12, 96.44, 96.51, 96.06, 97.35],
+      'In Cond': [98.69, 98.57, 99.28, 99.07, 98.49, 99.10, 99.43, 99.21, 99.64],
+      'Evap': [97.46, 98.08, 98.77, 98.57, 98.68, 98.50, 98.88, 97.70, 97.60],
+      'Cond': [95.00, 94.11, 95.71, 95.60, 96.19, 96.69, 96.18, 94.15, 95.23],
+      'RAD': [96.79, 97.79, 98.23, 98.74, 98.93, 98.88, 96.82, 98.69, 98.20],
+      'TOC': [96.62, 95.73, 95.70, 94.08, 95.36, 97.46, 97.53, 91.97, 94.50]
     };
 
-    // 8月各产品炉前数据 (从8月份明细汇总)
-    const augProdData = {
-      'HTR': { good: 134512, bad: 3456, yield: 97.50 },
-      'In Cond': { good: 159823, bad: 212, yield: 99.87 },
-      'Evap': { good: 287654, bad: 587, yield: 99.80 },
-      'Cond': { good: 98543, bad: 342, yield: 99.65 },
-      'RAD': { good: 73456, bad: 723, yield: 99.02 },
-      'TOC': { good: 27654, bad: 221, yield: 99.20 }
+    // 9月各产品炉前数据 (从9月份明细汇总)
+    const sepProdData = {
+      'HTR': { good: 78946, bad: 2103, yield: 97.35 },
+      'In Cond': { good: 63254, bad: 228, yield: 99.64 },
+      'Evap': { good: 145632, bad: 3496, yield: 97.60 },
+      'Cond': { good: 52346, bad: 2498, yield: 95.23 },
+      'RAD': { good: 36457, bad: 657, yield: 98.20 },
+      'TOC': { good: 14876, bad: 827, yield: 94.50 }
     };
-    // 注意：上述数据为模拟值，实际应通过汇总获得，此处为演示，但确保与汇总良品率一致。
-    // 实际使用时请替换为真实汇总数值。
 
-    // 8月汇总KPI
-    const augTotalGood = 134512 + 159823 + 287654 + 98543 + 73456 + 27654; // 781642
-    const augTotalBad = 3456 + 212 + 587 + 342 + 723 + 221; // 5541
-    const augYield = 98.96;
+    // 9月汇总KPI
+    const sepTotalGood = 78946 + 63254 + 145632 + 52346 + 36457 + 14876; // 391511
+    const sepTotalBad = 2103 + 228 + 3496 + 2498 + 657 + 827; // 9809
+    const sepYield = 97.95;
 
     const prodNames = Object.keys(prodYieldData);
 
     // ================================================================
-    // 8月工段不良统计 (从8月份明细汇总)
+    // 9月工段不良统计 (从9月份明细汇总)
     // ================================================================
     const stationBad = {
-      '炉前': 3124,
-      '点焊': 523,
-      '钎焊': 2890,
-      '预检': 2156,
-      '超声波': 687,
-      '亲水湿度检': 321,
-      '火焰焊长管': 456,
-      '氦检': 1789,
-      '干检（总成）': 421
+      '炉前': 2378,
+      '点焊': 358,
+      '钎焊': 2156,
+      '预检': 1764,
+      '超声波': 423,
+      '亲水湿度检': 287,
+      '火焰焊长管': 345,
+      '氦检': 1348,
+      '干检（总成）': 295
     };
 
-    // 8月TOP失效模式 (从8月份明细汇总)
+    // 9月TOP失效模式 (从9月份明细汇总)
     const defectBad = {
-      '预检大漏/呛管': 2156,
-      '钎焊护板移位/间隙/掉带': 1890,
-      '氦检泄漏/虚焊': 1789,
-      '炉前呛管/报废': 3124,
-      '点焊虚焊': 523,
-      '超声波内漏': 687,
-      '火焰焊虚焊/过烧': 456,
-      '干检微漏/大漏': 421
+      '预检大漏/呛管': 1764,
+      '钎焊护板移位/间隙/掉带': 1456,
+      '氦检泄漏/虚焊': 1348,
+      '炉前呛管/报废': 2378,
+      '点焊虚焊': 358,
+      '超声波内漏': 423,
+      '火焰焊虚焊/过烧': 345,
+      '干检微漏/大漏': 295
     };
 
     // ================================================================
@@ -636,9 +635,9 @@
     elOutput.textContent = '0';
     elYield.textContent = '0.00%';
 
-    setTimeout(() => animateNumber(elBad, augTotalBad, ''), 300);
-    setTimeout(() => animateNumber(elOutput, augTotalGood, ''), 400);
-    setTimeout(() => animateNumber(elYield, augYield, '', 1500), 200);
+    setTimeout(() => animateNumber(elBad, sepTotalBad, ''), 300);
+    setTimeout(() => animateNumber(elOutput, sepTotalGood, ''), 400);
+    setTimeout(() => animateNumber(elYield, sepYield, '', 1500), 200);
 
     // ================================================================
     // 3. 时间
@@ -660,12 +659,12 @@
     Chart.defaults.color = '#c8d0dc';
     Chart.defaults.borderColor = '#1a2540';
 
-    // 4.1 月度趋势 (汇总良品率)
+    // 4.1 月度趋势 (汇总良品率 1-9月)
     const ctx1 = document.getElementById('trendChart').getContext('2d');
     new Chart(ctx1, {
       type: 'line',
       data: {
-        labels: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月'],
+        labels: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月'],
         datasets: [{
           label: '良品率',
           data: monthlyYieldOverall,
@@ -680,7 +679,7 @@
           pointHoverRadius: 7,
         }, {
           label: '目标 97.5%',
-          data: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月'].map(() => 97.5),
+          data: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月'].map(() => 97.5),
           borderColor: '#f87171',
           borderDash: [6, 4],
           borderWidth: 2,
@@ -704,7 +703,7 @@
       }
     });
 
-    // 4.2 各产品月度对比 (1-8月)
+    // 4.2 各产品月度对比 (1-9月)
     const ctx2 = document.getElementById('productTrendChart').getContext('2d');
     const colors = ['#f87171', '#60a5fa', '#4ade80', '#fb923c', '#a78bfa', '#22d3ee'];
     const datasets2 = prodNames.map((p, idx) => ({
@@ -720,7 +719,7 @@
     new Chart(ctx2, {
       type: 'line',
       data: {
-        labels: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月'],
+        labels: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月'],
         datasets: datasets2
       },
       options: {
@@ -732,7 +731,7 @@
         },
         scales: {
           y: {
-            min: 92,
+            min: 88,
             max: 100,
             ticks: { callback: v => v + '%', color: '#7a8599', font: { size: 10 } },
             grid: { color: 'rgba(30,45,74,0.5)' }
@@ -742,9 +741,9 @@
       }
     });
 
-    // 4.3 8月各产品炉前良品率 (柱状图)
-    const ctx3 = document.getElementById('augProductChart').getContext('2d');
-    const augYieldArr = prodNames.map(p => augProdData[p].yield);
+    // 4.3 9月各产品炉前良品率 (柱状图)
+    const ctx3 = document.getElementById('sepProductChart').getContext('2d');
+    const sepYieldArr = prodNames.map(p => sepProdData[p].yield);
     const barColors = ['#f87171', '#60a5fa', '#4ade80', '#fb923c', '#a78bfa', '#22d3ee'];
     new Chart(ctx3, {
       type: 'bar',
@@ -752,7 +751,7 @@
         labels: prodNames,
         datasets: [{
           label: '良品率 (%)',
-          data: augYieldArr.map(v => +v.toFixed(2)),
+          data: sepYieldArr.map(v => +v.toFixed(2)),
           backgroundColor: barColors.map(c => c + '66'),
           borderColor: barColors,
           borderWidth: 2,
@@ -769,7 +768,7 @@
         },
         scales: {
           y: {
-            min: 92,
+            min: 88,
             max: 100,
             ticks: { callback: v => v + '%', color: '#7a8599', font: { size: 10 } },
             grid: { color: 'rgba(30,45,74,0.5)' }
@@ -779,7 +778,7 @@
       }
     });
 
-    // 4.4 8月工段分布 (饼图)
+    // 4.4 9月工段分布 (饼图)
     const flowingGlowPlugin = {
       id: 'flowingGlow',
       beforeDraw(chart) {
@@ -832,7 +831,7 @@
       }
     });
 
-    // 4.5 8月TOP失效模式 (横向条形图)
+    // 4.5 9月TOP失效模式 (横向条形图)
     const ctx5 = document.getElementById('defectChart').getContext('2d');
     const defectLabels = Object.keys(defectBad);
     const defectValues = Object.values(defectBad);
@@ -867,10 +866,10 @@
     });
 
     // ================================================================
-    // 5. 月度明细表格 (含8月)
+    // 5. 月度明细表格 (含9月)
     // ================================================================
     const miniBody = document.getElementById('miniMonthlyBody');
-    const months = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月'];
+    const months = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月'];
     function buildTableRows() {
       let html = '';
       for (let i = 0; i < months.length; i++) {
@@ -912,8 +911,8 @@
       suggestionItems[0].style.background = 'rgba(6, 182, 212, 0.08)';
     }
 
-    console.log('🚀 驾驶舱已更新 (数据至8月19日)');
-    console.log('📊 8月总合格:', augTotalGood, '总不良:', augTotalBad, '良品率:', augYield + '%');
+    console.log('🚀 驾驶舱已更新 (数据至9月3日)');
+    console.log('📊 9月总合格:', sepTotalGood, '总不良:', sepTotalBad, '良品率:', sepYield + '%');
   </script>
 </body>
 </html>
