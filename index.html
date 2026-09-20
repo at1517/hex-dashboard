@@ -3,9 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HEX车间 · 月度良品率驾驶舱 (更新至9月14日)</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js">
-  </script>
+  <title>芯体车间 · 月度良品率驾驶舱 (更新至9月20日)</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
     :root {
       --bg-primary: #0a0e27;
@@ -20,14 +19,9 @@
       --accent-yellow: #f59e0b;
       --accent-red: #ef4444;
       --accent-purple: #8b5cf6;
-      --glow-cyan: rgba(6, 182, 212, 0.25);
     }
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
       font-family: 'Microsoft YaHei', 'PingFang SC', sans-serif;
@@ -52,10 +46,8 @@
     .dashboard::before {
       content: '';
       position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
+      top: -50%; left: -50%;
+      width: 200%; height: 200%;
       background: radial-gradient(ellipse at 30% 20%, rgba(6, 182, 212, 0.03) 0%, transparent 50%),
         radial-gradient(ellipse at 70% 80%, rgba(59, 130, 246, 0.03) 0%, transparent 50%);
       animation: bgPulse 8s ease-in-out infinite alternate;
@@ -66,369 +58,136 @@
       0% { opacity: 0.5; transform: scale(1) rotate(0deg); }
       100% { opacity: 1; transform: scale(1.1) rotate(3deg); }
     }
-    .dashboard>* { position: relative; z-index: 1; }
+    .dashboard > * { position: relative; z-index: 1; }
 
     .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 12px 24px;
-      background: var(--bg-card);
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
-      position: relative;
-      flex-shrink: 0;
-      height: 64px;
-      overflow: hidden;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 12px 24px; background: var(--bg-card);
+      border: 1px solid var(--border-color); border-radius: 8px;
+      position: relative; flex-shrink: 0; height: 64px; overflow: hidden;
     }
     .header::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 2px;
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
       background: linear-gradient(90deg, transparent, var(--accent-cyan), var(--accent-blue), transparent);
-      animation: headerGlow 3s ease-in-out infinite;
-      background-size: 200% 100%;
+      animation: headerGlow 3s ease-in-out infinite; background-size: 200% 100%;
     }
-    @keyframes headerGlow {
-      0%, 100% { background-position: -200% 0; }
-      50% { background-position: 200% 0; }
-    }
+    @keyframes headerGlow { 0%,100% { background-position: -200% 0; } 50% { background-position: 200% 0; } }
 
     .header-title h1 {
-      font-size: clamp(20px, 2.2vw, 30px);
-      font-weight: 600;
+      font-size: clamp(20px, 2.2vw, 30px); font-weight: 600;
       background: linear-gradient(90deg, var(--accent-cyan), var(--accent-blue));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      letter-spacing: 3px;
-      animation: titlePulse 4s ease-in-out infinite;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      letter-spacing: 3px; animation: titlePulse 4s ease-in-out infinite;
     }
-    @keyframes titlePulse {
-      0%, 100% { filter: brightness(1); }
-      50% { filter: brightness(1.2); }
-    }
+    @keyframes titlePulse { 0%,100% { filter: brightness(1); } 50% { filter: brightness(1.2); } }
 
-    .header-stats {
-      display: flex;
-      gap: clamp(20px, 2.5vw, 40px);
-      align-items: center;
-    }
-    .stat-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 2px;
-    }
-    .stat-label {
-      font-size: 11px;
-      color: var(--text-secondary);
-      letter-spacing: 0.5px;
-    }
+    .header-stats { display: flex; gap: clamp(20px, 2.5vw, 40px); align-items: center; }
+    .stat-item { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+    .stat-label { font-size: 11px; color: var(--text-secondary); letter-spacing: 0.5px; }
     .stat-value {
-      font-size: clamp(18px, 1.8vw, 26px);
-      font-weight: 700;
-      font-feature-settings: "tnum";
+      font-size: clamp(18px, 1.8vw, 26px); font-weight: 700; font-feature-settings: "tnum";
       transition: all 0.3s;
     }
     .stat-value.blue { color: var(--accent-blue); }
     .stat-value.green { color: var(--accent-green); }
     .stat-value.red { color: var(--accent-red); }
     .stat-value.cyan { color: var(--accent-cyan); }
-    .stat-value.pulse {
-      animation: valuePulse 2s ease-in-out infinite;
-    }
-    @keyframes valuePulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.04); }
-    }
+    .stat-value.pulse { animation: valuePulse 2s ease-in-out infinite; }
+    @keyframes valuePulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.04); } }
 
     .datetime {
-      font-size: clamp(12px, 1vw, 15px);
-      color: var(--text-secondary);
-      min-width: 160px;
-      text-align: right;
-      font-variant-numeric: tabular-nums;
+      font-size: clamp(12px, 1vw, 15px); color: var(--text-secondary);
+      min-width: 160px; text-align: right; font-variant-numeric: tabular-nums;
       animation: timeGlow 4s ease-in-out infinite;
     }
-    @keyframes timeGlow {
-      0%, 100% { opacity: 0.8; }
-      50% { opacity: 1; }
-    }
+    @keyframes timeGlow { 0%,100% { opacity: 0.8; } 50% { opacity: 1; } }
 
-    .row-main {
-      flex: 1;
-      display: grid;
-      grid-template-columns: 1fr 1.6fr 1fr;
-      gap: 10px;
-      min-height: 0;
-    }
-    .row-bottom {
-      flex: 0.8;
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 10px;
-      min-height: 0;
-    }
+    .row-main { flex: 1; display: grid; grid-template-columns: 1fr 1.6fr 1fr; gap: 10px; min-height: 0; }
+    .row-bottom { flex: 0.8; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; min-height: 0; }
 
     .panel {
-      background: var(--bg-card);
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      position: relative;
+      background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px;
+      display: flex; flex-direction: column; overflow: hidden; position: relative;
       transition: border-color 0.4s ease, box-shadow 0.4s ease;
     }
-    .panel:hover {
-      border-color: rgba(6, 182, 212, 0.3);
-      box-shadow: 0 0 30px rgba(6, 182, 212, 0.05);
-    }
+    .panel:hover { border-color: rgba(6, 182, 212, 0.3); box-shadow: 0 0 30px rgba(6, 182, 212, 0.05); }
     .panel::after {
-      content: '';
-      position: absolute;
-      top: -1px;
-      left: -1px;
-      right: -1px;
-      bottom: -1px;
+      content: ''; position: absolute; top: -1px; left: -1px; right: -1px; bottom: -1px;
       border-radius: 8px;
       background: linear-gradient(135deg, transparent 40%, rgba(6, 182, 212, 0.06), transparent 60%);
-      background-size: 300% 300%;
-      animation: borderFlow 6s ease-in-out infinite;
-      pointer-events: none;
-      z-index: 0;
+      background-size: 300% 300%; animation: borderFlow 6s ease-in-out infinite;
+      pointer-events: none; z-index: 0;
     }
-    @keyframes borderFlow {
-      0% { background-position: 0% 0%; }
-      50% { background-position: 100% 100%; }
-      100% { background-position: 0% 0%; }
-    }
-    .panel>* { position: relative; z-index: 1; }
+    @keyframes borderFlow { 0% { background-position: 0% 0%; } 50% { background-position: 100% 100%; } 100% { background-position: 0% 0%; } }
+    .panel > * { position: relative; z-index: 1; }
 
     .panel-header {
-      padding: 6px 14px;
-      border-bottom: 1px solid var(--border-color);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-shrink: 0;
+      padding: 6px 14px; border-bottom: 1px solid var(--border-color);
+      display: flex; align-items: center; gap: 8px; flex-shrink: 0;
     }
     .panel-header::before {
-      content: '';
-      width: 3px;
-      height: 14px;
+      content: ''; width: 3px; height: 14px;
       background: linear-gradient(180deg, var(--accent-cyan), var(--accent-blue));
-      border-radius: 2px;
-      animation: headerBarPulse 2s ease-in-out infinite;
+      border-radius: 2px; animation: headerBarPulse 2s ease-in-out infinite;
     }
-    @keyframes headerBarPulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.4; }
-    }
-    .panel-title {
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--text-primary);
-    }
-    .panel-body {
-      flex: 1;
-      padding: 8px;
-      overflow: hidden;
-      min-height: 0;
-      display: flex;
-      flex-direction: column;
-    }
-    .chart-container {
-      position: relative;
-      width: 100%;
-      height: 100%;
-    }
+    @keyframes headerBarPulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+    .panel-title { font-size: 14px; font-weight: 600; color: var(--text-primary); }
+
+    .panel-body { flex: 1; padding: 8px; overflow: hidden; min-height: 0; display: flex; flex-direction: column; }
+    .chart-container { position: relative; width: 100%; height: 100%; }
 
     .table-wrap {
-      flex: 1;
-      overflow: hidden;
-      position: relative;
+      flex: 1; overflow: hidden; position: relative;
       mask-image: linear-gradient(to bottom, black 90%, transparent 100%);
       -webkit-mask-image: linear-gradient(to bottom, black 90%, transparent 100%);
     }
-    .table-scroll {
-      animation: scrollTable 18s linear infinite;
-    }
-    .table-scroll:hover {
-      animation-play-state: paused;
-    }
-    @keyframes scrollTable {
-      0% { transform: translateY(0); }
-      100% { transform: translateY(-50%); }
-    }
+    .table-scroll { animation: scrollTable 18s linear infinite; }
+    .table-scroll:hover { animation-play-state: paused; }
+    @keyframes scrollTable { 0% { transform: translateY(0); } 100% { transform: translateY(-50%); } }
 
-    table.data-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 12px;
-    }
+    table.data-table { width: 100%; border-collapse: collapse; font-size: 12px; }
     table.data-table thead th {
-      background: rgba(59, 130, 246, 0.15);
-      color: var(--accent-blue);
-      font-weight: 600;
-      padding: 6px 10px;
-      text-align: left;
-      border-bottom: 1px solid var(--border-color);
-      position: sticky;
-      top: 0;
-      z-index: 2;
+      background: rgba(59, 130, 246, 0.15); color: var(--accent-blue); font-weight: 600;
+      padding: 6px 10px; text-align: left; border-bottom: 1px solid var(--border-color);
+      position: sticky; top: 0; z-index: 2;
     }
     table.data-table tbody td {
-      padding: 5px 10px;
-      border-bottom: 1px solid rgba(30, 45, 74, 0.3);
-      color: var(--text-primary);
-      transition: background 0.2s;
+      padding: 5px 10px; border-bottom: 1px solid rgba(30, 45, 74, 0.3);
+      color: var(--text-primary); transition: background 0.2s;
     }
-    table.data-table tbody tr:hover td {
-      background: rgba(59, 130, 246, 0.08);
-    }
+    table.data-table tbody tr:hover td { background: rgba(59, 130, 246, 0.08); }
 
-    .tag {
-      display: inline-block;
-      padding: 1px 12px;
-      border-radius: 20px;
-      font-size: 11px;
-      font-weight: 500;
-    }
-    .tag.green {
-      background: rgba(16, 185, 129, 0.2);
-      color: var(--accent-green);
-    }
-    .tag.red {
-      background: rgba(239, 68, 68, 0.2);
-      color: var(--accent-red);
-    }
-    .tag.orange {
-      background: rgba(245, 158, 11, 0.2);
-      color: var(--accent-yellow);
-    }
+    .tag { display: inline-block; padding: 1px 12px; border-radius: 20px; font-size: 11px; font-weight: 500; }
+    .tag.green { background: rgba(16, 185, 129, 0.2); color: var(--accent-green); }
+    .tag.red { background: rgba(239, 68, 68, 0.2); color: var(--accent-red); }
 
-    .suggestion-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 6px;
-      flex: 1;
-      overflow: hidden;
-    }
-    .suggestion-item {
-      background: rgba(17, 24, 50, 0.5);
-      border: 1px solid var(--border-color);
-      border-radius: 6px;
-      padding: 6px 10px;
-      font-size: 11px;
-      line-height: 1.5;
-      color: var(--text-primary);
-      overflow: hidden;
-      transition: all 0.3s;
-      position: relative;
-    }
-    .suggestion-item::before {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 0;
-      bottom: 0;
-      width: 2px;
-      background: linear-gradient(180deg, var(--accent-cyan), var(--accent-purple));
-      border-radius: 2px;
-      animation: suggestionGlow 3s ease-in-out infinite;
-    }
-    @keyframes suggestionGlow {
-      0%, 100% { opacity: 0.5; }
-      50% { opacity: 1; }
-    }
-    .suggestion-item:hover {
-      border-color: rgba(6, 182, 212, 0.3);
-      background: rgba(17, 24, 50, 0.8);
-    }
-    .suggestion-item strong {
-      color: var(--accent-cyan);
-    }
-
-    .scroll-hint {
-      font-size: 10px;
-      color: var(--text-secondary);
-      text-align: right;
-      margin-top: 2px;
-      animation: hintBlink 2s ease-in-out infinite;
-    }
-    @keyframes hintBlink {
-      0%, 100% { opacity: 0.5; }
-      50% { opacity: 1; }
-    }
-
-    .right-panel-body {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      padding: 4px 8px 8px 8px;
-      height: 100%;
-    }
+    .right-panel-body { display: flex; flex-direction: column; gap: 4px; padding: 4px 8px 8px 8px; height: 100%; }
     .right-table-wrap {
-      flex: 0 0 auto;
-      height: 110px;
-      overflow: hidden;
-      position: relative;
+      flex: 0 0 auto; height: 150px; overflow: hidden; position: relative;
       mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
       -webkit-mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
     }
-    .right-table-scroll {
-      animation: scrollTable 14s linear infinite;
-    }
-    .right-table-scroll:hover {
-      animation-play-state: paused;
-    }
+    .right-table-scroll { animation: scrollTable 14s linear infinite; }
+    .right-table-scroll:hover { animation-play-state: paused; }
 
-    .right-suggestion-wrap {
-      flex: 1;
-      overflow: hidden;
-      min-height: 0;
-      margin-top: 4px;
-    }
-    .right-suggestion-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 4px;
-      height: 100%;
-    }
+    .right-suggestion-wrap { flex: 1; overflow: hidden; min-height: 0; margin-top: 4px; }
+    .right-suggestion-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; height: 100%; }
     .right-suggestion-item {
-      background: rgba(17, 24, 50, 0.5);
-      border: 1px solid var(--border-color);
-      border-radius: 4px;
-      padding: 4px 8px;
-      font-size: 10px;
-      line-height: 1.4;
-      color: var(--text-primary);
-      display: flex;
-      align-items: center;
-      transition: all 0.3s;
+      background: rgba(17, 24, 50, 0.5); border: 1px solid var(--border-color); border-radius: 4px;
+      padding: 4px 8px; font-size: 10px; line-height: 1.4; color: var(--text-primary);
+      display: flex; align-items: center; transition: all 0.3s;
     }
-    .right-suggestion-item::before {
-      content: '▸';
-      color: var(--accent-cyan);
-      margin-right: 4px;
-      font-size: 12px;
-    }
-    .right-suggestion-item strong {
-      color: var(--accent-cyan);
-      margin-right: 3px;
-    }
+    .right-suggestion-item::before { content: '▸'; color: var(--accent-cyan); margin-right: 4px; font-size: 12px; }
+    .right-suggestion-item strong { color: var(--accent-cyan); margin-right: 3px; }
+
+    .scroll-hint { font-size: 10px; color: var(--text-secondary); text-align: right; margin-top: 2px; animation: hintBlink 2s ease-in-out infinite; }
+    @keyframes hintBlink { 0%,100% { opacity: 0.5; } 50% { opacity: 1; } }
 
     @media (max-width: 1024px) {
       .row-main { grid-template-columns: 1fr 1fr; grid-template-rows: auto auto; }
       .row-main .panel:last-child { grid-column: span 2; }
       .row-bottom { grid-template-columns: 1fr 1fr; }
       .row-bottom .panel:last-child { grid-column: span 2; }
-      .right-suggestion-grid { grid-template-columns: 1fr 1fr; }
     }
     @media (max-width: 768px) {
       .row-main, .row-bottom { grid-template-columns: 1fr; }
@@ -447,14 +206,14 @@
   <div class="dashboard">
     <!-- Header -->
     <div class="header">
-      <div class="header-title"><h1>HEX车间 · 月度良品率驾驶舱</h1></div>
+      <div class="header-title"><h1>芯体车间 · 月度良品率驾驶舱</h1></div>
       <div class="header-stats">
         <div class="stat-item">
           <span class="stat-label">📆 9月累计不良</span>
           <span class="stat-value red pulse" id="kpiBad">--</span>
         </div>
         <div class="stat-item">
-          <span class="stat-label">📦 9月累计产量</span>
+          <span class="stat-label">📦 9月累计合格</span>
           <span class="stat-value blue pulse" id="kpiOutput">--</span>
         </div>
         <div class="stat-item">
@@ -471,21 +230,16 @@
 
     <!-- Row 2: 3 columns -->
     <div class="row-main">
-      <!-- Left: 月度良品率趋势 -->
       <div class="panel">
         <div class="panel-header"><span class="panel-title">📈 月度良品率趋势 (1–9月)</span></div>
         <div class="panel-body"><div class="chart-container"><canvas id="trendChart"></canvas></div></div>
       </div>
-
-      <!-- Center: 各产品月度良品率对比 -->
       <div class="panel">
         <div class="panel-header"><span class="panel-title">📊 各产品月度良品率对比</span></div>
         <div class="panel-body"><div class="chart-container"><canvas id="productTrendChart"></canvas></div></div>
       </div>
-
-      <!-- Right: 9月各产品炉前良品率 -->
       <div class="panel">
-        <div class="panel-header"><span class="panel-title">🏭 9月各产品良品率 (炉前)</span></div>
+        <div class="panel-header"><span class="panel-title">🏭 9月各产品良品率 (FTQ)</span></div>
         <div class="panel-body"><div class="chart-container"><canvas id="sepProductChart"></canvas></div></div>
       </div>
     </div>
@@ -515,10 +269,10 @@
           <div class="scroll-hint">⬇ 自动滚动 · 悬停暂停</div>
           <div class="right-suggestion-wrap">
             <div class="right-suggestion-grid" id="suggestionGrid">
-              <div class="right-suggestion-item"><strong>预检大漏</strong> T05/LEO蒸发器突出，建议优化水室装配</div>
-              <div class="right-suggestion-item"><strong>钎焊间隙/掉带</strong> X1325/G426集中，需强化工装点检</div>
-              <div class="right-suggestion-item"><strong>氦检虚焊</strong> 8KW/G426冷凝器异常，重点排查焊接参数</div>
-              <div class="right-suggestion-item"><strong>炉前呛管</strong> KX11/BX11偏高，检查来料一致性</div>
+              <div class="right-suggestion-item"><strong>预检大漏</strong> 预检不良3534件(31%)，大漏2594件，建议优化装配/检漏</div>
+              <div class="right-suggestion-item"><strong>钎焊缺陷</strong> 钎焊不良4091件(35.9%)，掉带/翅片倾斜集中，强化工装点检</div>
+              <div class="right-suggestion-item"><strong>炉前呛管</strong> 炉前1568件、呛管1225件，检查来料一致性</div>
+              <div class="right-suggestion-item"><strong>氦检泄漏</strong> 氦检1172件、氦检漏748件，重点核查焊接与氦检参数</div>
             </div>
           </div>
         </div>
@@ -528,77 +282,77 @@
 
   <script>
     // ================================================================
-    // 1. 核心数据 (更新至9月14日)
-    // KPI卡片采用第一个工作表9月列（K列）汇总数据
-    // 汇总良品率来自 K23，各产品族良品率来自 K15:K20
-    // 9月各产品炉前数据、工段不良、失效模式TOP来自9月份明细汇总
+    // 1. 核心数据 (更新至9月20日)
+    // KPI卡片来自主表9月汇总(K列)：合格419217.6、不良11397、良品率97.35%
+    // 工段分布与失效模式TOP来自9月份明细(截至9/19)
     // ================================================================
 
-    // 汇总良品率 (1-9月) —— 来自C23:K23
+    // 汇总良品率 (1-9月) —— 主表汇总行
     const monthlyYieldOverall = [
       97.24, // 1月
       97.29, // 2月
-      98.26, // 3月
-      98.06, // 4月
-      98.20, // 5月
-      98.10, // 6月
-      97.42, // 7月
-      98.02, // 8月
-      97.60  // 9月 (基于K23汇总)
+      98.24, // 3月
+      97.79, // 4月
+      98.05, // 5月
+      98.06, // 6月
+      98.05, // 7月
+      97.14, // 8月
+      97.35  // 9月 (截至9/19)
     ];
 
-    // 各产品族月度良品率 (1-9月) —— 来自K15:K20
+    // 各产品月度良品率 (1-9月) —— 主表各产品行
     const prodYieldData = {
-      'HTR': [97.02, 97.85, 98.09, 97.49, 97.12, 96.44, 96.51, 96.06, 97.50],
-      'In Cond': [98.69, 98.57, 99.28, 99.07, 98.49, 99.10, 99.43, 99.21, 99.49],
-      'Evap': [97.46, 98.08, 98.77, 98.57, 98.68, 98.50, 98.88, 97.70, 97.66],
-      'Cond': [95.00, 94.11, 95.71, 95.60, 96.19, 96.69, 96.18, 94.15, 95.41],
-      'RAD': [96.79, 97.79, 98.23, 98.74, 98.93, 98.88, 96.82, 98.69, 98.45],
-      'TOC': [96.62, 95.73, 95.70, 94.08, 95.36, 97.46, 97.53, 91.97, 94.68]
+      'HTR':     [97.02, 97.85, 98.09, 97.49, 97.11, 96.44, 96.50, 96.07, 97.89],
+      'In Cond': [98.69, 98.57, 99.28, 99.07, 98.49, 99.11, 99.43, 99.21, 98.81],
+      'Evap':    [97.46, 98.08, 98.77, 98.57, 98.68, 98.50, 98.88, 97.70, 97.41],
+      'Cond':    [94.99, 94.11, 95.71, 95.60, 96.19, 96.69, 96.19, 94.15, 93.20],
+      'RAD':     [96.79, 97.79, 98.03, 96.59, 98.58, 98.33, 95.55, 98.69, 98.65],
+      'TOC':     [96.62, 95.73, 95.70, 94.08, 95.36, 97.46, 97.53, 91.98, 93.63]
     };
 
-    // 9月各产品炉前数据 (从9月份明细汇总)
-    const sepProdData = {
-      'HTR': { good: 82000, bad: 2050, yield: 97.50 },
-      'In Cond': { good: 68000, bad: 350, yield: 99.49 },
-      'Evap': { good: 148000, bad: 3540, yield: 97.66 },
-      'Cond': { good: 52000, bad: 2500, yield: 95.41 },
-      'RAD': { good: 38000, bad: 590, yield: 98.45 },
-      'TOC': { good: 16000, bad: 850, yield: 94.68 }
+    // 9月各产品良品率 (FTQ，主表9月列)
+    const sepProdYield = {
+      'HTR': 97.89, 'In Cond': 98.81, 'Evap': 97.41, 'Cond': 93.20, 'RAD': 98.65, 'TOC': 93.63
     };
 
-    // 9月汇总KPI (采用第一个工作表K列)
-    const sepTotalGood = 404000;  // K21 汇总合格数
-    const sepTotalBad = 9880;     // K22 汇总不良数
-    const sepYield = 97.60;       // K23 汇总良品率
+    // 9月汇总KPI (主表汇总行 K列)
+    const sepTotalGood = 419218;  // 9月累计合格
+    const sepTotalBad = 11397;    // 9月累计不良
+    const sepYield = 97.35;       // 9月良品率
 
     const prodNames = Object.keys(prodYieldData);
 
     // ================================================================
-    // 9月工段不良统计 (从9月份明细汇总)
+    // 9月工段不良统计 (9月份明细，截至9/19)
     // ================================================================
     const stationBad = {
-      '炉前': 2500,
-      '点焊': 358,
-      '钎焊': 2800,
-      '预检': 2200,
-      '超声波': 500,
-      '亲水湿度检': 250,
-      '火焰焊长管': 350,
-      '氦检': 1500,
-      '干检（总成）': 350
+      '钎焊': 4091,
+      '预检': 3534,
+      '炉前': 1568,
+      '氦检': 1172,
+      '干检（总成）': 300,
+      '超声波': 245,
+      '点焊': 218,
+      '火焰焊长管': 168,
+      '亲水湿度检': 101
     };
 
-    // 9月TOP失效模式 (从9月份明细汇总)
+    // 9月TOP失效模式 (9月份明细，截至9/19)
     const defectBad = {
-      '预检大漏/呛管': 2200,
-      '钎焊护板移位/间隙/掉带': 1800,
-      '氦检泄漏/虚焊': 1500,
-      '炉前呛管/报废': 2500,
-      '点焊虚焊': 358,
-      '超声波内漏': 500,
-      '火焰焊虚焊/过烧': 350,
-      '干检微漏/大漏': 350
+      '大漏': 2594,
+      '呛管': 1225,
+      '其它': 1087,
+      '氦检漏': 748,
+      '翅片倾斜': 726,
+      '掉带': 652,
+      '虚焊': 459,
+      '支架与集流管间隙': 410,
+      '预检漏': 336,
+      '护板移位': 300,
+      '干燥筒与集流管间隙': 294,
+      '报废': 286,
+      '内漏': 251,
+      '微漏': 227
     };
 
     // ================================================================
@@ -658,93 +412,68 @@
     Chart.defaults.color = '#c8d0dc';
     Chart.defaults.borderColor = '#1a2540';
 
+    const monthLabels = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月'];
+
     // 4.1 月度趋势 (汇总良品率 1-9月)
-    const ctx1 = document.getElementById('trendChart').getContext('2d');
-    new Chart(ctx1, {
+    new Chart(document.getElementById('trendChart'), {
       type: 'line',
       data: {
-        labels: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月'],
+        labels: monthLabels,
         datasets: [{
           label: '良品率',
           data: monthlyYieldOverall,
           borderColor: '#60a5fa',
           backgroundColor: 'rgba(96,165,250,0.08)',
-          fill: true,
-          tension: 0.25,
-          pointBackgroundColor: '#60a5fa',
-          pointBorderColor: '#0f1729',
-          pointBorderWidth: 2,
-          pointRadius: 4,
-          pointHoverRadius: 7,
+          fill: true, tension: 0.25,
+          pointBackgroundColor: '#60a5fa', pointBorderColor: '#0f1729',
+          pointBorderWidth: 2, pointRadius: 4, pointHoverRadius: 7,
         }, {
           label: '目标 97.5%',
-          data: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月'].map(() => 97.5),
-          borderColor: '#f87171',
-          borderDash: [6, 4],
-          borderWidth: 2,
-          pointRadius: 0,
-          fill: false,
+          data: monthLabels.map(() => 97.5),
+          borderColor: '#f87171', borderDash: [6, 4], borderWidth: 2, pointRadius: 0, fill: false,
         }]
       },
       options: {
-        responsive: true,
-        maintainAspectRatio: false,
+        responsive: true, maintainAspectRatio: false,
         animation: { duration: 1200, easing: 'easeOutQuart' },
         plugins: {
           legend: { position: 'top', labels: { usePointStyle: true, boxWidth: 8, padding: 12, font: { size: 10 } } },
           tooltip: { callbacks: { label: (ctx) => ctx.dataset.label + ': ' + ctx.parsed.y + '%' } }
         },
         scales: {
-          y: { min: 93, max: 100, ticks: { callback: v => v + '%', color: '#7a8599', font: { size: 10 } },
-            grid: { color: 'rgba(30,45,74,0.5)' } },
+          y: { min: 93, max: 100, ticks: { callback: v => v + '%', color: '#7a8599', font: { size: 10 } }, grid: { color: 'rgba(30,45,74,0.5)' } },
           x: { ticks: { color: '#7a8599', font: { size: 10 } }, grid: { color: 'rgba(30,45,74,0.5)' } }
         }
       }
     });
 
     // 4.2 各产品月度对比 (1-9月)
-    const ctx2 = document.getElementById('productTrendChart').getContext('2d');
     const colors = ['#f87171', '#60a5fa', '#4ade80', '#fb923c', '#a78bfa', '#22d3ee'];
     const datasets2 = prodNames.map((p, idx) => ({
-      label: p,
-      data: prodYieldData[p],
-      borderColor: colors[idx % colors.length],
-      backgroundColor: 'transparent',
-      tension: 0.2,
-      pointRadius: 3,
-      borderWidth: 2,
-      pointHoverRadius: 6,
+      label: p, data: prodYieldData[p],
+      borderColor: colors[idx % colors.length], backgroundColor: 'transparent',
+      tension: 0.2, pointRadius: 3, borderWidth: 2, pointHoverRadius: 6,
     }));
-    new Chart(ctx2, {
+    new Chart(document.getElementById('productTrendChart'), {
       type: 'line',
-      data: {
-        labels: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月'],
-        datasets: datasets2
-      },
+      data: { labels: monthLabels, datasets: datasets2 },
       options: {
-        responsive: true,
-        maintainAspectRatio: false,
+        responsive: true, maintainAspectRatio: false,
         animation: { duration: 1200, easing: 'easeOutQuart' },
         plugins: {
           legend: { position: 'top', labels: { usePointStyle: true, boxWidth: 8, padding: 10, font: { size: 9 } } }
         },
         scales: {
-          y: {
-            min: 88,
-            max: 100,
-            ticks: { callback: v => v + '%', color: '#7a8599', font: { size: 10 } },
-            grid: { color: 'rgba(30,45,74,0.5)' }
-          },
+          y: { min: 88, max: 100, ticks: { callback: v => v + '%', color: '#7a8599', font: { size: 10 } }, grid: { color: 'rgba(30,45,74,0.5)' } },
           x: { ticks: { color: '#7a8599', font: { size: 10 } }, grid: { color: 'rgba(30,45,74,0.5)' } }
         }
       }
     });
 
-    // 4.3 9月各产品炉前良品率 (柱状图)
-    const ctx3 = document.getElementById('sepProductChart').getContext('2d');
-    const sepYieldArr = prodNames.map(p => sepProdData[p].yield);
+    // 4.3 9月各产品良品率 (柱状图)
+    const sepYieldArr = prodNames.map(p => sepProdYield[p]);
     const barColors = ['#f87171', '#60a5fa', '#4ade80', '#fb923c', '#a78bfa', '#22d3ee'];
-    new Chart(ctx3, {
+    new Chart(document.getElementById('sepProductChart'), {
       type: 'bar',
       data: {
         labels: prodNames,
@@ -752,32 +481,24 @@
           label: '良品率 (%)',
           data: sepYieldArr.map(v => +v.toFixed(2)),
           backgroundColor: barColors.map(c => c + '66'),
-          borderColor: barColors,
-          borderWidth: 2,
-          borderRadius: 4,
+          borderColor: barColors, borderWidth: 2, borderRadius: 4,
         }]
       },
       options: {
-        responsive: true,
-        maintainAspectRatio: false,
+        responsive: true, maintainAspectRatio: false,
         animation: { duration: 1000, easing: 'easeOutBounce' },
         plugins: {
           legend: { display: false },
           tooltip: { callbacks: { label: (ctx) => '良品率: ' + ctx.parsed.y + '%' } }
         },
         scales: {
-          y: {
-            min: 88,
-            max: 100,
-            ticks: { callback: v => v + '%', color: '#7a8599', font: { size: 10 } },
-            grid: { color: 'rgba(30,45,74,0.5)' }
-          },
+          y: { min: 88, max: 100, ticks: { callback: v => v + '%', color: '#7a8599', font: { size: 10 } }, grid: { color: 'rgba(30,45,74,0.5)' } },
           x: { ticks: { color: '#7a8599', font: { size: 10 } }, grid: { color: 'rgba(30,45,74,0.5)' } }
         }
       }
     });
 
-    // 4.4 9月工段分布 (饼图)
+    // 4.4 9月工段分布 (环形图)
     const flowingGlowPlugin = {
       id: 'flowingGlow',
       beforeDraw(chart) {
@@ -797,45 +518,40 @@
         gradient.addColorStop(0.5, 'rgba(59, 130, 246, 0.03)');
         gradient.addColorStop(1, 'rgba(6, 182, 212, 0)');
         ctx.fillStyle = gradient;
-        ctx.beginPath();
-        ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
-        ctx.fill();
+        ctx.beginPath(); ctx.arc(centerX, centerY, radius, 0, Math.PI * 2); ctx.fill();
         ctx.restore();
       }
     };
     Chart.register(flowingGlowPlugin);
 
-    const ctx4 = document.getElementById('stationChart').getContext('2d');
     const stationLabels = Object.keys(stationBad);
     const stationValues = Object.values(stationBad);
     const stationColors = ['#60a5fa', '#4ade80', '#fb923c', '#f87171', '#a78bfa', '#22d3ee', '#facc15', '#f472b6', '#34d399'];
-    new Chart(ctx4, {
+    new Chart(document.getElementById('stationChart'), {
       type: 'doughnut',
       data: {
         labels: stationLabels,
         datasets: [{
           data: stationValues,
           backgroundColor: stationColors.slice(0, stationLabels.length),
-          borderWidth: 2,
-          borderColor: '#0f1729',
+          borderWidth: 2, borderColor: '#0f1729',
         }]
       },
       options: {
-        responsive: true,
-        maintainAspectRatio: false,
+        responsive: true, maintainAspectRatio: false,
         animation: { duration: 1200, easing: 'easeOutQuart' },
         plugins: {
-          legend: { position: 'right', labels: { boxWidth: 12, font: { size: 9 }, color: '#c8d0dc' } }
+          legend: { position: 'right', labels: { boxWidth: 12, font: { size: 9 }, color: '#c8d0dc' } },
+          tooltip: { callbacks: { label: (ctx) => ctx.label + ': ' + ctx.parsed + ' 件 (' + (ctx.parsed / 11397 * 100).toFixed(1) + '%)' } }
         }
       }
     });
 
     // 4.5 9月TOP失效模式 (横向条形图)
-    const ctx5 = document.getElementById('defectChart').getContext('2d');
     const defectLabels = Object.keys(defectBad);
     const defectValues = Object.values(defectBad);
-    const defectColors = ['#f87171', '#fb923c', '#facc15', '#60a5fa', '#a78bfa', '#22d3ee', '#4ade80', '#f472b6'];
-    new Chart(ctx5, {
+    const defectColors = ['#f87171', '#fb923c', '#facc15', '#60a5fa', '#a78bfa', '#22d3ee', '#4ade80', '#f472b6', '#f87171', '#fb923c', '#facc15', '#60a5fa', '#a78bfa', '#22d3ee'];
+    new Chart(document.getElementById('defectChart'), {
       type: 'bar',
       data: {
         labels: defectLabels,
@@ -844,18 +560,15 @@
           data: defectValues,
           backgroundColor: defectColors.slice(0, defectLabels.length).map(c => c + '77'),
           borderColor: defectColors.slice(0, defectLabels.length),
-          borderWidth: 2,
-          borderRadius: 4,
+          borderWidth: 2, borderRadius: 4,
         }]
       },
       options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        indexAxis: 'y',
+        responsive: true, maintainAspectRatio: false, indexAxis: 'y',
         animation: { duration: 1000, easing: 'easeOutQuart' },
         plugins: {
           legend: { display: false },
-          tooltip: { callbacks: { label: (ctx) => ctx.parsed.x + ' 件' } }
+          tooltip: { callbacks: { label: (ctx) => ctx.parsed.x + ' 件 (' + (ctx.parsed.x / 11397 * 100).toFixed(1) + '%)' } }
         },
         scales: {
           x: { beginAtZero: true, ticks: { color: '#7a8599', font: { size: 10 } }, grid: { color: 'rgba(30,45,74,0.5)' } },
@@ -865,17 +578,16 @@
     });
 
     // ================================================================
-    // 5. 月度明细表格 (含9月)
+    // 5. 月度明细表格
     // ================================================================
     const miniBody = document.getElementById('miniMonthlyBody');
-    const months = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月'];
     function buildTableRows() {
       let html = '';
-      for (let i = 0; i < months.length; i++) {
+      for (let i = 0; i < monthLabels.length; i++) {
         const y = monthlyYieldOverall[i];
         const status = y >= 97.5 ? '达标' : '未达标';
         const cls = y >= 97.5 ? 'green' : 'red';
-        html += `<tr><td>${months[i]}</td><td>${y.toFixed(2)}%</td><td><span class="tag ${cls}">${status}</span></td></tr>`;
+        html += `<tr><td>${monthLabels[i]}</td><td>${y.toFixed(2)}%</td><td><span class="tag ${cls}">${status}</span></td></tr>`;
       }
       return html;
     }
@@ -910,8 +622,8 @@
       suggestionItems[0].style.background = 'rgba(6, 182, 212, 0.08)';
     }
 
-    console.log('🚀 驾驶舱已更新 (数据至9月15日)');
-    console.log('📊 9月总合格:', sepTotalGood, '总不良:', sepTotalBad, '良品率:', sepYield + '%');
+    console.log('🚀 芯体车间驾驶舱已更新 (数据至9月20日)');
+    console.log('📊 9月累计合格:', sepTotalGood, '累计不良:', sepTotalBad, '良品率:', sepYield + '%');
   </script>
 </body>
 </html>
