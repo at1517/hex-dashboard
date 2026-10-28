@@ -570,7 +570,7 @@
     const stationLabels = Object.keys(stationBad);
     const stationValues = Object.values(stationBad);
     const stationColors = ['#60a5fa','#4ade80','#fb923c','#f87171','#a78bfa','#22d3ee','#facc15','#f472b6','#34d399'];
-    new Chart(ctx4, {
+    const stationChart = new Chart(ctx4, {
       type: 'doughnut',
       data: {
         labels: stationLabels,
@@ -586,6 +586,48 @@
         plugins: { legend: { position: 'right', labels: { boxWidth: 12, font: { size: 9 }, color: '#c8d0dc' } } }
       }
     });
+    // ============================================================
+    // 4.4b 工段分布饼图 · 顺时针慢速旋转（约 15 秒 / 圈）
+    // 说明：
+    //   - Chart.js 的 options.rotation 单位是度，顺时针方向增大
+    //   - 默认起始角为 -90（12点钟方向）
+    //   - 使用 chart.update('none') 关闭过渡动画，保证每帧平滑旋转
+    //   - 鼠标悬停时暂停旋转，方便查看各扇区
+    // ============================================================
+    const SPIN_PERIOD_MS = 15000;   // 一圈耗时 15 秒
+    const BASE_ROTATION = -90;      // Chart.js 默认起始角
+    let stationRotation = BASE_ROTATION;
+    let stationLastTs = null;
+    let stationSpinning = true;
+
+    function stationSpinLoop(ts) {
+      if (!stationSpinning) {
+        stationLastTs = null;                       // 恢复时重新计时，避免跳变
+        requestAnimationFrame(stationSpinLoop);
+        return;
+      }
+      if (stationLastTs === null) stationLastTs = ts;
+      const dt = ts - stationLastTs;                // 距上一帧的毫秒数
+      stationLastTs = ts;
+
+      // 15 秒转 360°，即每毫秒 0.024°
+      stationRotation += (360 / SPIN_PERIOD_MS) * dt;
+
+      // 角度归一化，防止数值无限增大（-90 与 270 等价）
+      if (stationRotation >= BASE_ROTATION + 360) stationRotation -= 360;
+
+      stationChart.options.rotation = stationRotation;
+      stationChart.update('none');                  // 无动画更新，保证流畅
+      requestAnimationFrame(stationSpinLoop);
+    }
+
+    // 等初始渲染动画（1200ms）结束后再启动旋转，避免打断入场动画
+    setTimeout(() => requestAnimationFrame(stationSpinLoop), 1300);
+
+    // 鼠标悬停暂停 / 移出恢复
+    const stationCanvasEl = document.getElementById('stationChart');
+    stationCanvasEl.addEventListener('mouseenter', () => { stationSpinning = false; });
+    stationCanvasEl.addEventListener('mouseleave', () => { stationSpinning = true; stationLastTs = null; });
 
     // 4.5 TOP失效模式
     const ctx5 = document.getElementById('defectChart').getContext('2d');
