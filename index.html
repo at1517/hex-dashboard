@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HEX车间 · 月度良品率驾驶舱 (更新至10月26日)</title>
+  <title>月度良品率数据看板（数据至11月17日）</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
     :root {
@@ -147,6 +147,10 @@
       display: flex; flex-direction: column;
     }
     .chart-container { position: relative; width: 100%; height: 100%; }
+    .chart-fallback {
+      display: none; align-items: center; justify-content: center; height: 100%;
+      color: var(--text-secondary); font-size: 12px; text-align: center; line-height: 1.6;
+    }
     .table-wrap {
       flex: 1; overflow: hidden; position: relative;
       mask-image: linear-gradient(to bottom, black 90%, transparent 100%);
@@ -176,26 +180,6 @@
     .tag.green { background: rgba(16,185,129,0.2); color: var(--accent-green); }
     .tag.red { background: rgba(239,68,68,0.2); color: var(--accent-red); }
     .tag.orange { background: rgba(245,158,11,0.2); color: var(--accent-yellow); }
-    .suggestion-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; flex: 1; overflow: hidden; }
-    .suggestion-item {
-      background: rgba(17,24,50,0.5); border: 1px solid var(--border-color);
-      border-radius: 6px; padding: 6px 10px; font-size: 11px;
-      line-height: 1.5; color: var(--text-primary); overflow: hidden;
-      transition: all 0.3s; position: relative;
-    }
-    .suggestion-item::before {
-      content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px;
-      background: linear-gradient(180deg, var(--accent-cyan), var(--accent-purple));
-      border-radius: 2px; animation: suggestionGlow 3s ease-in-out infinite;
-    }
-    @keyframes suggestionGlow {
-      0%, 100% { opacity: 0.5; }
-      50% { opacity: 1; }
-    }
-    .suggestion-item:hover {
-      border-color: rgba(6,182,212,0.3); background: rgba(17,24,50,0.8);
-    }
-    .suggestion-item strong { color: var(--accent-cyan); }
     .scroll-hint {
       font-size: 10px; color: var(--text-secondary); text-align: right;
       margin-top: 2px; animation: hintBlink 2s ease-in-out infinite;
@@ -209,7 +193,7 @@
       padding: 4px 8px 8px 8px; height: 100%;
     }
     .right-table-wrap {
-      flex: 0 0 auto; height: 110px; overflow: hidden; position: relative;
+      flex: 0 0 auto; height: 130px; overflow: hidden; position: relative;
       mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
       -webkit-mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
     }
@@ -224,7 +208,7 @@
       display: flex; align-items: center; transition: all 0.3s;
     }
     .right-suggestion-item::before {
-      content: '▸'; color: var(--accent-cyan); margin-right: 4px; font-size: 12px;
+      content: '🔧'; color: var(--accent-cyan); margin-right: 4px; font-size: 12px;
     }
     .right-suggestion-item strong { color: var(--accent-cyan); margin-right: 3px; }
     @media (max-width: 1024px) {
@@ -249,22 +233,22 @@
 <body>
   <div class="dashboard">
     <div class="header">
-      <div class="header-title"><h1>HEX车间 · 月度良品率驾驶舱</h1></div>
+      <div class="header-title"><h1>月度良品率数据看板</h1></div>
       <div class="header-stats">
         <div class="stat-item">
-          <span class="stat-label">📆 10月累计不良</span>
+          <span class="stat-label">📅 11月累计不良数</span>
           <span class="stat-value red pulse" id="kpiBad">--</span>
         </div>
         <div class="stat-item">
-          <span class="stat-label">📦 10月累计产量</span>
+          <span class="stat-label">📦 11月累计产出</span>
           <span class="stat-value blue pulse" id="kpiOutput">--</span>
         </div>
         <div class="stat-item">
-          <span class="stat-label">📊 10月良品率</span>
+          <span class="stat-label">📈 11月累计良品率</span>
           <span class="stat-value green pulse" id="kpiYield">--</span>
         </div>
         <div class="stat-item">
-          <span class="stat-label">🎯 目标</span>
+          <span class="stat-label">🎯 月度目标</span>
           <span class="stat-value cyan">97.5%</span>
         </div>
       </div>
@@ -273,49 +257,64 @@
 
     <div class="row-main">
       <div class="panel">
-        <div class="panel-header"><span class="panel-title">📈 月度良品率趋势 (1–10月)</span></div>
-        <div class="panel-body"><div class="chart-container"><canvas id="trendChart"></canvas></div></div>
+        <div class="panel-header"><span class="panel-title">📉 月度良品率趋势 (1–11月)</span></div>
+        <div class="panel-body">
+          <div class="chart-container"><canvas id="trendChart"></canvas></div>
+          <div class="chart-fallback">图表库加载失败<br>请检查网络连接后刷新</div>
+        </div>
       </div>
       <div class="panel">
-        <div class="panel-header"><span class="panel-title">📊 各产品月度良品率对比 (1–10月)</span></div>
-        <div class="panel-body"><div class="chart-container"><canvas id="productTrendChart"></canvas></div></div>
+        <div class="panel-header"><span class="panel-title">📊 各产品月度良品率对比 (1–11月)</span></div>
+        <div class="panel-body">
+          <div class="chart-container"><canvas id="productTrendChart"></canvas></div>
+          <div class="chart-fallback">图表库加载失败<br>请检查网络连接后刷新</div>
+        </div>
       </div>
       <div class="panel">
-        <div class="panel-header"><span class="panel-title">🏭 10月各产品良品率（汇总）</span></div>
-        <div class="panel-body"><div class="chart-container"><canvas id="octProductChart"></canvas></div></div>
+        <div class="panel-header"><span class="panel-title">📌 11月各产品良品率（柱状）</span></div>
+        <div class="panel-body">
+          <div class="chart-container"><canvas id="octProductChart"></canvas></div>
+          <div class="chart-fallback">图表库加载失败<br>请检查网络连接后刷新</div>
+        </div>
       </div>
     </div>
 
     <div class="row-bottom">
       <div class="panel">
-        <div class="panel-header"><span class="panel-title">🧩 10月不良 · 工段分布</span></div>
-        <div class="panel-body"><div class="chart-container"><canvas id="stationChart"></canvas></div></div>
+        <div class="panel-header"><span class="panel-title">🏭 11月不良 · 工段分布</span></div>
+        <div class="panel-body">
+          <div class="chart-container"><canvas id="stationChart"></canvas></div>
+          <div class="chart-fallback">图表库加载失败<br>请检查网络连接后刷新</div>
+        </div>
       </div>
       <div class="panel">
-        <div class="panel-header"><span class="panel-title">⚠️ TOP失效模式 (10月)</span></div>
-        <div class="panel-body"><div class="chart-container"><canvas id="defectChart"></canvas></div></div>
+        <div class="panel-header"><span class="panel-title">🔥 TOP10 失效模式 (11月)</span></div>
+        <div class="panel-body">
+          <div class="chart-container"><canvas id="defectChart"></canvas></div>
+          <div class="chart-fallback">图表库加载失败<br>请检查网络连接后刷新</div>
+        </div>
       </div>
       <div class="panel">
-        <div class="panel-header"><span class="panel-title">📋 月度明细 & AI建议</span></div>
+        <div class="panel-header"><span class="panel-title">📋 11月产品不良明细 & AI建议</span></div>
         <div class="panel-body right-panel-body">
           <div class="right-table-wrap">
             <div class="right-table-scroll">
               <table class="data-table" id="miniMonthlyTable">
-                <thead><tr><th>月份</th><th>良品率</th><th>状态</th></tr></thead>
+                <thead><tr><th>产品</th><th>不良数</th><th>占比</th></tr></thead>
                 <tbody id="miniMonthlyBody"></tbody>
                 <tbody id="miniMonthlyBodyClone" style="display:none;"></tbody>
               </table>
             </div>
           </div>
-          <div class="scroll-hint">⬇ 自动滚动 · 悬停暂停</div>
+          <div class="scroll-hint">↕ 自动滚动 · 鼠标悬停暂停</div>
           <div class="right-suggestion-wrap">
             <div class="right-suggestion-grid" id="suggestionGrid">
-              <div class="right-suggestion-item"><strong>预检大漏/呛管</strong> T05/BX11/MS11/Silver蒸发器突出，建议优化水室装配与护板定位</div>
-              <div class="right-suggestion-item"><strong>钎焊间隙/掉带</strong> X1325/G426/SX11/BX11冷凝器集中，需强化工装点检与夹具清洁</div>
-              <div class="right-suggestion-item"><strong>氦检虚焊/泄漏</strong> A+后/Silver/LEO/EHV蒸发器及L663/KX11暖风异常，重点排查焊接参数</div>
-              <div class="right-suggestion-item"><strong>炉前呛管</strong> KX11/MS11/L663暖风、V710水箱偏高，检查来料一致性与冲压毛刺</div>
-              <div class="right-suggestion-item"><strong>点焊虚焊</strong> SX11冷凝器10-14/10-21集中，执行电极修磨与电流点检</div>
-              <div class="right-suggestion-item"><strong>数据治理</strong> 10-26氦检区出现1900/1901/1902日期格式错误，需修正H/I列格式</div>
+              <div class="right-suggestion-item"><strong>大漏/氦检漏</strong> 预检+氦检合计5241件，重点排查钎焊焊缝与水室密封</div>
+              <div class="right-suggestion-item"><strong>翅片熔蚀/倾斜</strong> 647件，复核炉温窗口与钎剂涂覆量，稳定炉内气氛</div>
+              <div class="right-suggestion-item"><strong>呛管</strong> 566件集中在炉前，优化管路装夹定位与目检标准</div>
+              <div class="right-suggestion-item"><strong>护板移位</strong> 552件，检查护板工装定位与焊后搬运防变形</div>
+              <div class="right-suggestion-item"><strong>报废/掉带</strong> 合计954件，排查钎焊工装与焊环匹配，降低过程报废</div>
+              <div class="right-suggestion-item"><strong>间隙类不良</strong> 水室主板R角/支架集流管间隙561件，加强装配尺寸链管控</div>
             </div>
           </div>
         </div>
@@ -325,79 +324,64 @@
 
   <script>
     // ================================================================
-    // 1. 核心数据（基于“月度良品率”工作表 + 10月份明细汇总）
-    // 10月各产品合格数量 = 10月份明细中“炉前”工序生产总数(H) * 1.2
-    // 10月各产品不良数量 = 10月份明细中按产品类型汇总不良数量(I)
-    // 数据截至 2026-10-26
+    // 数据区 —— 上方 KPI 与图表来自 Sheet1「月度良品率」
     // ================================================================
+    const monthLabels = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月'];
 
+    // Sheet1 汇总行：月度良品率（1–11月）
     const monthlyYieldOverall = [
-      97.24, // 1月
-      97.29, // 2月
-      98.26, // 3月
-      98.06, // 4月
-      98.20, // 5月
-      98.10, // 6月
-      97.42, // 7月
-      98.02, // 8月
-      97.60, // 9月
-      97.94  // 10月
+      97.24, 97.29, 98.24, 97.79, 98.05,
+      98.06, 98.05, 97.14, 97.34, 97.80, 97.73
     ];
 
-    // 各产品族月度良品率（1-10月）；TOC 10月无明细，置空
+    // Sheet1 各产品月度良品率（1–11月）
     const prodYieldData = {
-      'HTR':     [97.02, 97.85, 98.09, 97.49, 97.12, 96.44, 96.51, 96.06, 97.50, 96.85],
-      'In Cond': [98.69, 98.57, 99.28, 99.07, 98.49, 99.10, 99.43, 99.21, 99.49, 99.32],
-      'Evap':    [97.46, 98.08, 98.77, 98.57, 98.68, 98.50, 98.88, 97.70, 97.66, 98.66],
-      'Cond':    [95.00, 94.11, 95.71, 95.60, 96.19, 96.69, 96.18, 94.15, 95.41, 94.55],
-      'RAD':     [96.79, 97.79, 98.23, 98.74, 98.93, 98.88, 96.82, 98.69, 98.45, 98.55],
-      'TOC':     [96.62, 95.73, 95.70, 94.08, 95.36, 97.46, 97.53, 91.97, 94.68, null]
+      'HTR':     [97.02, 97.85, 98.09, 97.49, 97.11, 96.44, 96.50, 96.07, 97.24, 96.66, 95.47],
+      'In Cond': [98.69, 98.57, 99.28, 99.07, 98.49, 99.11, 99.43, 99.21, 99.18, 99.40, 99.31],
+      'Evap':    [97.46, 98.08, 98.77, 98.57, 98.68, 98.50, 98.88, 97.70, 97.38, 98.46, 98.08],
+      'Cond':    [94.99, 94.11, 95.71, 95.60, 96.19, 96.69, 96.19, 94.15, 92.58, 93.70, 96.40],
+      'RAD':     [96.79, 97.79, 98.03, 96.59, 98.58, 98.33, 95.55, 98.69, 98.56, 98.22, 99.13],
+      'TOC':     [96.62, 95.73, 95.70, 94.08, 95.36, 97.46, 97.53, 91.98, 93.88, 89.02, 96.89]
     };
 
-    // 10月各产品汇总良品率（用于柱状图）
-    const octProdYield = {
-      'HTR': 96.85,
-      'In Cond': 99.32,
-      'Evap': 98.66,
-      'Cond': 94.55,
-      'RAD': 98.55
+    // Sheet1 11月各产品良品率（柱状图）
+    const novProdYield = {
+      'HTR': 95.47, 'In Cond': 99.31, 'Evap': 98.08,
+      'Cond': 96.40, 'RAD': 99.13, 'TOC': 96.89
     };
 
-    // 10月汇总KPI
-    const octTotalGood = 504085;  // 各产品炉前H*1.2汇总
-    const octTotalBad = 10573;    // 各产品不良I汇总
-    const octYield = 97.94;
-
-    // 10月工段不良分布
-    const stationBad = {
-      '炉前': 2104,
-      '点焊': 145,
-      '钎焊': 3226,
-      '预检': 2315,
-      '超声波': 204,
-      '亲水湿度检': 82,
-      '火焰焊长管': 94,
-      '氦检': 2182,
-      '干检（总成）': 221
-    };
-
-    // 10月TOP失效模式（按工段/模式归并）
-    const defectBad = {
-      '预检大漏/呛管': 2315,
-      '钎焊护板移位/间隙/掉带': 2500,
-      '氦检泄漏/虚焊': 2182,
-      '炉前呛管/报废': 2104,
-      '干检微漏/大漏': 221,
-      '超声波内漏': 204,
-      '点焊虚焊': 145,
-      '火焰焊虚焊/过烧': 94
-    };
-
-    const prodNames = Object.keys(prodYieldData);
-    const octProdNames = Object.keys(octProdYield);
+    // Sheet1 11月 KPI
+    const novTotalGood = 441026;  // 11月合格数量
+    const novTotalBad  = 10258;   // 11月不良数量
+    const novYield     = 97.73;   // 11月良品率
 
     // ================================================================
-    // 2. KPI 数字滚动动画
+    // 数据区 —— 底部三个模块来自 Sheet2「11月份明细」聚合
+    // ================================================================
+    const stationBad = {
+      '预检': 3364, '钎焊': 3205, '氦检': 1877, '炉前': 1129,
+      '干检（总成）': 235, '超声波': 195, '火焰焊长管': 124,
+      '亲水湿度检': 73, '点焊': 56
+    };
+
+    const defectBad = {
+      '大漏': 1867, '其它': 1541, '氦检漏': 1232, '翅片熔蚀/倾斜': 647,
+      '呛管': 566, '护板移位': 552, '报废': 535, '掉带': 419,
+      '水室主板R角间隙': 326, '支架与集流管间隙': 235
+    };
+
+    // 11月产品不良明细（Sheet2 按产品聚合，合计 10258 与 Sheet1 一致）
+    const productBad = {
+      'HTR': 4135, 'Evap': 3631, 'Cond': 1097,
+      'In Cond': 563, 'TOC': 449, 'RAD': 383
+    };
+    const productBadTotal = 10258;
+
+    const prodNames = Object.keys(prodYieldData);
+    const novProdNames = Object.keys(novProdYield);
+
+    // ================================================================
+    // 1. KPI 数字滚动动画
     // ================================================================
     function animateNumber(el, target, suffix = '', duration = 1200) {
       const start = 0;
@@ -429,12 +413,12 @@
     elOutput.textContent = '0';
     elYield.textContent = '0.00%';
 
-    setTimeout(() => animateNumber(elBad, octTotalBad, ''), 300);
-    setTimeout(() => animateNumber(elOutput, octTotalGood, ''), 400);
-    setTimeout(() => animateNumber(elYield, octYield, '', 1500), 200);
+    setTimeout(() => animateNumber(elBad, novTotalBad, ''), 300);
+    setTimeout(() => animateNumber(elOutput, novTotalGood, ''), 400);
+    setTimeout(() => animateNumber(elYield, novYield, '', 1500), 200);
 
     // ================================================================
-    // 3. 时间
+    // 2. 时间
     // ================================================================
     function updateDateTime() {
       const now = new Date();
@@ -442,237 +426,227 @@
         year: 'numeric', month: '2-digit', day: '2-digit',
         hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false
       });
-      document.getElementById('datetime').textContent = '🕒 ' + text;
+      document.getElementById('datetime').textContent = '📅 ' + text;
     }
     setInterval(updateDateTime, 1000);
     updateDateTime();
 
     // ================================================================
-    // 4. 图表渲染
+    // 3. 图表渲染
     // ================================================================
-    Chart.defaults.color = '#c8d0dc';
-    Chart.defaults.borderColor = '#1a2540';
+    if (typeof Chart === 'undefined') {
+      document.querySelectorAll('.chart-container').forEach(c => c.style.display = 'none');
+      document.querySelectorAll('.chart-fallback').forEach(f => f.style.display = 'flex');
+    } else {
+      Chart.defaults.color = '#c8d0dc';
+      Chart.defaults.borderColor = '#1a2540';
 
-    // 4.1 月度趋势
-    const ctx1 = document.getElementById('trendChart').getContext('2d');
-    new Chart(ctx1, {
-      type: 'line',
-      data: {
-        labels: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月'],
-        datasets: [{
-          label: '良品率',
-          data: monthlyYieldOverall,
-          borderColor: '#60a5fa',
-          backgroundColor: 'rgba(96,165,250,0.08)',
-          fill: true, tension: 0.25,
-          pointBackgroundColor: '#60a5fa',
-          pointBorderColor: '#0f1729',
-          pointBorderWidth: 2,
-          pointRadius: 4, pointHoverRadius: 7,
-        }, {
-          label: '目标 97.5%',
-          data: monthlyYieldOverall.map(() => 97.5),
-          borderColor: '#f87171', borderDash: [6, 4], borderWidth: 2,
-          pointRadius: 0, fill: false,
-        }]
-      },
-      options: {
-        responsive: true, maintainAspectRatio: false,
-        animation: { duration: 1200, easing: 'easeOutQuart' },
-        plugins: {
-          legend: { position: 'top', labels: { usePointStyle: true, boxWidth: 8, padding: 12, font: { size: 10 } } },
-          tooltip: { callbacks: { label: (ctx) => ctx.dataset.label + ': ' + ctx.parsed.y + '%' } }
+      // 3.1 月度良品率趋势
+      const ctx1 = document.getElementById('trendChart').getContext('2d');
+      new Chart(ctx1, {
+        type: 'line',
+        data: {
+          labels: monthLabels,
+          datasets: [{
+            label: '良品率',
+            data: monthlyYieldOverall,
+            borderColor: '#60a5fa',
+            backgroundColor: 'rgba(96,165,250,0.08)',
+            fill: true, tension: 0.25,
+            pointBackgroundColor: '#60a5fa',
+            pointBorderColor: '#0f1729',
+            pointBorderWidth: 2,
+            pointRadius: 4, pointHoverRadius: 7,
+          }, {
+            label: '目标 97.5%',
+            data: monthlyYieldOverall.map(() => 97.5),
+            borderColor: '#f87171', borderDash: [6, 4], borderWidth: 2,
+            pointRadius: 0, fill: false,
+          }]
         },
-        scales: {
-          y: { min: 93, max: 100, ticks: { callback: v => v + '%', color: '#7a8599', font: { size: 10 } }, grid: { color: 'rgba(30,45,74,0.5)' } },
-          x: { ticks: { color: '#7a8599', font: { size: 10 } }, grid: { color: 'rgba(30,45,74,0.5)' } }
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          animation: { duration: 1200, easing: 'easeOutQuart' },
+          plugins: {
+            legend: { position: 'top', labels: { usePointStyle: true, boxWidth: 8, padding: 12, font: { size: 10 } } },
+            tooltip: { callbacks: { label: (ctx) => ctx.dataset.label + ': ' + ctx.parsed.y + '%' } }
+          },
+          scales: {
+            y: { min: 93, max: 100, ticks: { callback: v => v + '%', color: '#7a8599', font: { size: 10 } }, grid: { color: 'rgba(30,45,74,0.5)' } },
+            x: { ticks: { color: '#7a8599', font: { size: 10 } }, grid: { color: 'rgba(30,45,74,0.5)' } }
+          }
         }
-      }
-    });
+      });
 
-    // 4.2 各产品月度对比
-    const ctx2 = document.getElementById('productTrendChart').getContext('2d');
-    const colors = ['#f87171', '#60a5fa', '#4ade80', '#fb923c', '#a78bfa', '#22d3ee'];
-    const datasets2 = prodNames.map((p, idx) => ({
-      label: p, data: prodYieldData[p],
-      borderColor: colors[idx % colors.length],
-      backgroundColor: 'transparent', tension: 0.2,
-      pointRadius: 3, borderWidth: 2, pointHoverRadius: 6,
-      spanGaps: false
-    }));
-    new Chart(ctx2, {
-      type: 'line',
-      data: { labels: ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月'], datasets: datasets2 },
-      options: {
-        responsive: true, maintainAspectRatio: false,
-        animation: { duration: 1200, easing: 'easeOutQuart' },
-        plugins: { legend: { position: 'top', labels: { usePointStyle: true, boxWidth: 8, padding: 10, font: { size: 9 } } } },
-        scales: {
-          y: { min: 88, max: 100, ticks: { callback: v => v + '%', color: '#7a8599', font: { size: 10 } }, grid: { color: 'rgba(30,45,74,0.5)' } },
-          x: { ticks: { color: '#7a8599', font: { size: 10 } }, grid: { color: 'rgba(30,45,74,0.5)' } }
+      // 3.2 各产品月度对比
+      const ctx2 = document.getElementById('productTrendChart').getContext('2d');
+      const colors = ['#f87171', '#60a5fa', '#4ade80', '#fb923c', '#a78bfa', '#22d3ee'];
+      const datasets2 = prodNames.map((p, idx) => ({
+        label: p, data: prodYieldData[p],
+        borderColor: colors[idx % colors.length],
+        backgroundColor: 'transparent', tension: 0.2,
+        pointRadius: 3, borderWidth: 2, pointHoverRadius: 6,
+        spanGaps: false
+      }));
+      new Chart(ctx2, {
+        type: 'line',
+        data: { labels: monthLabels, datasets: datasets2 },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          animation: { duration: 1200, easing: 'easeOutQuart' },
+          plugins: { legend: { position: 'top', labels: { usePointStyle: true, boxWidth: 8, padding: 10, font: { size: 9 } } } },
+          scales: {
+            y: { min: 88, max: 100, ticks: { callback: v => v + '%', color: '#7a8599', font: { size: 10 } }, grid: { color: 'rgba(30,45,74,0.5)' } },
+            x: { ticks: { color: '#7a8599', font: { size: 10 } }, grid: { color: 'rgba(30,45,74,0.5)' } }
+          }
         }
-      }
-    });
+      });
 
-    // 4.3 10月各产品良品率
-    const ctx3 = document.getElementById('octProductChart').getContext('2d');
-    const octYieldArr = octProdNames.map(p => octProdYield[p]);
-    const barColors = ['#f87171', '#60a5fa', '#4ade80', '#fb923c', '#a78bfa', '#22d3ee'];
-    new Chart(ctx3, {
-      type: 'bar',
-      data: {
-        labels: octProdNames,
-        datasets: [{
-          label: '良品率 (%)',
-          data: octYieldArr,
-          backgroundColor: barColors.map(c => c + '66'),
-          borderColor: barColors, borderWidth: 2, borderRadius: 4,
-        }]
-      },
-      options: {
-        responsive: true, maintainAspectRatio: false,
-        animation: { duration: 1000, easing: 'easeOutBounce' },
-        plugins: { legend: { display: false }, tooltip: { callbacks: { label: (ctx) => '良品率: ' + ctx.parsed.y + '%' } } },
-        scales: {
-          y: { min: 88, max: 100, ticks: { callback: v => v + '%', color: '#7a8599', font: { size: 10 } }, grid: { color: 'rgba(30,45,74,0.5)' } },
-          x: { ticks: { color: '#7a8599', font: { size: 10 } }, grid: { color: 'rgba(30,45,74,0.5)' } }
+      // 3.3 11月各产品良品率
+      const ctx3 = document.getElementById('octProductChart').getContext('2d');
+      const novYieldArr = novProdNames.map(p => novProdYield[p]);
+      const barColors = ['#f87171', '#60a5fa', '#4ade80', '#fb923c', '#a78bfa', '#22d3ee'];
+      new Chart(ctx3, {
+        type: 'bar',
+        data: {
+          labels: novProdNames,
+          datasets: [{
+            label: '良品率 (%)',
+            data: novYieldArr,
+            backgroundColor: barColors.map(c => c + '66'),
+            borderColor: barColors, borderWidth: 2, borderRadius: 4,
+          }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          animation: { duration: 1000, easing: 'easeOutBounce' },
+          plugins: { legend: { display: false }, tooltip: { callbacks: { label: (ctx) => '良品率: ' + ctx.parsed.y + '%' } } },
+          scales: {
+            y: { min: 90, max: 100, ticks: { callback: v => v + '%', color: '#7a8599', font: { size: 10 } }, grid: { color: 'rgba(30,45,74,0.5)' } },
+            x: { ticks: { color: '#7a8599', font: { size: 10 } }, grid: { color: 'rgba(30,45,74,0.5)' } }
+          }
         }
-      }
-    });
+      });
 
-    // 4.4 工段分布
-    const flowingGlowPlugin = {
-      id: 'flowingGlow',
-      beforeDraw(chart) {
-        if (chart.config.type !== 'doughnut') return;
-        const { ctx, chartArea } = chart;
-        if (!chartArea) return;
-        const centerX = (chartArea.left + chartArea.right) / 2;
-        const centerY = (chartArea.top + chartArea.bottom) / 2;
-        const radius = Math.min(chartArea.right - chartArea.left, chartArea.bottom - chartArea.top) / 2;
-        const time = Date.now() * 0.001;
-        const angle = time * 0.3;
-        const glowX = centerX + Math.cos(angle) * radius * 0.5;
-        const glowY = centerY + Math.sin(angle) * radius * 0.5;
-        ctx.save();
-        const gradient = ctx.createRadialGradient(glowX, glowY, 0, centerX, centerY, radius);
-        gradient.addColorStop(0, 'rgba(6,182,212,0.06)');
-        gradient.addColorStop(0.5, 'rgba(59,130,246,0.03)');
-        gradient.addColorStop(1, 'rgba(6,182,212,0)');
-        ctx.fillStyle = gradient;
-        ctx.beginPath(); ctx.arc(centerX, centerY, radius, 0, Math.PI * 2); ctx.fill();
-        ctx.restore();
-      }
-    };
-    Chart.register(flowingGlowPlugin);
+      // 3.4 工段分布（环形图 + 流光 + 自动旋转）
+      const flowingGlowPlugin = {
+        id: 'flowingGlow',
+        beforeDraw(chart) {
+          if (chart.config.type !== 'doughnut') return;
+          const { ctx, chartArea } = chart;
+          if (!chartArea) return;
+          const centerX = (chartArea.left + chartArea.right) / 2;
+          const centerY = (chartArea.top + chartArea.bottom) / 2;
+          const radius = Math.min(chartArea.right - chartArea.left, chartArea.bottom - chartArea.top) / 2;
+          const time = Date.now() * 0.001;
+          const angle = time * 0.3;
+          const glowX = centerX + Math.cos(angle) * radius * 0.5;
+          const glowY = centerY + Math.sin(angle) * radius * 0.5;
+          ctx.save();
+          const gradient = ctx.createRadialGradient(glowX, glowY, 0, centerX, centerY, radius);
+          gradient.addColorStop(0, 'rgba(6,182,212,0.06)');
+          gradient.addColorStop(0.5, 'rgba(59,130,246,0.03)');
+          gradient.addColorStop(1, 'rgba(6,182,212,0)');
+          ctx.fillStyle = gradient;
+          ctx.beginPath(); ctx.arc(centerX, centerY, radius, 0, Math.PI * 2); ctx.fill();
+          ctx.restore();
+        }
+      };
+      Chart.register(flowingGlowPlugin);
 
-    const ctx4 = document.getElementById('stationChart').getContext('2d');
-    const stationLabels = Object.keys(stationBad);
-    const stationValues = Object.values(stationBad);
-    const stationColors = ['#60a5fa','#4ade80','#fb923c','#f87171','#a78bfa','#22d3ee','#facc15','#f472b6','#34d399'];
-    const stationChart = new Chart(ctx4, {
-      type: 'doughnut',
-      data: {
-        labels: stationLabels,
-        datasets: [{
-          data: stationValues,
-          backgroundColor: stationColors.slice(0, stationLabels.length),
-          borderWidth: 2, borderColor: '#0f1729',
-        }]
-      },
-      options: {
-        responsive: true, maintainAspectRatio: false,
-        animation: { duration: 1200, easing: 'easeOutQuart' },
-        plugins: { legend: { position: 'right', labels: { boxWidth: 12, font: { size: 9 }, color: '#c8d0dc' } } }
-      }
-    });
-    // ============================================================
-    // 4.4b 工段分布饼图 · 顺时针慢速旋转（约 15 秒 / 圈）
-    // 说明：
-    //   - Chart.js 的 options.rotation 单位是度，顺时针方向增大
-    //   - 默认起始角为 -90（12点钟方向）
-    //   - 使用 chart.update('none') 关闭过渡动画，保证每帧平滑旋转
-    //   - 鼠标悬停时暂停旋转，方便查看各扇区
-    // ============================================================
-    const SPIN_PERIOD_MS = 15000;   // 一圈耗时 15 秒
-    const BASE_ROTATION = -90;      // Chart.js 默认起始角
-    let stationRotation = BASE_ROTATION;
-    let stationLastTs = null;
-    let stationSpinning = true;
+      const ctx4 = document.getElementById('stationChart').getContext('2d');
+      const stationLabels = Object.keys(stationBad);
+      const stationValues = Object.values(stationBad);
+      const stationColors = ['#60a5fa','#4ade80','#fb923c','#f87171','#a78bfa','#22d3ee','#facc15','#f472b6','#34d399'];
+      const stationChart = new Chart(ctx4, {
+        type: 'doughnut',
+        data: {
+          labels: stationLabels,
+          datasets: [{
+            data: stationValues,
+            backgroundColor: stationColors.slice(0, stationLabels.length),
+            borderWidth: 2, borderColor: '#0f1729',
+          }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          animation: { duration: 1200, easing: 'easeOutQuart' },
+          plugins: { legend: { position: 'right', labels: { boxWidth: 12, font: { size: 9 }, color: '#c8d0dc' } } }
+        }
+      });
 
-    function stationSpinLoop(ts) {
-      if (!stationSpinning) {
-        stationLastTs = null;                       // 恢复时重新计时，避免跳变
+      const SPIN_PERIOD_MS = 15000;
+      const BASE_ROTATION = -90;
+      let stationRotation = BASE_ROTATION;
+      let stationLastTs = null;
+      let stationSpinning = true;
+
+      function stationSpinLoop(ts) {
+        if (!stationSpinning) {
+          stationLastTs = null;
+          requestAnimationFrame(stationSpinLoop);
+          return;
+        }
+        if (stationLastTs === null) stationLastTs = ts;
+        const dt = ts - stationLastTs;
+        stationLastTs = ts;
+        stationRotation += (360 / SPIN_PERIOD_MS) * dt;
+        if (stationRotation >= BASE_ROTATION + 360) stationRotation -= 360;
+        stationChart.options.rotation = stationRotation;
+        stationChart.update('none');
         requestAnimationFrame(stationSpinLoop);
-        return;
       }
-      if (stationLastTs === null) stationLastTs = ts;
-      const dt = ts - stationLastTs;                // 距上一帧的毫秒数
-      stationLastTs = ts;
+      setTimeout(() => requestAnimationFrame(stationSpinLoop), 1300);
 
-      // 15 秒转 360°，即每毫秒 0.024°
-      stationRotation += (360 / SPIN_PERIOD_MS) * dt;
+      const stationCanvasEl = document.getElementById('stationChart');
+      stationCanvasEl.addEventListener('mouseenter', () => { stationSpinning = false; });
+      stationCanvasEl.addEventListener('mouseleave', () => { stationSpinning = true; stationLastTs = null; });
 
-      // 角度归一化，防止数值无限增大（-90 与 270 等价）
-      if (stationRotation >= BASE_ROTATION + 360) stationRotation -= 360;
-
-      stationChart.options.rotation = stationRotation;
-      stationChart.update('none');                  // 无动画更新，保证流畅
-      requestAnimationFrame(stationSpinLoop);
+      // 3.5 TOP失效模式
+      const ctx5 = document.getElementById('defectChart').getContext('2d');
+      const defectLabels = Object.keys(defectBad);
+      const defectValues = Object.values(defectBad);
+      const defectColors = ['#f87171','#fb923c','#facc15','#60a5fa','#a78bfa','#22d3ee','#4ade80','#f472b6','#38bdf8','#c084fc'];
+      new Chart(ctx5, {
+        type: 'bar',
+        data: {
+          labels: defectLabels,
+          datasets: [{
+            label: '不良数量',
+            data: defectValues,
+            backgroundColor: defectColors.slice(0, defectLabels.length).map(c => c + '77'),
+            borderColor: defectColors.slice(0, defectLabels.length),
+            borderWidth: 2, borderRadius: 4,
+          }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          indexAxis: 'y', animation: { duration: 1000, easing: 'easeOutQuart' },
+          plugins: { legend: { display: false }, tooltip: { callbacks: { label: (ctx) => ctx.parsed.x + ' 件' } } },
+          scales: {
+            x: { beginAtZero: true, ticks: { color: '#7a8599', font: { size: 10 } }, grid: { color: 'rgba(30,45,74,0.5)' } },
+            y: { ticks: { color: '#7a8599', font: { size: 9 } }, grid: { color: 'rgba(30,45,74,0.5)' } }
+          }
+        }
+      });
     }
 
-    // 等初始渲染动画（1200ms）结束后再启动旋转，避免打断入场动画
-    setTimeout(() => requestAnimationFrame(stationSpinLoop), 1300);
-
-    // 鼠标悬停暂停 / 移出恢复
-    const stationCanvasEl = document.getElementById('stationChart');
-    stationCanvasEl.addEventListener('mouseenter', () => { stationSpinning = false; });
-    stationCanvasEl.addEventListener('mouseleave', () => { stationSpinning = true; stationLastTs = null; });
-
-    // 4.5 TOP失效模式
-    const ctx5 = document.getElementById('defectChart').getContext('2d');
-    const defectLabels = Object.keys(defectBad);
-    const defectValues = Object.values(defectBad);
-    const defectColors = ['#f87171','#fb923c','#facc15','#60a5fa','#a78bfa','#22d3ee','#4ade80','#f472b6'];
-    new Chart(ctx5, {
-      type: 'bar',
-      data: {
-        labels: defectLabels,
-        datasets: [{
-          label: '不良数量',
-          data: defectValues,
-          backgroundColor: defectColors.slice(0, defectLabels.length).map(c => c + '77'),
-          borderColor: defectColors.slice(0, defectLabels.length),
-          borderWidth: 2, borderRadius: 4,
-        }]
-      },
-      options: {
-        responsive: true, maintainAspectRatio: false,
-        indexAxis: 'y', animation: { duration: 1000, easing: 'easeOutQuart' },
-        plugins: { legend: { display: false }, tooltip: { callbacks: { label: (ctx) => ctx.parsed.x + ' 件' } } },
-        scales: {
-          x: { beginAtZero: true, ticks: { color: '#7a8599', font: { size: 10 } }, grid: { color: 'rgba(30,45,74,0.5)' } },
-          y: { ticks: { color: '#7a8599', font: { size: 9 } }, grid: { color: 'rgba(30,45,74,0.5)' } }
-        }
-      }
-    });
-
     // ================================================================
-    // 5. 月度明细表格（含10月）
+    // 4. 11月产品不良明细表（Sheet2 聚合）
     // ================================================================
     const miniBody = document.getElementById('miniMonthlyBody');
-    const months = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月'];
-    function buildTableRows() {
+    function buildRows() {
       let html = '';
-      for (let i = 0; i < months.length; i++) {
-        const y = monthlyYieldOverall[i];
-        const status = y >= 97.5 ? '达标' : '未达标';
-        const cls = y >= 97.5 ? 'green' : 'red';
-        html += `<tr><td>${months[i]}</td><td>${y.toFixed(2)}%</td><td><span class="tag ${cls}">${status}</span></td></tr>`;
-      }
+      const sorted = Object.entries(productBad).sort((a, b) => b[1] - a[1]);
+      sorted.forEach(([name, val]) => {
+        const ratio = (val / productBadTotal * 100).toFixed(2) + '%';
+        const num = val / productBadTotal * 100;
+        const cls = num >= 30 ? 'red' : (num >= 10 ? 'orange' : 'green');
+        html += `<tr><td>${name}</td><td>${val.toLocaleString()}</td><td><span class="tag ${cls}">${ratio}</span></td></tr>`;
+      });
       return html;
     }
-    const rowsHtml = buildTableRows();
+    const rowsHtml = buildRows();
     miniBody.innerHTML = rowsHtml;
     const table = document.getElementById('miniMonthlyTable');
     const oldClone = document.getElementById('miniMonthlyBodyClone');
@@ -683,7 +657,7 @@
     table.appendChild(newClone);
 
     // ================================================================
-    // 6. AI建议轮换
+    // 5. AI建议高亮轮询
     // ================================================================
     const suggestionItems = document.querySelectorAll('.right-suggestion-item');
     let suggestionIndex = 0;
@@ -703,9 +677,10 @@
       suggestionItems[0].style.background = 'rgba(6,182,212,0.08)';
     }
 
-    console.log('🚀 驾驶舱已更新 (数据至10月26日)');
-    console.log('📊 10月总合格:', octTotalGood, '总不良:', octTotalBad, '良品率:', octYield + '%');
-    console.log('📌 主要改善点：预检大漏/呛管、钎焊护板移位/间隙/掉带、氦检泄漏/虚焊、炉前呛管/报废、点焊虚焊');
+    console.log('✅ 看板已加载（数据周期：2026年1–11月，明细截至11月17日）');
+    console.log('📊 11月 KPI：不良', novTotalBad, '件 / 产出', novTotalGood, '件 / 良品率', novYield + '%');
+    console.log('🏭 工段TOP3：预检3364、钎焊3205、氦检1877');
+    console.log('🔥 失效模式TOP3：大漏1867、其它1541、氦检漏1232');
   </script>
 </body>
 </html>
